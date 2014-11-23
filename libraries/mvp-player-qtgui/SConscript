@@ -1,0 +1,15 @@
+Import( 'project' )
+Import( 'libs' )
+
+sourcesDir = 'src'
+mvpPlayerSourcesUi = project.scanFiles( sourcesDir, accept=['*.ui'] )
+
+project.StaticLibrary( 'mvp_player_qtgui',
+                       sources   = project.scanFiles( ['src'] ),
+                       includes  = ['src'],
+                       libraries = [
+                                     libs.boost,
+                                     libs.qt5( modules=[ 'QtCore', 'QtGui', 'QtWidgets', 'QtMultimedia' ], uiFiles=mvpPlayerSourcesUi ),
+                                    ],
+                       shared = False
+                      )

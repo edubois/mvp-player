@@ -1,0 +1,13 @@
+Import( 'project' )
+Import( 'libs' )
+
+project.StaticLibrary( 'mvp_player_core',
+                       sources   = project.scanFiles( ['src'] ),
+                       includes  = ['src'],
+                       libraries = [
+                                     libs.boost,
+                                     libs.qt5( modules=[ 'QtCore', 'QtMultimedia' ] ),
+                                    ],
+                       shared = False
+                      )
+
