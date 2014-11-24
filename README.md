@@ -13,7 +13,9 @@ To compile, you will need Qt5, Boost and scons.
 First, clone the repository:
 
 git clone https://github.com/edubois/mvp-player.git
+
 cd mvp-player
+
 git submodule update -i
 
 Now, it's time to edit default.sconf according to your configuration.
