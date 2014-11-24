@@ -18,6 +18,15 @@ cd mvp-player
 
 git submodule update -i
 
+This should bring tools/sconsProject
+
+now, go into tools/sconsProject
+
+and do (to avoid compilation issues on Mac)
+
+git checkout precompiled_header_proposal
+
+
 Now, it's time to edit default.sconf according to your configuration.
 In the default configuration, I made a parent directory 3rdParties where I put
 my 3rd party libraries. To change your external libraries base dir, 
