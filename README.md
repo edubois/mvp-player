@@ -22,7 +22,7 @@ This should bring tools/sconsProject
 
 now, go into tools/sconsProject
 
-and do (to avoid compilation issues on Mac)
+and do (this is mandatory):
 
 git checkout precompiled_header_proposal
 
@@ -42,6 +42,7 @@ When you are ready, enter:
 scons mode=release mvp_player_ncurses
 
 * or, if you want the QT player:
+
 scons mode=release mvp_player_qt
 
 This should build an executable showing a player dialog, where you can play a music (I tried .wav, it was working well).
