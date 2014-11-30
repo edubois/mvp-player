@@ -2,6 +2,10 @@
 
 * MVP-PLAYER is a music player showing a great pattern: the model view presenter
 
+* Done by Eloi du Bois
+
+* LICENSE: LGPLv3
+
 This is a proof of concept of a my personal way to implement the 
 model view presenter pattern.
 
