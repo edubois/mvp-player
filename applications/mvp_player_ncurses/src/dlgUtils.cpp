@@ -24,7 +24,7 @@ boost::filesystem::path openFile( CDKSCREEN* cdkscreen, const std::string & titl
     refreshCDKScreen( cdkscreen );
     if ( filename )
     {
-        return filename;
+        return std::string( filename );
     }
     else
     {
