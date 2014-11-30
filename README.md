@@ -8,7 +8,14 @@ To me, this (or similar) should exists on every C++ projects.
 
 ////////////////////////////////////////////////////////////////////////////////
 
-To compile, you will need Qt5, Boost and scons.
+To compile, you will need Qt5, Boost, Fmod, ncurses, cdk and scons:
+
+* QT5: http://www.qt.io/download/
+* Boost: http://www.boost.org/users/download/
+* FMOD: http://www.fmod.org/
+* NCURSES: http://ftp.gnu.org/pub/gnu/ncurses/
+* CDK: http://invisible-island.net/cdk/
+
 
 First, clone the repository:
 
