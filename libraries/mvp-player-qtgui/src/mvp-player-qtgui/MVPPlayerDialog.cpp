@@ -23,7 +23,7 @@ MVPPlayerDialog::~MVPPlayerDialog()
 
 void MVPPlayerDialog::slotViewHitPlayStopBtn()
 {
-    if ( widget.btnPlay->text() == kStopCaption )
+    if ( widget.btnPlay->text().toStdString() == kStopCaption )
     {
         signalViewHitStop();
     }

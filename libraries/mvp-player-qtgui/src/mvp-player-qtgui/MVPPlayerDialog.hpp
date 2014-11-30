@@ -3,6 +3,8 @@
 
 #include "ui_MVPPlayerDialog.hpp"
 
+#include <mvp-player-gui/IMVPPlayerDialog.hpp>
+
 #include <boost/signals2.hpp>
 #include <boost/filesystem/path.hpp>
 #include <string>
@@ -13,34 +15,28 @@ namespace gui
 {
 namespace qt
 {
-static const QString kStopCaption( "[*]" );
-static const QString kPlayCaption( "|>" );
 
 /**
- * @brief mvp-player dialog
+ * @brief mvp-player qt dialog
  */
-class MVPPlayerDialog : public QDialog
+class MVPPlayerDialog : public QDialog, public IMVPPlayerDialog
 {
     Q_OBJECT
 public:
     MVPPlayerDialog( QWidget *parent = NULL );
     virtual ~MVPPlayerDialog();
-    
+
     inline void setCurrentTrack( const boost::filesystem::path & filename )
     { widget.lblCurrentTrack->setText( QString::fromStdString( filename.string() ) ); }
 
     inline void setIconStop()
-    { widget.btnPlay->setText( kStopCaption ); }
-    
+    { widget.btnPlay->setText( kStopCaption.c_str() ); }
+
     inline void setIconPlay()
-    { widget.btnPlay->setText( kPlayCaption ); }
+    { widget.btnPlay->setText( kPlayCaption.c_str() ); }
 
 private Q_SLOTS:
     void slotViewHitPlayStopBtn();
-
-public:
-    boost::signals2::signal<void( const std::string& )> signalViewHitPlay; ///< Signals that user hit play button
-    boost::signals2::signal<void()> signalViewHitStop; ///< Signals that user hit stop button
 
 private:
     Ui::MVPPlayerDialog widget;

@@ -3,6 +3,7 @@ Import( 'libs' )
 
 libraries = [
               libs.mvp_player_core,
+              libs.mvp_player_gui,
               libs.mvp_player_qtgui,
               libs.boost_program_options,
               libs.qt5( modules=[ 'QtCore', 'QtGui', 'QtWidgets', 'QtPrintSupport', 'QtMultimedia' ] ),
@@ -14,8 +15,8 @@ sources = project.scanFiles( [sourcesDir] )
 
 env = project.createEnv( libraries )
 env.Append( CPPPATH=sourcesDir )
-mvp_player = env.Program( target=name, source=sources )
+mvp_player_qt = env.Program( target=name, source=sources )
 
-install = env.Install( project.inOutputBin(), mvp_player )
+install = env.Install( project.inOutputBin(), mvp_player_qt )
 env.Alias(name, install )
 env.Alias('all', install )

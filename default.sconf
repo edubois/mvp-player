@@ -16,8 +16,8 @@ extern = '#../3rdParties'
 
 CPPDEFINES.extend(['BOOST_ALL_DYN_LINK', 'BOOST_LOG_DYN_LINK', 'BOOST_SPIRIT_USE_PHOENIX_V3', 'BOOST_SIGNALS_NO_DEPRECATION_WARNING' ])
 
-aliases = [('mvp_player')]
-default = 'mvp_player'
+aliases = [('mvp_player_ncurses')]
+default = 'mvp_player_ncurses'
 
 ccache = False
 ccachedir = join(extern,'mvp_player_cache')
@@ -26,6 +26,10 @@ incdir_qt5 = join(extern, 'qt5/5.3/clang_64/include')
 fwkdir_qt5 = '/Users/admin/_DEV/3rdParties/qt5/5.3/clang_64/lib'
 incdir_boost = join(extern,'boost_1_55_0-mac-oldc++')
 libdir_boost = join(extern,'boost_1_55_0-mac-oldc++/stage/lib')
+incdir_ncurses = join(extern,'ncurses/include')
+libdir_ncurses = join(extern,'ncurses/lib')
+incdir_cdk = join(extern,'cdk/include')
+libdir_cdk = join(extern,'cdk/')
 
 compiler="clang"
 CXXFLAGS=['-ftemplate-depth=256', '-stdlib=libstdc++', '-isysroot/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk']
