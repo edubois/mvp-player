@@ -34,7 +34,7 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerDialog>( int argc, char **argv )
     // Presenter (presenter: logic-glu between model and view)
     mvpplayer::logic::PlayerStateMachine playerLogic;
 
-    // Additionnal specific connections
+    // Specific connections (be careful of the order here)
 
     // Display a message box on errors
     playerLogic.signalFailed.connect( boost::bind( &mvpplayer::gui::qt::displayError, _1 ) );

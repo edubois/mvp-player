@@ -10,7 +10,7 @@ namespace gui
  */
 void setupMainBehavior( mvpplayer::MVPPlayerEngine & m, mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logic::PlayerStateMachine & p )
 {
-    //@{ Connections (behavior)
+    //@{ Connections (behavior), note that the order is important
     // When we hit play button, we want to react by sending a play event to the state machine
     v.signalViewHitPlay.connect( boost::bind( &mvpplayer::logic::PlayerStateMachine::processPlay, &p, _1 ) );
     // When we hit stop button, we want to react by sending a stop event to the state machine

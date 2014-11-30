@@ -41,7 +41,7 @@ int instanciateApp<mvpplayer::gui::ncurses::MVPPlayerDialog>( int argc, char **a
         // Presenter (presenter: logic-glu between model and view)
         mvpplayer::logic::PlayerStateMachine playerLogic;
 
-        // Additionnal specific connections
+        // Specific connections (be careful of the order here)
 
         // Display a message box on errors
         playerLogic.signalFailed.connect( boost::bind( &mvpplayer::gui::ncurses::displayError, cdkscreen, _1 ) );
