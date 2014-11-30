@@ -5,6 +5,7 @@ namespace mvpplayer
 
 MVPPlayerEngine::MVPPlayerEngine()
 {
+    SoundPlayer::initialize();
     _currentPosition = _playlist.begin();
 }
 
@@ -14,8 +15,9 @@ MVPPlayerEngine::~MVPPlayerEngine()
 
 void MVPPlayerEngine::playFile( const boost::filesystem::path & filename )
 {
-    _currentPlayedTrack.reset( new QSound( QString::fromStdString( filename.string() ) ) );
-    _currentPlayedTrack->play();
+    _currentPlayedTrack = filename;
+    SoundPlayer::load( filename.string() );
+    SoundPlayer::play();
 }
 
 void MVPPlayerEngine::playList()
@@ -30,10 +32,7 @@ void MVPPlayerEngine::playList()
 
 void MVPPlayerEngine::stop()
 {
-    if ( _currentPlayedTrack.get() )
-    {
-        _currentPlayedTrack->stop();
-    }
+    SoundPlayer::unload();
 }
 
 void MVPPlayerEngine::playPrevious()

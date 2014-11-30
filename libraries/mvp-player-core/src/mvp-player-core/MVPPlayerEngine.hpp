@@ -1,7 +1,7 @@
 #ifndef _MVPPLAYERENGINE_HPP_
 #define	_MVPPLAYERENGINE_HPP_
 
-#include <QtMultimedia/QSound>
+#include "SoundPlayer.hpp"
 
 #include <boost/signals2.hpp>
 #include <boost/foreach.hpp>
@@ -43,10 +43,10 @@ public:
     }
 
 public:
-    std::auto_ptr<QSound> _currentPlayedTrack;
+    boost::filesystem::path _currentPlayedTrack;                            ///< Current played track
     std::list<boost::filesystem::path>::const_iterator _currentPosition;    ///< Current playing position
-    std::list<boost::filesystem::path> _playlist;                   ///< Track playlist
-    boost::signals2::signal<void()> signalEndOfTrack;   ///< Signals that the track has ended
+    std::list<boost::filesystem::path> _playlist;                           ///< Track playlist
+    boost::signals2::signal<void()> signalEndOfTrack;                       ///< Signals that the track has ended
 };
 
 }

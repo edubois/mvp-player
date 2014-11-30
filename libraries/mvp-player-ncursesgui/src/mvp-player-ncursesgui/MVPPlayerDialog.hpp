@@ -37,11 +37,12 @@ public:
     int exec();
 
 private:
-    void initWin();
+    void initWin( const std::string & currentTrack, const bool playButton = true );
 
 private:
     CDKSCREEN* _cdkScreen;
     CDKDIALOG* _childwin;
+    bool _isPlaying;
 };
 
 }

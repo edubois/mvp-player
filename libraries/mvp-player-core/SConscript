@@ -7,7 +7,8 @@ project.StaticLibrary( 'mvp_player_core',
                        libraries = [
                                      libs.boost,
                                      libs.boost_filesystem,
-                                     libs.qt5( modules=[ 'QtCore', 'QtMultimedia' ] ),
+                                     libs.fmod,
+                                     libs.qt5( modules=[ 'QtCore' ] ),
                                     ],
                        shared = False
                       )
