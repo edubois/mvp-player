@@ -1,5 +1,4 @@
 #include "MVPPlayerDialog.hpp"
-#include "winFun.hpp"
 
 #include <iostream>
 
