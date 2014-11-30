@@ -19,9 +19,17 @@ boost::filesystem::path openFile( CDKSCREEN* cdkscreen, const std::string & titl
                                             TRUE,
                                             FALSE );
 
-    const std::string filename( activateCDKFselect( fileSelect, NULL ) );
+    const char* filename = activateCDKFselect( fileSelect, NULL );
     destroyCDKFselect( fileSelect );
-    return filename;
+    refreshCDKScreen( cdkscreen );
+    if ( filename )
+    {
+        return filename;
+    }
+    else
+    {
+        return boost::filesystem::path();
+    }
 }
 
 void displayError( CDKSCREEN* cdkscreen, const std::string & msg )
