@@ -44,10 +44,7 @@ void SoundPlayer::load( const std::string & filename )
             unload();
         }
         result = fmodsystem->createStream( currentSound.c_str(), FMOD_DEFAULT, 0, &sound );
-        if (result != FMOD_OK)
-        {
-            possible = false;
-        }
+        possible = ( result == FMOD_OK );
     }
 }
 
@@ -57,8 +54,8 @@ void SoundPlayer::unload()
     if ( sound )
     {
         result = sound->release();
-        on = false;
     }
+    on = false;
 }
 
 //plays a sound (no argument to leave pause as dafault)
