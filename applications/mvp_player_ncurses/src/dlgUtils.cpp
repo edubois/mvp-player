@@ -1,5 +1,7 @@
 #include "dlgUtils.hpp"
 
+#include <sstream>
+
 namespace mvpplayer
 {
 namespace gui
@@ -20,16 +22,11 @@ boost::filesystem::path openFile( CDKSCREEN* cdkscreen, const std::string & titl
                                             FALSE );
 
     const char* filename = activateCDKFselect( fileSelect, NULL );
+    std::ostringstream os;
+    os << filename;
     destroyCDKFselect( fileSelect );
     refreshCDKScreen( cdkscreen );
-    if ( filename )
-    {
-        return std::string( filename );
-    }
-    else
-    {
-        return boost::filesystem::path();
-    }
+    return os.str();
 }
 
 void displayError( CDKSCREEN* cdkscreen, const std::string & msg )
