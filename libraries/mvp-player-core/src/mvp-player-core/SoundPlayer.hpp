@@ -25,9 +25,24 @@ public:
 
     //sound control
     static void setVolume( const float v ); //sets the actual playing sound's volume
-    static void load( const std::string & filename ); //loads a soundfile
-    static void unload(); //frees the sound object
-    static void play (const bool pause = false); //plays a sound (may be started paused; no argument for unpaused)
+    
+    /**
+     * @brief load a given file
+     * @param filename given file
+     */
+    static void load( const std::string & filename );
+    
+    /**
+     * @brief frees the sound object
+     */
+    static void unload();
+
+    /**
+     * @brief plays a sound
+     * @param pause pause playing
+     * @return false on success, true if error
+     */
+    static bool play (const bool pause = false);
 
     //getters
     static bool getSound(); //checks whether the sound is on

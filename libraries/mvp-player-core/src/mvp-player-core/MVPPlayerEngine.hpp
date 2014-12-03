@@ -1,15 +1,8 @@
-#ifndef _MVPPLAYERENGINE_HPP_
-#define	_MVPPLAYERENGINE_HPP_
+#ifndef _CORE_MVPPLAYERENGINE_HPP_
+#define	_CORE_MVPPLAYERENGINE_HPP_
 
+#include "IMVPPlayerEngine.hpp"
 #include "SoundPlayer.hpp"
-
-#include <boost/signals2.hpp>
-#include <boost/foreach.hpp>
-#include <boost/filesystem.hpp>
-
-#include <list>
-#include <iterator>
-#include <string>
 
 namespace mvpplayer
 {
@@ -17,7 +10,7 @@ namespace mvpplayer
 /**
  * @brief Engine for music player
  */
-class MVPPlayerEngine
+class MVPPlayerEngine : public IMVPPlayerEngine
 {
 public:
     MVPPlayerEngine();
@@ -25,22 +18,8 @@ public:
 
     void stop();
 
-    void playFile( const boost::filesystem::path & filename );
-    void playList();
-    void playPrevious();
-
-    void playNext();
-
-    inline void addTrack( const boost::filesystem::path & filename )
-    {
-        _playlist.push_back( filename );
-    }
-    
-    inline void clearPlaylist()
-    {
-        _playlist.clear();
-        _currentPosition = _playlist.begin();
-    }
+    bool playCurrent();
+    bool playFile( const boost::filesystem::path & filename );
 
 public:
     boost::filesystem::path _currentPlayedTrack;                            ///< Current played track

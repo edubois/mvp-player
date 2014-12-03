@@ -1,4 +1,5 @@
 #include "dlgUtils.hpp"
+#include <mvp-player-core/MVPPlayerEngine.hpp>
 #include <mvp-player-gui/playerBehavior.hpp>
 #include <mvp-player-ncursesgui/MVPPlayerDialog.hpp>
 

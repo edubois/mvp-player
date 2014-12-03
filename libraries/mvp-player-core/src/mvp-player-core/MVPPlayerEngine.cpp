@@ -13,44 +13,29 @@ MVPPlayerEngine::~MVPPlayerEngine()
 {
 }
 
-void MVPPlayerEngine::playFile( const boost::filesystem::path & filename )
+bool MVPPlayerEngine::playFile( const boost::filesystem::path & filename )
 {
-    _currentPlayedTrack = filename;
+    IMVPPlayerEngine::playFile( filename );
+
     SoundPlayer::load( filename.string() );
-    SoundPlayer::play();
+    return SoundPlayer::play();
 }
 
-void MVPPlayerEngine::playList()
+
+bool MVPPlayerEngine::playCurrent()
 {
-    _currentPosition = _playlist.begin();
-    for( std::size_t i = 0; i < _playlist.size(); ++i )
+    if ( IMVPPlayerEngine::playCurrent() )
     {
-        playNext();
-        ///@todo: wait until end
+        SoundPlayer::load( _currentPlayedTrack.string() );
+        SoundPlayer::play();
+        return false;
     }
+    return true;
 }
 
 void MVPPlayerEngine::stop()
 {
     SoundPlayer::unload();
-}
-
-void MVPPlayerEngine::playPrevious()
-{
-    stop();
-    if ( --_currentPosition != _playlist.end() )
-    {
-        playFile( *_currentPosition );
-    }
-}
-
-void MVPPlayerEngine::playNext()
-{
-    stop();
-    if ( ++_currentPosition != _playlist.end() )
-    {
-        playFile( *_currentPosition );
-    }
 }
 
 }

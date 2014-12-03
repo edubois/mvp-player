@@ -59,7 +59,7 @@ void SoundPlayer::unload()
 }
 
 //plays a sound (no argument to leave pause as dafault)
-void SoundPlayer::play( const bool pause )
+bool SoundPlayer::play( const bool pause )
 {
     if ( possible && sound )
     {
@@ -67,7 +67,9 @@ void SoundPlayer::play( const bool pause )
         assert( channel != NULL );
         channel->setMode( FMOD_LOOP_NORMAL );
         setVolume( 1.0f );
+        return false;
     }
+    return true;
 }
 
 //toggles sound on and off

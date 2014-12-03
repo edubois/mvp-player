@@ -25,7 +25,7 @@ public:
     virtual void setCurrentTrack( const boost::filesystem::path & filename ) = 0;
 
     virtual void setIconStop() = 0;
-    
+
     virtual void setIconPlay() = 0;
 
 public:

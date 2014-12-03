@@ -8,7 +8,7 @@ namespace gui
 /**
  * @brief Setup music player's behavior (connect signals between the model/view/presenter)
  */
-void setupMainBehavior( mvpplayer::MVPPlayerEngine & m, mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logic::PlayerStateMachine & p )
+void setupMainBehavior( mvpplayer::IMVPPlayerEngine & m, mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logic::PlayerStateMachine & p )
 {
     //@{ Connections (behavior), note that the order is important
     // When we hit play button, we want to react by sending a play event to the state machine
@@ -16,10 +16,10 @@ void setupMainBehavior( mvpplayer::MVPPlayerEngine & m, mvpplayer::gui::IMVPPlay
     // When we hit stop button, we want to react by sending a stop event to the state machine
     v.signalViewHitStop.connect( boost::bind( &mvpplayer::logic::PlayerStateMachine::processStop, &p ) );
     // Connect played event to the engine play file function
-    p.signalPlayedTrack.connect( boost::bind( &mvpplayer::MVPPlayerEngine::playFile, &m, _1 ) );
+    p.signalPlayedTrack.connect( boost::bind( &mvpplayer::IMVPPlayerEngine::playFile, &m, _1 ) );
     // Connect stop event to stop the current played track
-    p.signalStopTrack.connect( boost::bind( &mvpplayer::MVPPlayerEngine::stop, &m ) );
-    
+    p.signalStopTrack.connect( boost::bind( &mvpplayer::IMVPPlayerEngine::stop, &m ) );
+
     // Connect stop event to change play button to [*]
     p.signalPlayedTrack.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setIconStop, &v ) );
     // Connect played event to display track filename function
