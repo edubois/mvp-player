@@ -6,6 +6,7 @@ project.UnitTest(
     includes = ['../'],
     libraries = [
         libs.mvp_player_core,
+        libs.mvp_player_gui,
         libs.boost_unit_test_framework,
     ]
 )
