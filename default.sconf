@@ -24,8 +24,8 @@ ccachedir = join(extern,'mvp_player_cache')
 
 incdir_qt5 = join(extern, 'qt5/5.3/clang_64/include')
 fwkdir_qt5 = '/Users/admin/_DEV/3rdParties/qt5/5.3/clang_64/lib'
-incdir_boost = join(extern,'boost_1_55_0-mac-oldc++')
-libdir_boost = join(extern,'boost_1_55_0-mac-oldc++/stage/lib')
+incdir_boost = join(extern,'boost-mac-c++11')
+libdir_boost = join(extern,'boost-mac-c++11/stage/lib')
 incdir_ncurses = join(extern,'ncurses/include')
 libdir_ncurses = join(extern,'ncurses/lib')
 incdir_cdk = join(extern,'cdk/include')
@@ -34,5 +34,5 @@ incdir_fmod = join(extern,'fmod/api/lowlevel/inc')
 libdir_fmod = join(extern,'fmod/api/lowlevel/lib')
 
 compiler="clang"
-CXXFLAGS=['-ftemplate-depth=256', '-stdlib=libstdc++', '-isysroot/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk']
-LINKFLAGS=['-stdlib=libstdc++','-Wl,-syslibroot,/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk']
+CXXFLAGS=['-Wno-deprecated-register', '-ftemplate-depth=256', '-std=c++11', '-stdlib=libc++', '-isysroot/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk']
+LINKFLAGS=['-stdlib=libc++','-Wl,-syslibroot,/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk']
