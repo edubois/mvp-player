@@ -1,8 +1,10 @@
 #define BOOST_TEST_MODULE player_state_machine_test
 #include <unittest.hpp>
 
-#include "MVPPlayerEngineMoc.hpp"
 #include "MVPPlayerGuiMoc.hpp"
+#include "SoundPlayerMOC.hpp"
+
+#include <mvp-player-core/MVPPlayerEngine.hpp>
 #include <mvp-player-gui/playerBehavior.hpp>
 
 using namespace mvpplayer::tests;
@@ -26,12 +28,13 @@ BOOST_AUTO_TEST_SUITE( play_statie_machine_test_suite )
 
 BOOST_AUTO_TEST_CASE( play_stop_music )
 {
-    MVPPlayerEngineMoc engineMoc; // dummy model
+    SoundPlayerMOC player;
+    mvpplayer::MVPPlayerEngine engine( &player ); // model with a dummy player
     MVPPlayerGuiMoc viewMoc;      // dummy view
     mvpplayer::logic::PlayerStateMachine playerLogic;     // logic (presenter)
     
     // Bind the whole thing
-    mvpplayer::gui::setupMainBehavior( engineMoc, viewMoc, playerLogic );
+    mvpplayer::gui::setupMainBehavior( engine, viewMoc, playerLogic );
     
     // Print on console on errors
     playerLogic.signalFailed.connect( boost::bind( &mvpplayer::tests::printError, _1 ) );
@@ -40,14 +43,13 @@ BOOST_AUTO_TEST_CASE( play_stop_music )
     viewMoc.signalViewHitPlay( kDummyExistingMusicFile );
 
     // Check if the engine is playing the "dummyFile.ogg"
-    BOOST_CHECK( engineMoc.currentPlayedTrack().string() == kDummyExistingMusicFile );
+    BOOST_CHECK( player.trackFilename == kDummyExistingMusicFile );
 
     // Simulate stop
     viewMoc.signalViewHitStop();
 
     // Check if the engine is stopped
-    BOOST_CHECK( engineMoc.currentPlayedTrack() == boost::filesystem::path() );
-
+    BOOST_CHECK( player.trackFilename == std::string() );
 }
 
 BOOST_AUTO_TEST_CASE( play_restart_previous_music )

@@ -1,11 +1,12 @@
 #include "MVPPlayerEngine.hpp"
 
+
 namespace mvpplayer
 {
 
-MVPPlayerEngine::MVPPlayerEngine()
+MVPPlayerEngine::MVPPlayerEngine( ISoundPlayer *soundPlayer )
+: _soundPlayer( soundPlayer )
 {
-    SoundPlayer::initialize();
     _currentPosition = _playlist.begin();
 }
 
@@ -15,27 +16,63 @@ MVPPlayerEngine::~MVPPlayerEngine()
 
 bool MVPPlayerEngine::playFile( const boost::filesystem::path & filename )
 {
-    IMVPPlayerEngine::playFile( filename );
-
-    SoundPlayer::load( filename.string() );
-    return SoundPlayer::play();
+    stop();
+    _currentPosition = _playlist.end(); // We are not playing from the playlist
+    _currentPlayedTrack = filename;
+    _soundPlayer->load( filename.string() );
+    // Subscribe to sound player's end of track notifications
+    _soundPlayer->signalEndOfTrack.connect( boost::bind( &MVPPlayerEngine::stop, this ) );
+    return _soundPlayer->play();
 }
 
-
-bool MVPPlayerEngine::playCurrent()
+void MVPPlayerEngine::playList()
 {
-    if ( IMVPPlayerEngine::playCurrent() )
+    stop();
+    _currentPosition = _playlist.begin();
+    // Subscribe to sound player's end of track notifications
+    _soundPlayer->signalEndOfTrack.connect( boost::bind( &MVPPlayerEngine::playNext, this ) );
+    playCurrent();
+}
+
+void MVPPlayerEngine::playPrevious()
+{
+    if ( --_currentPosition != _playlist.end() )
     {
-        SoundPlayer::load( _currentPlayedTrack.string() );
-        SoundPlayer::play();
-        return false;
+        stop();
+        playCurrent();
     }
-    return true;
+}
+
+void MVPPlayerEngine::playNext()
+{
+    if ( ++_currentPosition != _playlist.end() )
+    {
+        stop();
+        playCurrent();
+    }
 }
 
 void MVPPlayerEngine::stop()
 {
-    SoundPlayer::unload();
+    _currentPlayedTrack = boost::filesystem::path();
+    // Unsubscribe to sound player's end of track notifications
+    _soundPlayer->signalEndOfTrack.disconnect( boost::bind( &MVPPlayerEngine::playNext, this ) );
+    // Unsubscribe to sound player's end of track notifications
+    _soundPlayer->signalEndOfTrack.disconnect( boost::bind( &MVPPlayerEngine::stop, this ) );
+    // Stop all
+    _soundPlayer->unload();
+}
+
+bool MVPPlayerEngine::playCurrent()
+{
+    if ( _currentPosition != _playlist.end() )
+    {
+        _currentPlayedTrack = *_currentPosition;
+        _soundPlayer->load( _currentPlayedTrack.string() );
+        _soundPlayer->play();
+        return false;
+    }
+    return true;
 }
 
 }

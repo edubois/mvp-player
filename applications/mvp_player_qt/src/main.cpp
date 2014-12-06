@@ -1,5 +1,6 @@
 #include "dlgUtils.hpp"
 #include <mvp-player-core/MVPPlayerEngine.hpp>
+#include <mvp-player-core/SoundPlayer.hpp>
 #include <mvp-player-gui/playerBehavior.hpp>
 #include <mvp-player-qtgui/MVPPlayerDialog.hpp>
 
@@ -26,8 +27,8 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerDialog>( int argc, char **argv )
 {
     QApplication app( argc, argv );
 
-    // Core (model)
-    mvpplayer::MVPPlayerEngine playerEngine;
+    // Core (model): a sound player engine
+    mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
 
     // Main dialog (view)
     mvpplayer::gui::qt::MVPPlayerDialog::MVPPlayerDialog dlg;

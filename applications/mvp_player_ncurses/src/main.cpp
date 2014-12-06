@@ -2,6 +2,7 @@
 #include <mvp-player-core/MVPPlayerEngine.hpp>
 #include <mvp-player-gui/playerBehavior.hpp>
 #include <mvp-player-ncursesgui/MVPPlayerDialog.hpp>
+#include <mvp-player-core/SoundPlayer.hpp>
 
 #include <QtCore/QCoreApplication>
 
@@ -34,7 +35,7 @@ int instanciateApp<mvpplayer::gui::ncurses::MVPPlayerDialog>( int argc, char **a
 
     {
         // Core (model)
-        mvpplayer::MVPPlayerEngine playerEngine;
+        mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
 
         // Main dialog (view)
         mvpplayer::gui::ncurses::MVPPlayerDialog::MVPPlayerDialog dlg( cdkscreen, 30, 10, 5, 5 );

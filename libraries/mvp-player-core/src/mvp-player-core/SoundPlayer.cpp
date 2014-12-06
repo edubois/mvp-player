@@ -4,15 +4,6 @@
 namespace mvpplayer
 {
 
-bool SoundPlayer::on = true; //is sound on?
-bool SoundPlayer::possible = true; //is it possible to play sound?
-std::string SoundPlayer::currentSound; //currently played sound
-//FMOD-specific stuff
-FMOD_RESULT SoundPlayer::result;
-FMOD::System* SoundPlayer::fmodsystem;
-FMOD::Sound* SoundPlayer::sound;
-FMOD::Channel* SoundPlayer::channel;
-
 //initialises sound
 void SoundPlayer::initialize()
 {
@@ -67,6 +58,8 @@ bool SoundPlayer::play( const bool pause )
         assert( channel != NULL );
         channel->setMode( FMOD_LOOP_NORMAL );
         setVolume( 1.0f );
+        channel->setUserData( this );
+        channel->setCallback( &playEndedCallback );
         return false;
     }
     return true;
@@ -104,6 +97,34 @@ void SoundPlayer::togglePause()
 bool SoundPlayer::getSound()
 {
     return on;
+}
+
+FMOD_RESULT playEndedCallback(FMOD_CHANNELCONTROL *cchannelcontrol, FMOD_CHANNELCONTROL_TYPE controltype, FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype, void *commanddata1, void *commanddata2)
+{
+    FMOD::ChannelControl *channelcontrol = reinterpret_cast<FMOD::ChannelControl *>( cchannelcontrol );
+    mvpplayer::SoundPlayer* player;
+    channelcontrol->getUserData( reinterpret_cast<void**>( &player ) );
+    if ( player )
+    {
+        switch( controltype )
+        {
+            case FMOD_CHANNELCONTROL_CALLBACK_END:
+            {
+                player->getInstance().signalEndOfTrack();
+                channelcontrol->setCallback( nullptr );
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+    else
+    {
+        return FMOD_ERR_INTERNAL;
+    }
+    return FMOD_OK;
 }
 
 }
