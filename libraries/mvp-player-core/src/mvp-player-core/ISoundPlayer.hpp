@@ -14,6 +14,11 @@ class ISoundPlayer
 public:
     ISoundPlayer() {}
     virtual ~ISoundPlayer() {}
+    
+    /**
+     * @brief restart track
+     */
+    virtual bool restart() = 0;
 
     /**
      * @brief sound volume control for the current played track

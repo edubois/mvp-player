@@ -3,6 +3,8 @@
 
 #include <mvp-player-core/ISoundPlayer.hpp>
 
+#include <iostream>
+
 namespace mvpplayer
 {
 namespace tests
@@ -39,9 +41,19 @@ public:
     virtual bool play( const bool pause = false )
     {
         isPlaying = !pause;
-        return true;
+        position = 1; // Simulate sample step
+        return false;
     }
 
+    /**
+     * @brief restart current track
+     */
+    virtual bool restart()
+    {
+        position = 0;
+        return false;
+    }
+    
     /**
      * @brief stop and free the current played track
      */
@@ -79,6 +91,7 @@ public:
 
 // Signals
 public:
+    int position;
     float volume;
     std::string trackFilename;
     bool isPlaying;

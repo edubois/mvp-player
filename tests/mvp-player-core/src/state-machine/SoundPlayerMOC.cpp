@@ -6,7 +6,8 @@ namespace tests
 {
 
 SoundPlayerMOC::SoundPlayerMOC()
-: volume( 0.0f )
+: position( 1 )
+, volume( 0.0f )
 , isPlaying( false )
 , mute( false )
 {

@@ -33,6 +33,12 @@ public:
     virtual bool playFile( const boost::filesystem::path & filename );
 
     /**
+     * @brief restart current track
+     * @return 
+     */
+    virtual bool restart();
+
+    /**
      * @brief play current track
      * @return false on success, true if error
      */

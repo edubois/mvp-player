@@ -21,7 +21,7 @@ class IMVPPlayerDialog
 public:
     IMVPPlayerDialog() {}
     virtual ~IMVPPlayerDialog() = 0;
-    
+
     virtual void setCurrentTrack( const boost::filesystem::path & filename ) = 0;
 
     virtual void setIconStop() = 0;
@@ -31,6 +31,8 @@ public:
 public:
     boost::signals2::signal<void( const std::string& )> signalViewHitPlay; ///< Signals that user hit play button
     boost::signals2::signal<void()> signalViewHitStop; ///< Signals that user hit stop button
+    boost::signals2::signal<void()> signalViewHitPrevious;  ///< Signal hit previous track
+    boost::signals2::signal<void()> signalViewHitNext;  ///< Signal hit next track
 };
 
 }

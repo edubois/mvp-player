@@ -37,6 +37,7 @@ public:
 
 private Q_SLOTS:
     void slotViewHitPlayStopBtn();
+    void slotViewHitPreviousBtn();
 
 private:
     Ui::MVPPlayerDialog widget;

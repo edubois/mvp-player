@@ -51,8 +51,15 @@ public:
      */
     bool play (const bool pause = false);
 
-    //getters
-    bool getSound(); //checks whether the sound is on
+    /**
+     * @brief restart track
+     */
+    bool restart();
+
+    /**
+     * @brief checks whether the sound is on or off
+     */
+    bool getSound();
 
     /**
      * @brief pause or unpause the current track

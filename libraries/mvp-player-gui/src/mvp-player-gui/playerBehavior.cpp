@@ -28,6 +28,13 @@ void setupMainBehavior( mvpplayer::MVPPlayerEngine & m, mvpplayer::gui::IMVPPlay
     p.signalStopTrack.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setCurrentTrack, &v, boost::filesystem::path() ) );
     // Connect stop event to change play button to |>
     p.signalStopTrack.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setIconPlay, &v ) );
+
+    // When we hit previous button, we want to react by sending a 'previous track' event to the state machine
+    v.signalViewHitPrevious.connect( boost::bind( &mvpplayer::logic::PlayerStateMachine::processPrevious, &p ) );
+    // When the logic asks for 'previous track' play previous track
+    p.signalRestartTrack.connect( boost::bind( &mvpplayer::MVPPlayerEngine::playPrevious, &m ) );
+    // When the logic asks for 'restart track' play restart track
+    p.signalRestartTrack.connect( boost::bind( &mvpplayer::MVPPlayerEngine::restart, &m ) );
     //@}
 }
 

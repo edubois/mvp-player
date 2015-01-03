@@ -15,6 +15,7 @@ MVPPlayerDialog::MVPPlayerDialog( QWidget *parent )
     widget.setupUi(this);
 
     connect( widget.btnPlay, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
+    connect( widget.btnPrevious, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPreviousBtn() ) );
 }
 
 MVPPlayerDialog::~MVPPlayerDialog()
@@ -31,6 +32,11 @@ void MVPPlayerDialog::slotViewHitPlayStopBtn()
     {
         signalViewHitPlay( std::string() );
     }
+}
+
+void MVPPlayerDialog::slotViewHitPreviousBtn()
+{
+    signalViewHitPrevious();
 }
 
 }

@@ -34,6 +34,11 @@ void MVPPlayerEngine::playList()
     playCurrent();
 }
 
+bool MVPPlayerEngine::restart()
+{
+    return _soundPlayer->restart();
+}
+
 void MVPPlayerEngine::playPrevious()
 {
     if ( --_currentPosition != _playlist.end() )

@@ -7,6 +7,7 @@ project.StaticLibrary( 'mvp_player_core',
                        libraries = [
                                      libs.boost,
                                      libs.boost_filesystem,
+                                     libs.boost_chrono,
                                      libs.fmod,
                                      libs.qt5( modules=[ 'QtCore' ] ),
                                     ],

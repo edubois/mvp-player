@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'MVPPlayerDialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.3.2
+** Created by: Qt User Interface Compiler version 5.4.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -17,6 +17,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QListWidget>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QVBoxLayout>
 
@@ -33,12 +34,14 @@ public:
     QPushButton *btnPrevious;
     QPushButton *btnPlay;
     QPushButton *btnNext;
+    QLabel *label_2;
+    QListWidget *playlist;
 
     void setupUi(QDialog *MVPPlayerDialog)
     {
         if (MVPPlayerDialog->objectName().isEmpty())
             MVPPlayerDialog->setObjectName(QStringLiteral("MVPPlayerDialog"));
-        MVPPlayerDialog->resize(517, 100);
+        MVPPlayerDialog->resize(517, 212);
         MVPPlayerDialog->setModal(true);
         verticalLayout = new QVBoxLayout(MVPPlayerDialog);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
@@ -78,6 +81,17 @@ public:
 
         verticalLayout->addLayout(horizontalLayout);
 
+        label_2 = new QLabel(MVPPlayerDialog);
+        label_2->setObjectName(QStringLiteral("label_2"));
+
+        verticalLayout->addWidget(label_2);
+
+        playlist = new QListWidget(MVPPlayerDialog);
+        playlist->setObjectName(QStringLiteral("playlist"));
+        playlist->setDragDropMode(QAbstractItemView::DropOnly);
+
+        verticalLayout->addWidget(playlist);
+
 
         retranslateUi(MVPPlayerDialog);
 
@@ -92,6 +106,7 @@ public:
         btnPrevious->setText(QApplication::translate("MVPPlayerDialog", "<<", 0));
         btnPlay->setText(QApplication::translate("MVPPlayerDialog", "|>", 0));
         btnNext->setText(QApplication::translate("MVPPlayerDialog", ">>", 0));
+        label_2->setText(QApplication::translate("MVPPlayerDialog", "Playlist:", 0));
     } // retranslateUi
 
 };

@@ -1,5 +1,7 @@
 #include "SoundPlayer.hpp"
+
 #include <cassert>
+#include <iostream>
 
 namespace mvpplayer
 {
@@ -45,8 +47,22 @@ void SoundPlayer::unload()
     if ( sound )
     {
         result = sound->release();
+        channel = nullptr;
     }
     on = false;
+}
+
+/**
+ * @brief restart track
+ */
+bool SoundPlayer::restart()
+{
+    if ( possible && on && channel )
+    {
+        return channel->setPosition( 0, FMOD_TIMEUNIT_MS ) == FMOD_OK && 
+               fmodsystem->update() == FMOD_OK;
+    }
+    return true;
 }
 
 //plays a sound (no argument to leave pause as dafault)
@@ -60,6 +76,7 @@ bool SoundPlayer::play( const bool pause )
         setVolume( 1.0f );
         channel->setUserData( this );
         channel->setCallback( &playEndedCallback );
+        on = true;
         return false;
     }
     return true;
