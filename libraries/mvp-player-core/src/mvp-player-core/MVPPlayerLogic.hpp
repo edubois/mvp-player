@@ -17,8 +17,6 @@
 #include <string>
 #include <iostream>
 
-#include <QtCore/QFile>
-
 namespace mvpplayer
 {
 namespace logic
