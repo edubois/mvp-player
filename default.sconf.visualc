@@ -1,0 +1,49 @@
+import os
+import sys
+
+windows = os.name.lower() == "nt" and sys.platform.lower().startswith("win")
+macos = sys.platform.lower().startswith("darwin")
+linux = not windows and not macos
+unix = not windows
+
+mode='release'
+check_libs=0
+
+jobs=7
+
+extern = '#../3rdParties'
+
+CPPDEFINES.extend(['BOOST_ALL_DYN_LINK', 'BOOST_LOG_DYN_LINK', 'BOOST_SPIRIT_USE_PHOENIX_V3', 'BOOST_SIGNALS_NO_DEPRECATION_WARNING' ])
+
+LIBPATH.extend( ['C:/Program Files (x86)/Microsoft Visual Studio 11.0/VC/lib/amd64', 'C:/Program Files (x86)/Windows Kits/8.0/Lib/win8/um/x64'] )
+
+ENVINC.extend( ['C:/Program Files (x86)/Windows Kits/8.0/Include/um', 'C:/Program Files (x86)/Windows Kits/8.0/Include/shared', 'C:/Program Files (x86)/Microsoft Visual Studio 11.0/VC/include'] )
+
+aliases = [('mvp_player_ncurses')]
+#default = 'mvp_player_ncurses'
+default = 'mvp_player_qt'
+
+ccache = False
+ccachedir = join(extern,'mvp_player_cache')
+
+incdir_qt5 = join(extern,'Qt/qt-5.2/5.2.0/msvc2012_64_opengl/include')
+libdir_qt5 = join(extern,'Qt/qt-5.2/5.2.0/msvc2012_64_opengl/lib')
+lib_qt5 = [ 'Qt5Network', 'Qt5Core', 'Qt5Gui', 'Qt5PrintSupport', 'Qt5Widgets', 'Qt5OpenGL', 'Qt5Sql', 'Qt5Script', 'Qt5WebKit', 'Qt5WebKitWidgets' ]
+incdir_boost = join(extern,'boost')
+libdir_boost = join(extern,'boost/stage/lib')
+incdir_ncurses = join(extern,'ncurses/include')
+libdir_ncurses = join(extern,'ncurses/lib')
+incdir_cdk = join(extern,'cdk/include')
+libdir_cdk = join(extern,'cdk/')
+incdir_fmod = join(extern,'fmod/api/lowlevel/inc')
+libdir_fmod = join(extern,'fmod/api/lowlevel/lib')
+
+lib_boost_thread = 'boost_thread-vc110-mt-1_55'
+lib_boost_signals = 'boost_signals-vc110-mt-1_55'
+lib_boost_system = 'boost_system-vc110-mt-1_55'
+lib_boost_filesystem = 'boost_filesystem-vc110-mt-1_55'
+lib_boost_serialization = 'boost_serialization-vc110-mt-1_55'
+lib_boost_regex = 'boost_regex-vc110-mt-1_55'
+lib_boost_date_time = 'boost_date_time-vc110-mt-1_55'
+lib_boost_program_options = 'boost_program_options-vc110-mt-1_55'
+
