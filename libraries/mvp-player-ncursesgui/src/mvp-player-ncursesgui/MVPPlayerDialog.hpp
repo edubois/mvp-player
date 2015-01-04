@@ -30,6 +30,8 @@ public:
 
     void setCurrentTrack( const boost::filesystem::path & filename );
 
+    void setPlaylistItemIndex( const int row );
+
     void setIconStop();
 
     void setIconPlay();

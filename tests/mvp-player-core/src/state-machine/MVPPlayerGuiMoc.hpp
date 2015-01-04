@@ -17,6 +17,9 @@ public:
     MVPPlayerGuiMoc() {}
     virtual ~MVPPlayerGuiMoc() {}
 
+    void setPlaylistItemIndex( const int row )
+    { /* No GUI */ }
+
     virtual void setCurrentTrack( const boost::filesystem::path & filename )
     { /* No GUI */ }
 

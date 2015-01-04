@@ -73,6 +73,11 @@ void MVPPlayerDialog::setIconPlay()
     initWin( "Hit play to resume track", !_isPlaying );
 }
 
+void MVPPlayerDialog::setPlaylistItemIndex( const int row )
+{
+    ///@todo
+}
+
 int MVPPlayerDialog::exec()
 {
     // Loop until user hits 'q' to quit

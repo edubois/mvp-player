@@ -50,6 +50,12 @@ public:
     virtual void playList();
 
     /**
+     * @brief Plays a playlist item
+     * @param index playlist index
+     */
+    virtual void playPlaylistItem( const int index );
+
+    /**
      * @brief Play the previous item of the playlist
      */
     virtual void playPrevious();
@@ -90,6 +96,7 @@ public:
 public:
     boost::signals2::signal<void(const boost::filesystem::path&)> signalTrackAddedToPlaylist; ///< Signals that a track has been added to the playlist
     boost::signals2::signal<void()> signalEndOfTrack;                       ///< Signals that the track has ended
+    boost::signals2::signal<void(const boost::filesystem::path&, const int)> signalPlayingItemIndex;        ///< Signals that we are playing the 'index' track of the playlist
 
 protected:
     ISoundPlayer *_soundPlayer;                                             ///< Pointer to a sound player instance

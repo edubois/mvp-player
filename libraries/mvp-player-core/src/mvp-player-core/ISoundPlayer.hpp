@@ -40,6 +40,12 @@ public:
     virtual bool play (const bool pause = false) = 0;
 
     /**
+     * @brief stop the current played track
+     */
+    virtual void stop()
+    { unload(); }
+
+    /**
      * @brief stop and free the current played track
      */
     virtual void unload() = 0;

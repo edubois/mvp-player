@@ -34,7 +34,7 @@ void SoundPlayer::load( const std::string & filename )
     {
         if ( on && sound )
         {
-            unload();
+            stop();
         }
         result = fmodsystem->createStream( currentSound.c_str(), FMOD_DEFAULT, 0, &sound );
         possible = ( result == FMOD_OK );
@@ -46,7 +46,9 @@ void SoundPlayer::unload()
 {
     if ( sound )
     {
+        channel->stop();
         result = sound->release();
+        sound = nullptr;
         channel = nullptr;
     }
     on = false;
@@ -87,7 +89,7 @@ void SoundPlayer::toggleSound()
 {
     on = !on;
     if (on == true) { load( currentSound ); play(); }
-    if (on == false) { unload(); }
+    if (on == false) { stop(); }
 }
 
 //pause or unpause the sound

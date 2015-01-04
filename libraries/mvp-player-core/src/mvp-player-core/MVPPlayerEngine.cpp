@@ -1,5 +1,6 @@
 #include "MVPPlayerEngine.hpp"
 
+#include <iterator>
 
 namespace mvpplayer
 {
@@ -17,7 +18,6 @@ MVPPlayerEngine::~MVPPlayerEngine()
 bool MVPPlayerEngine::playFile( const boost::filesystem::path & filename )
 {
     stop();
-    _currentPosition = _playlist.end(); // We are not playing from the playlist
     _currentPlayedTrack = filename;
     _soundPlayer->load( filename.string() );
     // Subscribe to sound player's end of track notifications
@@ -34,6 +34,21 @@ void MVPPlayerEngine::playList()
     playCurrent();
 }
 
+/**
+ * @brief Plays a playlist item
+ * @param index playlist index
+ */
+void MVPPlayerEngine::playPlaylistItem( const int index )
+{
+    stop();
+    _currentPosition = _playlist.begin();
+    std::advance( _currentPosition, index );
+    // Subscribe to sound player's end of track notifications
+    _soundPlayer->signalEndOfTrack.connect( boost::bind( &MVPPlayerEngine::playNext, this ) );
+    playCurrent();
+}
+
+
 bool MVPPlayerEngine::restart()
 {
     return _soundPlayer->restart();
@@ -45,6 +60,10 @@ void MVPPlayerEngine::playPrevious()
     {
         stop();
         playCurrent();
+    }
+    else
+    {
+        _currentPosition = _playlist.begin();
     }
 }
 
@@ -65,7 +84,7 @@ void MVPPlayerEngine::stop()
     // Unsubscribe to sound player's end of track notifications
     _soundPlayer->signalEndOfTrack.disconnect( boost::bind( &MVPPlayerEngine::stop, this ) );
     // Stop all
-    _soundPlayer->unload();
+    _soundPlayer->stop();
 }
 
 bool MVPPlayerEngine::playCurrent()
@@ -75,6 +94,7 @@ bool MVPPlayerEngine::playCurrent()
         _currentPlayedTrack = *_currentPosition;
         _soundPlayer->load( _currentPlayedTrack.string() );
         _soundPlayer->play();
+        signalPlayingItemIndex( _currentPlayedTrack, std::distance( _playlist.cbegin(), _currentPosition ) );
         return false;
     }
     return true;
