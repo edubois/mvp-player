@@ -58,5 +58,5 @@ scons mode=release mvp_player_ncurses
 
 scons mode=release mvp_player_qt
 
-This should build an executable showing a player dialog, where you can play a music (I tried .wav, it was working well).
+This should build an executable showing a player dialog, where you can play a music (I tried .wav, mp3 and playlist m3u, it was working well on both GUI).
 
