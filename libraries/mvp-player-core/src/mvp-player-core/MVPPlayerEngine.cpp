@@ -8,6 +8,8 @@ namespace mvpplayer
 MVPPlayerEngine::MVPPlayerEngine( ISoundPlayer *soundPlayer )
 : _soundPlayer( soundPlayer )
 {
+    // Subscribe to sound player's end of track notifications
+    _soundPlayer->signalEndOfTrack.connect( boost::bind( &MVPPlayerEngine::notifyEndOfTrack, this ) );
     _currentPosition = _playlist.begin();
 }
 
@@ -20,8 +22,6 @@ bool MVPPlayerEngine::playFile( const boost::filesystem::path & filename )
     stop();
     _currentPlayedTrack = filename;
     _soundPlayer->load( filename.string() );
-    // Subscribe to sound player's end of track notifications
-    _soundPlayer->signalEndOfTrack.connect( boost::bind( &MVPPlayerEngine::stop, this ) );
     return _soundPlayer->play();
 }
 
@@ -29,8 +29,6 @@ void MVPPlayerEngine::playList()
 {
     stop();
     _currentPosition = _playlist.begin();
-    // Subscribe to sound player's end of track notifications
-    _soundPlayer->signalEndOfTrack.connect( boost::bind( &MVPPlayerEngine::playNext, this ) );
     playCurrent();
 }
 
@@ -43,8 +41,6 @@ void MVPPlayerEngine::playPlaylistItem( const int index )
     stop();
     _currentPosition = _playlist.begin();
     std::advance( _currentPosition, index );
-    // Subscribe to sound player's end of track notifications
-    _soundPlayer->signalEndOfTrack.connect( boost::bind( &MVPPlayerEngine::playNext, this ) );
     playCurrent();
 }
 
@@ -79,10 +75,6 @@ void MVPPlayerEngine::playNext()
 void MVPPlayerEngine::stop()
 {
     _currentPlayedTrack = boost::filesystem::path();
-    // Unsubscribe to sound player's end of track notifications
-    _soundPlayer->signalEndOfTrack.disconnect( boost::bind( &MVPPlayerEngine::playNext, this ) );
-    // Unsubscribe to sound player's end of track notifications
-    _soundPlayer->signalEndOfTrack.disconnect( boost::bind( &MVPPlayerEngine::stop, this ) );
     // Stop all
     _soundPlayer->stop();
 }

@@ -9,21 +9,21 @@ namespace gui
  * @brief Setup music player's behavior (connect signals between the model/view/presenter)
  * Connections should be done anywhere else than here.
  */
-void setupMainBehavior( mvpplayer::MVPPlayerEngine & m, mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logic::PlayerStateMachine & p )
+void setupMainBehavior( mvpplayer::MVPPlayerEngine & m, mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logic::MVPPlayerPresenter & p )
 {
     //@{ Connections (behavior), note that the order is important
     // When we hit play button, we want to react by sending a play event to the state machine
-    v.signalViewHitPlay.connect( boost::bind( &mvpplayer::logic::PlayerStateMachine::processPlay, &p, _1 ) );
+    v.signalViewHitPlay.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processPlay, &p, _1 ) );
     // When we hit stop button, we want to react by sending a stop event to the state machine
-    v.signalViewHitStop.connect( boost::bind( &mvpplayer::logic::PlayerStateMachine::processStop, &p ) );
+    v.signalViewHitStop.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processStop, &p ) );
     // When we hit clear playlist button, we want to react by sending a clear playlist event to the state machine
-    v.signalViewClearPlaylist.connect( boost::bind( &mvpplayer::logic::PlayerStateMachine::processClearPlaylist, &p ) );
+    v.signalViewClearPlaylist.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processClearPlaylist, &p ) );
     // When we hit start playlist button, we want to react by sending a start playlist event to the state machine
-    v.signalViewStartPlaylist.connect( boost::bind( &mvpplayer::logic::PlayerStateMachine::processStartPlaylist, &p ) );
+    v.signalViewStartPlaylist.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processStartPlaylist, &p ) );
     // When we add a track on the view, we want to react by adding the track in the engine's playlist
     v.signalViewAddTrack.connect( boost::bind( &mvpplayer::MVPPlayerEngine::addTrack, &m, _1 ) );
     // When the view want to play a playlist item, react by sending the event to the state machine
-    v.signalViewHitPlaylistItem.connect( boost::bind( &mvpplayer::logic::PlayerStateMachine::processPlayItemAtIndex, &p, _1 ) );
+    v.signalViewHitPlaylistItem.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processPlayItemAtIndex, &p, _1 ) );
     // Connect play item event to the engine play item function
     p.signalPlayItemAtIndex.connect( boost::bind( &mvpplayer::MVPPlayerEngine::playPlaylistItem, &m, _1 ) );
     // Connect played event to the engine play file function
@@ -43,9 +43,9 @@ void setupMainBehavior( mvpplayer::MVPPlayerEngine & m, mvpplayer::gui::IMVPPlay
     // Connect stop event to change play button to |>
     p.signalStopTrack.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setIconPlay, &v ) );
     // When we hit previous button, we want to react by sending a 'previous track' event to the state machine
-    v.signalViewHitPrevious.connect( boost::bind( &mvpplayer::logic::PlayerStateMachine::processPrevious, &p ) );
+    v.signalViewHitPrevious.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processPrevious, &p ) );
     // When we hit next button, we want to react by sending a 'next track' event to the state machine
-    v.signalViewHitNext.connect( boost::bind( &mvpplayer::logic::PlayerStateMachine::processNext, &p ) );
+    v.signalViewHitNext.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processNext, &p ) );
     // When the logic asks next track, we want to play next track
     p.signalNextTrack.connect( boost::bind( &mvpplayer::MVPPlayerEngine::playNext, &m ) );
     // When the logic asks previous track, we want to play previous track
@@ -53,8 +53,10 @@ void setupMainBehavior( mvpplayer::MVPPlayerEngine & m, mvpplayer::gui::IMVPPlay
     // When the logic asks for 'restart track' play restart track
     p.signalRestartTrack.connect( boost::bind( &mvpplayer::MVPPlayerEngine::restart, &m ) );
     // When the model plays another playlist track, inform the view
-    m.signalPlayingItemIndex.connect( boost::bind( &mvpplayer::logic::PlayerStateMachine::processPlayingItemIndex, &p, _1, _2 ) );
+    m.signalPlayingItemIndex.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processPlayingItemIndex, &p, _1, _2 ) );
     p.signalPlayingItemIndex.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setPlaylistItemIndex, &v, _2 ) );
+    // Subscribe to end of track notifications
+    m.signalEndOfTrack.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processEndOfTrack, &p ) );
     //@}
 }
 

@@ -8,6 +8,7 @@ project.StaticLibrary( 'mvp_player_core',
                                      libs.boost,
                                      libs.boost_filesystem,
                                      libs.boost_chrono,
+                                     libs.boost_thread,
                                      libs.fmod,
                                     ],
                        shared = False

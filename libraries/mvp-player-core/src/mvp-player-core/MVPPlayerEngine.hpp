@@ -92,6 +92,9 @@ public:
     inline const boost::filesystem::path & currentPlayedTrack() const
     { return _currentPlayedTrack; }
 
+    inline void notifyEndOfTrack() const
+    { signalEndOfTrack(); }
+    
 // Signals
 public:
     boost::signals2::signal<void(const boost::filesystem::path&)> signalTrackAddedToPlaylist; ///< Signals that a track has been added to the playlist

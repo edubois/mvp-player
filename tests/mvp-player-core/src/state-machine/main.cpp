@@ -3,8 +3,8 @@
 
 #include "MVPPlayerGuiMoc.hpp"
 #include "SoundPlayerMOC.hpp"
-
 #include <mvp-player-core/MVPPlayerEngine.hpp>
+#include <mvp-player-core/MVPPlayerLogic.hpp>
 #include <mvp-player-gui/playerBehavior.hpp>
 #include <chrono>
 #include <thread>
@@ -34,22 +34,25 @@ BOOST_AUTO_TEST_CASE( play_stop_music )
     SoundPlayerMOC player;
     mvpplayer::MVPPlayerEngine engine( &player ); // model with a dummy player
     MVPPlayerGuiMoc viewMoc;      // dummy view
-    mvpplayer::logic::PlayerStateMachine playerLogic;     // logic (presenter)
+    mvpplayer::logic::MVPPlayerPresenter presenter;     // logic (presenter)
+    presenter.startStateMachine<mvpplayer::logic::PlayerStateMachine>();
     
     // Bind the whole thing
-    mvpplayer::gui::setupMainBehavior( engine, viewMoc, playerLogic );
-    
+    mvpplayer::gui::setupMainBehavior( engine, viewMoc, presenter );
+
     // Print on console on errors
-    playerLogic.signalFailed.connect( boost::bind( &mvpplayer::tests::printError, _1 ) );
+    presenter.signalFailed.connect( boost::bind( &mvpplayer::tests::printError, _1 ) );
 
     // Simulate play
     viewMoc.signalViewHitPlay( kDummyExistingMusicFile1 );
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the engine is playing the "dummyFile.ogg"
     BOOST_CHECK( player.trackFilename == kDummyExistingMusicFile1 );
 
     // Simulate stop
     viewMoc.signalViewHitStop();
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the engine is stopped
     BOOST_CHECK( player.trackFilename == std::string() );
@@ -60,19 +63,22 @@ BOOST_AUTO_TEST_CASE( play_restart_previous_music )
     SoundPlayerMOC player;
     mvpplayer::MVPPlayerEngine engine( &player ); // model with a dummy player
     MVPPlayerGuiMoc viewMoc;      // dummy view
-    mvpplayer::logic::PlayerStateMachine playerLogic;     // logic (presenter)
-    
+    mvpplayer::logic::MVPPlayerPresenter presenter;     // logic (presenter)
+    presenter.startStateMachine<mvpplayer::logic::PlayerStateMachine>();
+
     // Bind the whole thing
-    mvpplayer::gui::setupMainBehavior( engine, viewMoc, playerLogic );
+    mvpplayer::gui::setupMainBehavior( engine, viewMoc, presenter );
     
     engine.addTrack( kDummyExistingMusicFile1 );
     engine.addTrack( kDummyExistingMusicFile2 );
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Print on console on errors
-    playerLogic.signalFailed.connect( boost::bind( &mvpplayer::tests::printError, _1 ) );
+    presenter.signalFailed.connect( boost::bind( &mvpplayer::tests::printError, _1 ) );
 
     // Simulate play
     viewMoc.signalViewStartPlaylist();
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the engine is playing the "dummyFile.ogg"
     BOOST_CHECK( player.trackFilename == kDummyExistingMusicFile1 );
@@ -82,6 +88,7 @@ BOOST_AUTO_TEST_CASE( play_restart_previous_music )
 
     // Simulate next track
     viewMoc.signalViewHitNext();
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the engine is playing the "dummyFile2.ogg"
     BOOST_CHECK( player.trackFilename == kDummyExistingMusicFile2 );
@@ -94,6 +101,7 @@ BOOST_AUTO_TEST_CASE( play_restart_previous_music )
 
     // Simulate previous
     viewMoc.signalViewHitPrevious();
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the position is 0 (restart)
     BOOST_CHECK( player.position == 0 );
@@ -108,19 +116,22 @@ BOOST_AUTO_TEST_CASE( play_restart_next_previous_music )
     SoundPlayerMOC player;
     mvpplayer::MVPPlayerEngine engine( &player ); // model with a dummy player
     MVPPlayerGuiMoc viewMoc;      // dummy view
-    mvpplayer::logic::PlayerStateMachine playerLogic;     // logic (presenter)
-    
+    mvpplayer::logic::MVPPlayerPresenter presenter;     // logic (presenter)
+    presenter.startStateMachine<mvpplayer::logic::PlayerStateMachine>();
+
     // Bind the whole thing
-    mvpplayer::gui::setupMainBehavior( engine, viewMoc, playerLogic );
+    mvpplayer::gui::setupMainBehavior( engine, viewMoc, presenter );
     
     engine.addTrack( kDummyExistingMusicFile1 );
     engine.addTrack( kDummyExistingMusicFile2 );
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Print on console on errors
-    playerLogic.signalFailed.connect( boost::bind( &mvpplayer::tests::printError, _1 ) );
+    presenter.signalFailed.connect( boost::bind( &mvpplayer::tests::printError, _1 ) );
 
     // Simulate play
     viewMoc.signalViewStartPlaylist();
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the engine is playing the "dummyFile.ogg"
     BOOST_CHECK( player.trackFilename == kDummyExistingMusicFile1 );
@@ -130,6 +141,7 @@ BOOST_AUTO_TEST_CASE( play_restart_next_previous_music )
 
     // Simulate next track
     viewMoc.signalViewHitNext();
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the engine is playing the "dummyFile2.ogg"
     BOOST_CHECK( player.trackFilename == kDummyExistingMusicFile2 );
@@ -139,6 +151,7 @@ BOOST_AUTO_TEST_CASE( play_restart_next_previous_music )
 
     // Simulate previous
     viewMoc.signalViewHitPrevious();
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the position is 0 (restart)
     BOOST_CHECK( player.position == 0 );
@@ -148,12 +161,14 @@ BOOST_AUTO_TEST_CASE( play_restart_next_previous_music )
 
     // Simulate previous
     viewMoc.signalViewHitPrevious();
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the position is 0 (restart)
     BOOST_CHECK( player.position == 0 );
 
     // Simulate previous
     viewMoc.signalViewHitPrevious();
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the position is 0 (playing)
     BOOST_CHECK( player.position != 0 );
@@ -167,19 +182,22 @@ BOOST_AUTO_TEST_CASE( play_playlist_item )
     SoundPlayerMOC player;
     mvpplayer::MVPPlayerEngine engine( &player ); // model with a dummy player
     MVPPlayerGuiMoc viewMoc;      // dummy view
-    mvpplayer::logic::PlayerStateMachine playerLogic;     // logic (presenter)
-    
+    mvpplayer::logic::MVPPlayerPresenter presenter;     // logic (presenter)
+    presenter.startStateMachine<mvpplayer::logic::PlayerStateMachine>();
+
     // Bind the whole thing
-    mvpplayer::gui::setupMainBehavior( engine, viewMoc, playerLogic );
+    mvpplayer::gui::setupMainBehavior( engine, viewMoc, presenter );
     
     engine.addTrack( kDummyExistingMusicFile1 );
     engine.addTrack( kDummyExistingMusicFile2 );
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Print on console on errors
-    playerLogic.signalFailed.connect( boost::bind( &mvpplayer::tests::printError, _1 ) );
+    presenter.signalFailed.connect( boost::bind( &mvpplayer::tests::printError, _1 ) );
 
     // Simulate play
     viewMoc.signalViewStartPlaylist();
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the engine is playing the "dummyFile.ogg"
     BOOST_CHECK( player.trackFilename == kDummyExistingMusicFile1 );
@@ -188,6 +206,7 @@ BOOST_AUTO_TEST_CASE( play_playlist_item )
     BOOST_CHECK( player.position > 0 );
 
     viewMoc.signalViewHitPlaylistItem( 1 );
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the engine is playing the right track
     BOOST_CHECK( player.trackFilename == kDummyExistingMusicFile2 );
@@ -196,6 +215,7 @@ BOOST_AUTO_TEST_CASE( play_playlist_item )
     BOOST_CHECK( player.position > 0 );
 
     viewMoc.signalViewHitPlaylistItem( 0 );
+    std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the engine is playing the right track
     BOOST_CHECK( player.trackFilename == kDummyExistingMusicFile1 );

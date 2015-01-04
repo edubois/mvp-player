@@ -30,15 +30,21 @@ public:
     MVPPlayerDialog( QWidget *parent = NULL );
     virtual ~MVPPlayerDialog();
 
-    void setCurrentTrack( const boost::filesystem::path & filename );
-
-    void setPlaylistItemIndex( const int row );
-
+    /**
+     * In the following sections, we use invokeMethod because of asynchronous
+     * calls that might come from other threads.
+     */
     inline void setIconStop()
-    { widget.btnPlay->setText( kStopCaption.c_str() ); }
+    { QMetaObject::invokeMethod( this, "slotSetIconStop", Qt::BlockingQueuedConnection ); }
 
     inline void setIconPlay()
-    { widget.btnPlay->setText( kPlayCaption.c_str() ); }
+    { QMetaObject::invokeMethod( this, "slotSetIconPlay", Qt::BlockingQueuedConnection ); }
+
+    inline void setCurrentTrack( const boost::filesystem::path & filename )
+    { QMetaObject::invokeMethod( widget.lblCurrentTrack, "setText", Qt::BlockingQueuedConnection, Q_ARG( QString, QString::fromStdString( filename.string() ) ) ); }
+
+    inline void setPlaylistItemIndex( const int row )
+    { QMetaObject::invokeMethod( this, "slotSetPlaylistItemIndex", Qt::BlockingQueuedConnection, Q_ARG( int, row ) ); }
 
 private:
     void dropEvent( QDropEvent *de );
@@ -51,6 +57,11 @@ private Q_SLOTS:
     void slotViewHitPlayStopBtn();
     void slotViewHitPreviousBtn();
     void slotViewHitNextBtn();
+    void slotSetPlaylistItemIndex( const int row );
+    void slotSetIconStop()
+    { widget.btnPlay->setText( kStopCaption.c_str() ); }
+    void slotSetIconPlay()
+    { widget.btnPlay->setText( kPlayCaption.c_str() ); }
 
 private:
     Ui::MVPPlayerDialog widget;

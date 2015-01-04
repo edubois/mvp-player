@@ -7,6 +7,10 @@
 #include <fmod.hpp>
 #include <string>
 
+#include <boost/asio.hpp>
+#include <boost/thread.hpp>
+#include <boost/scoped_ptr.hpp>
+
 namespace mvpplayer
 {
 
@@ -14,7 +18,7 @@ class SoundPlayer : public ISoundPlayer, public Singleton<SoundPlayer>
 {
 public:
     SoundPlayer()
-    : on( true )
+    : on( false )
     , possible( true )
     , fmodsystem( nullptr )
     , sound( nullptr )
@@ -26,6 +30,12 @@ public:
 
 public:
     void initialize(); //initialises sound
+
+    /**
+     * @brief is the player playing sound
+     */
+    inline bool isPlaying() const
+    { return on; }
 
     /**
      * @brief sound volume control for the current played track
@@ -83,6 +93,12 @@ public:
      */
     void togglePause();
 
+    inline boost::mutex & mutexPlayer()
+    { return _mutexPlayer; }
+
+private:
+    void updater();
+
 private:
     bool on; //is sound on?
     bool possible; //is it possible to play sound?
@@ -92,6 +108,9 @@ private:
     FMOD::System* fmodsystem;
     FMOD::Sound* sound;
     FMOD::Channel* channel;
+
+    boost::scoped_ptr<boost::thread> _updaterThread; ///< Updater thread
+    mutable boost::mutex _mutexPlayer;               ///< For thread safety
 };
 
 FMOD_RESULT playEndedCallback(FMOD_CHANNELCONTROL *channelcontrol, FMOD_CHANNELCONTROL_TYPE controltype, FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype, void *commanddata1, void *commanddata2);

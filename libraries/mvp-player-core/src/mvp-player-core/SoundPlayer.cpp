@@ -2,6 +2,8 @@
 
 #include <cassert>
 #include <iostream>
+#include <boost/asio.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace mvpplayer
 {
@@ -15,6 +17,22 @@ void SoundPlayer::initialize()
     //if initialise the sound system. If fails, sound is set to impossible
     if (possible) result = fmodsystem->init( 2, FMOD_INIT_NORMAL, 0 );
     if (result != FMOD_OK) possible = false;
+}
+
+void SoundPlayer::updater()
+{
+    assert( fmodsystem != nullptr );
+    boost::asio::io_service io;
+    while( on )
+    {
+        {
+            boost::mutex::scoped_lock lock( _mutexPlayer );
+            fmodsystem->update();
+        }
+        // Wait 25ms
+        boost::asio::deadline_timer timer( io, boost::posix_time::milliseconds( 25 ) );
+        timer.wait();
+    }
 }
 
 //sets the actual playing sound's volume
@@ -36,6 +54,7 @@ void SoundPlayer::load( const std::string & filename )
         {
             stop();
         }
+        boost::mutex::scoped_lock lock( _mutexPlayer );
         result = fmodsystem->createStream( currentSound.c_str(), FMOD_DEFAULT, 0, &sound );
         possible = ( result == FMOD_OK );
     }
@@ -44,14 +63,18 @@ void SoundPlayer::load( const std::string & filename )
 //frees the sound object
 void SoundPlayer::unload()
 {
+    on = false;
     if ( sound )
     {
+        if ( _updaterThread )
+        {
+            _updaterThread->join();
+        }
         channel->stop();
         result = sound->release();
         sound = nullptr;
         channel = nullptr;
     }
-    on = false;
 }
 
 /**
@@ -61,8 +84,8 @@ bool SoundPlayer::restart()
 {
     if ( possible && on && channel )
     {
-        return channel->setPosition( 0, FMOD_TIMEUNIT_MS ) == FMOD_OK && 
-               fmodsystem->update() == FMOD_OK;
+        boost::mutex::scoped_lock lock( _mutexPlayer );
+        return channel->setPosition( 0, FMOD_TIMEUNIT_MS ) == FMOD_OK;
     }
     return true;
 }
@@ -72,13 +95,24 @@ bool SoundPlayer::play( const bool pause )
 {
     if ( possible && sound )
     {
-        result = fmodsystem->playSound( sound, NULL, pause, &channel );
+        if ( _updaterThread )
+        {
+            on = false;
+            _updaterThread->join();
+        }
+
+        {
+            boost::mutex::scoped_lock lock( _mutexPlayer );
+            result = fmodsystem->playSound( sound, NULL, pause, &channel );
+        }
         assert( channel != NULL );
-        channel->setMode( FMOD_LOOP_NORMAL );
-        setVolume( 1.0f );
         channel->setUserData( this );
         channel->setCallback( &playEndedCallback );
+        // We need to call update every 20 ms to get fmod system status
+        setVolume( 1.0f );
         on = true;
+        // Start fmod updater thread
+        _updaterThread.reset( new boost::thread( boost::bind( &SoundPlayer::updater, this ) ) );
         return false;
     }
     return true;
@@ -120,17 +154,20 @@ bool SoundPlayer::getSound()
 
 FMOD_RESULT playEndedCallback(FMOD_CHANNELCONTROL *cchannelcontrol, FMOD_CHANNELCONTROL_TYPE controltype, FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype, void *commanddata1, void *commanddata2)
 {
-    FMOD::ChannelControl *channelcontrol = reinterpret_cast<FMOD::ChannelControl *>( cchannelcontrol );
+    FMOD::ChannelControl *channelcontrol = (FMOD::ChannelControl *)( cchannelcontrol );
     mvpplayer::SoundPlayer* player;
-    channelcontrol->getUserData( reinterpret_cast<void**>( &player ) );
+    channelcontrol->getUserData( (void**)( &player ) );
     if ( player )
     {
         switch( controltype )
         {
             case FMOD_CHANNELCONTROL_CALLBACK_END:
             {
-                player->getInstance().signalEndOfTrack();
-                channelcontrol->setCallback( nullptr );
+                if ( player->isPlaying() )
+                {
+                    channelcontrol->setCallback( nullptr );
+                    player->signalEndOfTrack();
+                }
                 break;
             }
             default:

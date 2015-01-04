@@ -105,12 +105,7 @@ void MVPPlayerDialog::dragLeaveEvent( QDragLeaveEvent *event )
     event->accept();
 }
 
-void MVPPlayerDialog::setCurrentTrack( const boost::filesystem::path & filename )
-{
-    widget.lblCurrentTrack->setText( QString::fromStdString( filename.string() ) );
-}
-
-void MVPPlayerDialog::setPlaylistItemIndex( const int row )
+void MVPPlayerDialog::slotSetPlaylistItemIndex( const int row )
 {
     if ( row == -1 )
     {
