@@ -40,10 +40,12 @@ public:
 
 private:
     void initWin( const std::string & currentTrack, const bool playButton = true );
+    void openPlaylist( const boost::filesystem::path & playlistFilename );
 
 private:
     CDKSCREEN* _cdkScreen;
     CDKDIALOG* _childwin;
+    CDKSCROLL* _playlist;
     bool _isPlaying;
 };
 

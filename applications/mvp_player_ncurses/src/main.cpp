@@ -2,6 +2,7 @@
 #include <mvp-player-core/MVPPlayerEngine.hpp>
 #include <mvp-player-gui/playerBehavior.hpp>
 #include <mvp-player-ncursesgui/MVPPlayerDialog.hpp>
+#include <mvp-player-ncursesgui/fileUtils.hpp>
 #include <mvp-player-core/SoundPlayer.hpp>
 
 #include <QtCore/QCoreApplication>

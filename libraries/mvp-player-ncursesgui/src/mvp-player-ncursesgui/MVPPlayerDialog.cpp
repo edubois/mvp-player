@@ -1,4 +1,9 @@
 #include "MVPPlayerDialog.hpp"
+#include "fileUtils.hpp"
+
+#include <mvp-player-core/m3uParser.hpp>
+
+#include <boost/algorithm/string/predicate.hpp>
 
 #include <iostream>
 
@@ -11,15 +16,20 @@ namespace ncurses
     
 MVPPlayerDialog::MVPPlayerDialog( CDKSCREEN *cdkScreen, const int width, const int height, const int x, const int y )
 : _cdkScreen( cdkScreen )
-, _childwin( NULL )
+, _childwin( nullptr )
+, _playlist( nullptr )
 , _isPlaying( false )
 {
-    initWin( "Hit play to select a track..." );
+    initWin( "Hit play to select a track or a playlist..." );
 }
 
 MVPPlayerDialog::~MVPPlayerDialog()
 {
     destroyCDKDialog( _childwin );
+    if ( _playlist )
+    {
+        destroyCDKItemlist( _playlist );
+    }
 }
 
 void MVPPlayerDialog::initWin( const std::string & currentTrack, const bool playButton )
@@ -56,6 +66,33 @@ void MVPPlayerDialog::initWin( const std::string & currentTrack, const bool play
     refreshCDKScreen( _cdkScreen );
 }
 
+void MVPPlayerDialog::openPlaylist( const boost::filesystem::path & playlistFilename )
+{
+   // Create the playlist widget
+    std::vector<m3uParser::PlaylistItem> items = m3uParser::parse( playlistFilename );
+    if ( !items.size() )
+    { return; }
+
+    std::vector<char*> itemsChars( items.size() );
+    std::vector<std::unique_ptr<char[]> > itemsAlloc( items.size() );
+    std::size_t i = 0;
+    for( const m3uParser::PlaylistItem & item: items )
+    {
+        const std::string itemStr = item.infos.size() ? item.infos : item.filename.string();
+        signalViewAddTrack( item.filename.string() );
+        itemsAlloc[i].reset( new char[ itemStr.size() + 1 ] );
+        strcpy( itemsAlloc[i].get(), itemStr.c_str() );
+        itemsChars[i] = itemsAlloc[i].get();
+        ++i;
+    }
+
+    if ( _playlist )
+    { destroyCDKItemlist( _playlist ); }
+
+    _playlist = newCDKScroll( _cdkScreen, CENTER, TOP, RIGHT, 10, 78, "<C>Playlist", &itemsChars[0], itemsChars.size(), TRUE, A_REVERSE | A_BOLD, TRUE, FALSE );
+    setCDKScrollBackgroundColor( _playlist, "</5>" );
+}
+
 void MVPPlayerDialog::setCurrentTrack( const boost::filesystem::path & filename )
 {
     initWin( filename.string(), !_isPlaying );
@@ -75,7 +112,10 @@ void MVPPlayerDialog::setIconPlay()
 
 void MVPPlayerDialog::setPlaylistItemIndex( const int row )
 {
-    ///@todo
+    if ( _playlist )
+    {
+        setCDKScrollCurrentItem( _playlist, row );
+    }
 }
 
 int MVPPlayerDialog::exec()
@@ -89,6 +129,7 @@ int MVPPlayerDialog::exec()
         {
             case 0:
             {
+                signalViewHitPrevious();
                 break;
             }
             case 1:
@@ -99,12 +140,23 @@ int MVPPlayerDialog::exec()
                 }
                 else
                 {
-                    signalViewHitPlay( std::string() );
+                    boost::filesystem::path item = openFile( _cdkScreen, "Open file or playlist", "*" );
+                    if ( boost::iends_with( item.string(), ".m3u" ) )
+                    {
+                        signalViewClearPlaylist();
+                        openPlaylist( item );
+                        signalViewStartPlaylist();
+                    }
+                    else
+                    {
+                        signalViewHitPlay( item.string() );
+                    }
                 }
                 break;
             }
             case 2:
             {
+                signalViewHitNext();
                 break;
             }
             case 3:
