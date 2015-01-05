@@ -125,6 +125,8 @@ void MVPPlayerDialog::dragLeaveEvent( QDragLeaveEvent *event )
 
 void MVPPlayerDialog::slotSetPlaylistItemIndex( const int row )
 {
+    widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
+
     if ( row == -1 )
     {
         widget.playlist->selectionModel()->clearSelection();
@@ -133,11 +135,13 @@ void MVPPlayerDialog::slotSetPlaylistItemIndex( const int row )
     {
         widget.playlist->setCurrentRow( row );
     }
+
+    widget.playlist->blockSignals( false );
 }
 
 QString MVPPlayerDialog::slotOpenFile( const QString & title, const QString & extensions )
 {
-    return QFileDialog::getOpenFileName( QApplication::activeWindow(), title, "/Users", extensions );
+    return QFileDialog::getOpenFileName( QApplication::activeWindow(), title, QDir::currentPath(), extensions );
 }
 
 void MVPPlayerDialog::slotOpenedPlaylist( const QStringList & filenames )
