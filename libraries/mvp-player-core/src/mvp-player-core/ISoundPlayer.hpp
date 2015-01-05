@@ -17,6 +17,7 @@ public:
     
     /**
      * @brief restart track
+     * @return false if success, true otherwise
      */
     virtual bool restart() = 0;
 
@@ -37,7 +38,7 @@ public:
      * @param pause pause playing
      * @return false on success, true if error
      */
-    virtual bool play (const bool pause = false) = 0;
+    virtual bool play( const bool pause = false ) = 0;
 
     /**
      * @brief stop the current played track

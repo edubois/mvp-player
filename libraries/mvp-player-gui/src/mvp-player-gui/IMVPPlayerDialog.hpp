@@ -1,6 +1,8 @@
 #ifndef _IMVPPLAYERDIALOG_HPP
 #define	_IMVPPLAYERDIALOG_HPP
 
+#include <mvp-player-core/m3uParser.hpp>
+
 #include <boost/signals2.hpp>
 #include <boost/filesystem/path.hpp>
 #include <string>
@@ -29,6 +31,8 @@ public:
     virtual void setIconStop() = 0;
 
     virtual void setIconPlay() = 0;
+
+    virtual void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems ) = 0;
 
 public:
     boost::signals2::signal<void( const std::string& )> signalViewHitPlay; ///< Signals that user hit play button

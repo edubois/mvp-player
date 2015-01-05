@@ -77,6 +77,16 @@ void MVPPlayerDialog::playPlaylistItemAtIndex( const int playlistIndex )
     signalViewHitPlaylistItem( playlistIndex );
 }
 
+void MVPPlayerDialog::openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
+{
+    QStringList filenames;
+    for( const m3uParser::PlaylistItem & item: playlistItems )
+    {
+        filenames.append( item.filename.string().c_str() );
+    }
+    QMetaObject::invokeMethod( this, "slotOpenedPlaylist", Qt::BlockingQueuedConnection, Q_ARG( QStringList, filenames ) );
+}
+
 void MVPPlayerDialog::dropEvent( QDropEvent *de )
 {
     // Unpack dropped data and handle it
@@ -128,6 +138,13 @@ void MVPPlayerDialog::slotSetPlaylistItemIndex( const int row )
 QString MVPPlayerDialog::slotOpenFile( const QString & title, const QString & extensions )
 {
     return QFileDialog::getOpenFileName( QApplication::activeWindow(), title, "/Users", extensions );
+}
+
+void MVPPlayerDialog::slotOpenedPlaylist( const QStringList & filenames )
+{
+    widget.playlist->clear();
+    widget.playlist->addItems( filenames );
+    signalViewStartPlaylist();
 }
 
 void MVPPlayerDialog::slotDisplayError( const QString & msg )

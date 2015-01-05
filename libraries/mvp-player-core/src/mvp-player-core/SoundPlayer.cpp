@@ -85,7 +85,7 @@ bool SoundPlayer::restart()
     if ( possible && on && channel )
     {
         boost::mutex::scoped_lock lock( _mutexPlayer );
-        return channel->setPosition( 0, FMOD_TIMEUNIT_MS ) == FMOD_OK;
+        return channel->setPosition( 0, FMOD_TIMEUNIT_MS ) != FMOD_OK;
     }
     return true;
 }

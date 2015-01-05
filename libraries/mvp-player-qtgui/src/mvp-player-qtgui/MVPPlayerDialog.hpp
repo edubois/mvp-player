@@ -51,6 +51,8 @@ public:
     inline void setPlaylistItemIndex( const int row )
     { QMetaObject::invokeMethod( this, "slotSetPlaylistItemIndex", Qt::BlockingQueuedConnection, Q_ARG( int, row ) ); }
 
+    void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems );
+
 private:
     void dropEvent( QDropEvent *de );
     void dragEnterEvent( QDragEnterEvent *event );
@@ -69,6 +71,7 @@ private Q_SLOTS:
     { widget.btnPlay->setText( kPlayCaption.c_str() ); }
     QString slotOpenFile( const QString & title, const QString & extensions );
     void slotDisplayError( const QString & msg );
+    void slotOpenedPlaylist( const QStringList & filenames );
 
 private:
     Ui::MVPPlayerDialog widget;

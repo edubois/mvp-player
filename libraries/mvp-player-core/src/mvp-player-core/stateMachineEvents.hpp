@@ -1,8 +1,12 @@
 #ifndef _STATEMACHINEEVENTS_HPP_
 #define	_STATEMACHINEEVENTS_HPP_
 
+#include "m3uParser.hpp"
+
 #include <boost/statechart/event.hpp>
 #include <boost/filesystem.hpp>
+
+#include <vector>
 
 namespace mvpplayer
 {
@@ -61,6 +65,22 @@ struct EvPlay : sc::event< EvPlay >
 
 private:
     boost::filesystem::path _filename;      ///< Filename we want to play
+};
+
+/**
+ * @brief event opened playlist
+ */
+struct EvOpenedPlaylist : sc::event< EvOpenedPlaylist >
+{
+    EvOpenedPlaylist( const std::vector<m3uParser::PlaylistItem>& playlistItems )
+    : _playlistItems( playlistItems )
+    {}
+
+    inline const std::vector<m3uParser::PlaylistItem>& playlistItems() const
+    { return _playlistItems; }
+
+private:
+    std::vector<m3uParser::PlaylistItem> _playlistItems; ///< Playlist items
 };
 
 /**

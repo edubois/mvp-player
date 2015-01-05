@@ -2,6 +2,7 @@
 #define	_CORE_MVPPLAYERENGINE_HPP_
 
 #include "ISoundPlayer.hpp"
+#include "m3uParser.hpp"
 
 #include <boost/signals2.hpp>
 #include <boost/foreach.hpp>
@@ -27,14 +28,20 @@ public:
     virtual void stop();
 
     /**
-     * @brief play a given file
+     * @brief play a given file (if m3u, playlist will be changed)
      * @return false on success, true if error
      */
     virtual bool playFile( const boost::filesystem::path & filename );
 
     /**
+     * @brief open a given playlist
+     * @param playlistFilename given playlist
+     */
+    void openPlaylist( const boost::filesystem::path & playlistFilename );
+
+    /**
      * @brief restart current track
-     * @return 
+     * @return false if success, true otherwise
      */
     virtual bool restart();
 
@@ -97,9 +104,10 @@ public:
     
 // Signals
 public:
-    boost::signals2::signal<void(const boost::filesystem::path&)> signalTrackAddedToPlaylist; ///< Signals that a track has been added to the playlist
-    boost::signals2::signal<void()> signalEndOfTrack;                       ///< Signals that the track has ended
-    boost::signals2::signal<void(const boost::filesystem::path&, const int)> signalPlayingItemIndex;        ///< Signals that we are playing the 'index' track of the playlist
+    boost::signals2::signal<void(const std::vector<m3uParser::PlaylistItem>&)> signalOpenedPlaylist;///< Signals that we opened a playlist
+    boost::signals2::signal<void(const boost::filesystem::path&)> signalTrackAddedToPlaylist;       ///< Signals that a track has been added to the playlist
+    boost::signals2::signal<void()> signalEndOfTrack;                                               ///< Signals that the track has ended
+    boost::signals2::signal<void(const boost::filesystem::path&, const int)> signalPlayingItemIndex;///< Signals that we are playing the 'index' track of the playlist
 
 protected:
     ISoundPlayer *_soundPlayer;                                             ///< Pointer to a sound player instance

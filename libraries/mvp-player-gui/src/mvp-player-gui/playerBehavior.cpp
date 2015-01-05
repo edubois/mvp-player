@@ -57,6 +57,10 @@ void setupMainBehavior( mvpplayer::MVPPlayerEngine & m, mvpplayer::gui::IMVPPlay
     p.signalPlayingItemIndex.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setPlaylistItemIndex, &v, _2 ) );
     // Subscribe to end of track notifications
     m.signalEndOfTrack.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processEndOfTrack, &p ) );
+    // When the model notify that it opened a playlist, inform the presenter
+    m.signalOpenedPlaylist.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processOpenedPlaylist, &p, _1 ) );
+    // When the presenter notify that it opened a playlist, inform the view
+    p.signalOpenedPlaylist.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::openedPlaylist, &v, _1 ) );
     //@}
 }
 

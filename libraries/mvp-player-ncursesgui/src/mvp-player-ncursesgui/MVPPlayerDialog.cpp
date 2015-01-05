@@ -1,10 +1,6 @@
 #include "MVPPlayerDialog.hpp"
 #include "fileUtils.hpp"
 
-#include <mvp-player-core/m3uParser.hpp>
-
-#include <boost/algorithm/string/predicate.hpp>
-
 #include <iostream>
 
 namespace mvpplayer
@@ -13,7 +9,7 @@ namespace gui
 {
 namespace ncurses
 {
-    
+
 MVPPlayerDialog::MVPPlayerDialog( CDKSCREEN *cdkScreen, const int width, const int height, const int x, const int y )
 : _cdkScreen( cdkScreen )
 , _childwin( nullptr )
@@ -68,20 +64,14 @@ void MVPPlayerDialog::initWin( const std::string & currentTrack, const bool play
     refreshCDKScreen( _cdkScreen );
 }
 
-void MVPPlayerDialog::openPlaylist( const boost::filesystem::path & playlistFilename )
+void MVPPlayerDialog::openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
 {
-   // Create the playlist widget
-    std::vector<m3uParser::PlaylistItem> items = m3uParser::parse( playlistFilename );
-    if ( !items.size() )
-    { return; }
-
-    std::vector<char*> itemsChars( items.size() );
-    std::vector<std::unique_ptr<char[]> > itemsAlloc( items.size() );
+    std::vector<char*> itemsChars( playlistItems.size() );
+    std::vector<std::unique_ptr<char[]> > itemsAlloc( playlistItems.size() );
     std::size_t i = 0;
-    for( const m3uParser::PlaylistItem & item: items )
+    for( const m3uParser::PlaylistItem & item: playlistItems )
     {
         const std::string itemStr = item.infos.size() ? item.infos : item.filename.string();
-        signalViewAddTrack( item.filename.string() );
         itemsAlloc[i].reset( new char[ itemStr.size() + 1 ] );
         strcpy( itemsAlloc[i].get(), itemStr.c_str() );
         itemsChars[i] = itemsAlloc[i].get();
@@ -164,16 +154,7 @@ int MVPPlayerDialog::exec()
                         item = openFile( _cdkScreen, "Open file or playlist", "*" );
                     }
 
-                    if ( boost::iends_with( item.string(), ".m3u" ) )
-                    {
-                        signalViewClearPlaylist();
-                        openPlaylist( item );
-                        signalViewStartPlaylist();
-                    }
-                    else
-                    {
-                        signalViewHitPlay( item.string() );
-                    }
+                    signalViewHitPlay( item.string() );
                 }
                 break;
             }

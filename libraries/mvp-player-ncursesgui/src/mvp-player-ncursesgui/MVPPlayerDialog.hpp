@@ -39,9 +39,10 @@ public:
 
     int exec();
 
+    void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems );
+
 private:
     void initWin( const std::string & currentTrack, const bool playButton = true );
-    void openPlaylist( const boost::filesystem::path & playlistFilename );
 
 private:
     CDKSCREEN* _cdkScreen;

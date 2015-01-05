@@ -83,6 +83,9 @@ public:
     inline void failed( const std::string & msg )
     { signalFailed( msg ); }
 
+    inline void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
+    { signalOpenedPlaylist( playlistItems ); }
+
     boost::optional<boost::filesystem::path> askForFile( const std::string & question )
     { return signalAskForFile( question ); }
 
@@ -125,6 +128,9 @@ public:
     inline void processEndOfTrack()
     { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvEndOfTrack >( new EvEndOfTrack() ) ); }
 
+    inline void processOpenedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
+    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvOpenedPlaylist >( new EvOpenedPlaylist( playlistItems ) ) ); }
+    
     mutable sc::fifo_scheduler<> _scheduler;                    ///< Event asynchronous scheduler (used to queue events)
     sc::fifo_scheduler<>::processor_handle _playerProcessor;    ///< Event processor
     std::unique_ptr<boost::thread> _schedulerThread;            ///< Event scheduler thread
@@ -137,6 +143,7 @@ public:
     boost::signals2::signal<void()> signalClearPlaylist;
     boost::signals2::signal<void()> signalStartPlaylist;
     boost::signals2::signal<void(const int)> signalPlayItemAtIndex;
+    boost::signals2::signal<void(const std::vector<m3uParser::PlaylistItem> &)> signalOpenedPlaylist;
     boost::signals2::signal<void(const boost::filesystem::path&, const int)> signalPlayingItemIndex;
     boost::signals2::signal<void(const std::string&)> signalFailed;
     boost::signals2::signal<boost::filesystem::path(const std::string&)> signalAskForFile;

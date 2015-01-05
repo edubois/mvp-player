@@ -1,6 +1,7 @@
 #ifndef _MVPPLAYERLOGIC_HPP_
 #define	_MVPPLAYERLOGIC_HPP_
 
+#include "m3uParser.hpp"
 #include "MVPPlayerPresenter.hpp"
 #include "stateMachineEvents.hpp"
 
@@ -68,6 +69,7 @@ struct Playing : sc::simple_state< Playing, Active >
       sc::custom_reaction< EvNextTrack >,
       sc::custom_reaction< EvRestartTrack >,
       sc::custom_reaction< EvStartPlaylist >,
+      sc::custom_reaction< EvOpenedPlaylist >,
       sc::custom_reaction< EvClearPlaylist >,
       sc::custom_reaction< EvPlayingItemIndex >,
       sc::custom_reaction< EvPlayItemAtIndex >,
@@ -107,6 +109,15 @@ struct Playing : sc::simple_state< Playing, Active >
     sc::result react( const EvStartPlaylist & )
     {
         context< PlayerStateMachine >().presenter.startPlaylist();
+        return transit< Playing >();
+    }
+
+    /**
+     * @brief reaction to playlist open
+     */
+    sc::result react( const EvOpenedPlaylist & ev )
+    {
+        context< PlayerStateMachine >().presenter.openedPlaylist( ev.playlistItems() );
         return transit< Playing >();
     }
 
@@ -197,10 +208,20 @@ struct Stopped : sc::simple_state< Stopped, Active >
       sc::custom_reaction< EvPlay >,
       sc::custom_reaction< EvClearPlaylist >,
       sc::custom_reaction< EvStartPlaylist >,
+      sc::custom_reaction< EvOpenedPlaylist >,
       sc::custom_reaction< EvPreviousTrack >,
       sc::custom_reaction< EvNextTrack >,
       sc::custom_reaction< EvPlayItemAtIndex >
     > reactions;
+
+    /**
+     * @brief reaction to playlist open
+     */
+    sc::result react( const EvOpenedPlaylist & ev )
+    {
+        context< PlayerStateMachine >().presenter.openedPlaylist( ev.playlistItems() );
+        return transit< Playing >();
+    }
 
     /**
      * @brief reaction on clear playlist event

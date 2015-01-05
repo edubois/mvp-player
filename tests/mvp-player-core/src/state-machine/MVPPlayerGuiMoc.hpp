@@ -29,6 +29,8 @@ public:
     virtual void setIconPlay()
     { /* No GUI */ }
 
+    virtual void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
+    { /* No GUI */ }
 };
 
 }

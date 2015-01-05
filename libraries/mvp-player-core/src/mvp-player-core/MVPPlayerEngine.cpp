@@ -2,6 +2,8 @@
 
 #include <iterator>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 namespace mvpplayer
 {
 
@@ -20,9 +22,34 @@ MVPPlayerEngine::~MVPPlayerEngine()
 bool MVPPlayerEngine::playFile( const boost::filesystem::path & filename )
 {
     stop();
-    _currentPlayedTrack = filename;
-    _soundPlayer->load( filename.string() );
-    return _soundPlayer->play();
+    if ( boost::iends_with( filename.string(), ".m3u" ) )
+    {
+        openPlaylist( filename );
+        playList();
+        return false;
+    }
+    else
+    {
+        _currentPlayedTrack = filename;
+        _soundPlayer->load( filename.string() );
+        return _soundPlayer->play();
+    }
+}
+
+void MVPPlayerEngine::openPlaylist( const boost::filesystem::path & playlistFilename )
+{
+    // Parse the playlist
+    std::vector<m3uParser::PlaylistItem> playlistItems = m3uParser::parse( playlistFilename );
+    if ( !playlistItems.size() )
+    { return; }
+
+    for( const m3uParser::PlaylistItem playlistItem : playlistItems )
+    {
+        _playlist.push_back( playlistItem.filename );
+    }
+
+    // Signalize that we opened the playlist
+    signalOpenedPlaylist( playlistItems );
 }
 
 void MVPPlayerEngine::playList()
