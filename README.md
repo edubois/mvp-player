@@ -14,6 +14,8 @@ To me, this (or similar) should exists on every C++ projects.
 
 ////////////////////////////////////////////////////////////////////////////////
 
+## Compilation
+
 To compile, you will need Qt5, Boost, Fmod, ncurses, cdk and scons:
 
 * QT5: http://www.qt.io/download/
@@ -25,19 +27,18 @@ To compile, you will need Qt5, Boost, Fmod, ncurses, cdk and scons:
 
 First, clone the repository:
 
+```
 git clone https://github.com/edubois/mvp-player.git
-
 cd mvp-player
-
 git submodule update -i
-
+```
 This should bring tools/sconsProject
 
 now, go into tools/sconsProject
 
 and do (this is mandatory):
 
-git checkout precompiled_header_proposal
+```git checkout precompiled_header_proposal```
 
 
 Now, it's time to edit default.sconf according to your configuration.
@@ -48,15 +49,34 @@ If you are using Mac, adapt the last lines according to your
 XCode configuration.
 If you are not using Mac, remove the lines after '# Mac only'
 
+## Running
+
 When you are ready, enter:
 
 * if you want the ncurses console player:
 
-scons mode=release mvp_player_ncurses
+```scons mode=release mvp_player_ncurses```
 
 * or, if you want the QT player:
 
-scons mode=release mvp_player_qt
+```scons mode=release mvp_player_qt```
 
 This should build an executable showing a player dialog, where you can play a music (I tried .wav, mp3 and playlist m3u, it was working well on both GUI).
+
+## Tags
+I put some tags so you can have a better understanding of the different developement steps.
+
+To switch to a tag, please use ```git checkout tag_name```
+
+* ```version_simple_player```
+
+This is a 'simple' version of the player, using a synchronous state machine (easier)
+
+* ```version_asynchronous_player_state_machine```
+
+This is a version of the player using an asynchronous state machine (a little bit more difficult to understand)
+
+* ```version_with_network_support```
+
+This is a version with support of network remote player.
 
