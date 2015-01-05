@@ -15,6 +15,7 @@ namespace ncurses
 
 void displayError( CDKSCREEN* cdkscreen, const std::string & msg );
 
+
 }
 
 }

@@ -7,7 +7,6 @@
 #include <fmod.hpp>
 #include <string>
 
-#include <boost/asio.hpp>
 #include <boost/thread.hpp>
 #include <boost/scoped_ptr.hpp>
 
@@ -110,7 +109,7 @@ private:
     FMOD::Channel* channel;
 
     boost::scoped_ptr<boost::thread> _updaterThread; ///< Updater thread
-    mutable boost::mutex _mutexPlayer;               ///< For thread safety
+    mutable boost::mutex _mutexPlayer;               ///< For thread safetyness
 };
 
 FMOD_RESULT playEndedCallback(FMOD_CHANNELCONTROL *channelcontrol, FMOD_CHANNELCONTROL_TYPE controltype, FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype, void *commanddata1, void *commanddata2);

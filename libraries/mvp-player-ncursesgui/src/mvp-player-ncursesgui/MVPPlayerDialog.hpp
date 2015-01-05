@@ -8,6 +8,7 @@
 
 #include <boost/signals2.hpp>
 #include <boost/filesystem/path.hpp>
+#include <boost/thread.hpp>
 #include <string>
 
 namespace mvpplayer
@@ -47,6 +48,8 @@ private:
     CDKDIALOG* _childwin;
     CDKSCROLL* _playlist;
     bool _isPlaying;
+
+    mutable boost::mutex _mutexGui;               ///< For thread safetyness
 };
 
 }

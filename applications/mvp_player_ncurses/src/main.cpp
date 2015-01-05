@@ -40,7 +40,7 @@ int instanciateApp<mvpplayer::gui::ncurses::MVPPlayerDialog>( int argc, char **a
         mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
 
         // Main dialog (view)
-        mvpplayer::gui::ncurses::MVPPlayerDialog::MVPPlayerDialog dlg( cdkscreen, 30, 10, 5, 5 );
+        mvpplayer::gui::ncurses::MVPPlayerDialog dlg( cdkscreen, 30, 10, 5, 5 );
 
         // Presenter (presenter: logic-glu between model and view)
         mvpplayer::logic::MVPPlayerPresenter presenter;

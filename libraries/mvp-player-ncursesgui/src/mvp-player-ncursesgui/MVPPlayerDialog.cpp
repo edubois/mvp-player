@@ -25,6 +25,7 @@ MVPPlayerDialog::MVPPlayerDialog( CDKSCREEN *cdkScreen, const int width, const i
 
 MVPPlayerDialog::~MVPPlayerDialog()
 {
+    boost::mutex::scoped_lock lock( _mutexGui );
     destroyCDKDialog( _childwin );
     if ( _playlist )
     {
@@ -34,6 +35,7 @@ MVPPlayerDialog::~MVPPlayerDialog()
 
 void MVPPlayerDialog::initWin( const std::string & currentTrack, const bool playButton )
 {
+    boost::mutex::scoped_lock lock( _mutexGui );
     if ( _childwin )
     {
         destroyCDKDialog( _childwin );
@@ -86,6 +88,7 @@ void MVPPlayerDialog::openPlaylist( const boost::filesystem::path & playlistFile
         ++i;
     }
 
+    boost::mutex::scoped_lock lock( _mutexGui );
     if ( _playlist )
     { destroyCDKItemlist( _playlist ); }
 
@@ -114,6 +117,7 @@ void MVPPlayerDialog::setPlaylistItemIndex( const int row )
 {
     if ( _playlist )
     {
+        boost::mutex::scoped_lock lock( _mutexGui );
         setCDKScrollCurrentItem( _playlist, row );
     }
 }
@@ -121,10 +125,24 @@ void MVPPlayerDialog::setPlaylistItemIndex( const int row )
 int MVPPlayerDialog::exec()
 {
     // Loop until user hits 'q' to quit
-    refreshCDKScreen( _cdkScreen );
+    {
+        boost::mutex::scoped_lock lock( _mutexGui );
+        refreshCDKScreen( _cdkScreen );
+    }
     while( _childwin->exitType != vESCAPE_HIT )
     {
-        const int selection = activateCDKDialog( _childwin, NULL );
+        int selection;
+
+        boolean functionKey;
+        const chtype input = static_cast<chtype>( getchCDKObject (ObjOf (_childwin), &functionKey) );
+        {
+            boost::mutex::scoped_lock lock( _mutexGui );
+            drawCDKDialog( _childwin, ObjOf (_childwin)->box );
+            wrefresh( _childwin->win );
+            selection = injectCDKDialog( _childwin, input );
+        }
+        
+
         switch( selection )
         {
             case 0:
@@ -140,7 +158,12 @@ int MVPPlayerDialog::exec()
                 }
                 else
                 {
-                    boost::filesystem::path item = openFile( _cdkScreen, "Open file or playlist", "*" );
+                    boost::filesystem::path item;
+                    {
+                        boost::mutex::scoped_lock lock( _mutexGui );
+                        item = openFile( _cdkScreen, "Open file or playlist", "*" );
+                    }
+
                     if ( boost::iends_with( item.string(), ".m3u" ) )
                     {
                         signalViewClearPlaylist();
@@ -165,7 +188,11 @@ int MVPPlayerDialog::exec()
                 break;
             }
         }
-        refreshCDKScreen( _cdkScreen );
+
+        {
+            boost::mutex::scoped_lock lock( _mutexGui );
+            refreshCDKScreen( _cdkScreen );
+        }
     }
     
     return 0;
