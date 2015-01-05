@@ -30,6 +30,11 @@ public:
     MVPPlayerDialog( QWidget *parent = NULL );
     virtual ~MVPPlayerDialog();
 
+    void displayError( const std::string & msg )
+    { QMetaObject::invokeMethod( this, "slotDisplayError", Qt::BlockingQueuedConnection, Q_ARG( QString, msg.c_str() ) ); }
+
+    boost::filesystem::path openFile( const std::string & title, const std::string & extensions );
+
     /**
      * In the following sections, we use invokeMethod because of asynchronous
      * calls that might come from other threads.
@@ -62,6 +67,8 @@ private Q_SLOTS:
     { widget.btnPlay->setText( kStopCaption.c_str() ); }
     void slotSetIconPlay()
     { widget.btnPlay->setText( kPlayCaption.c_str() ); }
+    QString slotOpenFile( const QString & title, const QString & extensions );
+    void slotDisplayError( const QString & msg );
 
 private:
     Ui::MVPPlayerDialog widget;

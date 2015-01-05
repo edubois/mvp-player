@@ -264,7 +264,8 @@ struct Stopped : sc::simple_state< Stopped, Active >
             boost::optional<boost::filesystem::path> answer = context< PlayerStateMachine >().presenter.askForFile( _tr( "Select a music filename!" ) );
             if ( answer && !answer.get().empty() )
             {
-                context< PlayerStateMachine >().presenter.processPlay( ev.filename() );
+                context< PlayerStateMachine >().presenter.processPlay( answer.get() );
+                return transit< Playing >();
             }
             else if ( answer )
             {

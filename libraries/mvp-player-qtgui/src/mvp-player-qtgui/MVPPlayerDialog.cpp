@@ -1,6 +1,7 @@
 #include "MVPPlayerDialog.hpp"
 
 #include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
 
 #include <iostream>
 
@@ -26,6 +27,13 @@ MVPPlayerDialog::MVPPlayerDialog( QWidget *parent )
 
 MVPPlayerDialog::~MVPPlayerDialog()
 {
+}
+
+boost::filesystem::path MVPPlayerDialog::openFile( const std::string & title, const std::string & extensions )
+{
+    QString result;
+    QMetaObject::invokeMethod( this, "slotOpenFile", Qt::BlockingQueuedConnection, Q_RETURN_ARG( QString, result ), Q_ARG( QString, QString::fromStdString( title ) ), Q_ARG( QString, QString::fromStdString( extensions ) ) );
+    return result.toStdString();
 }
 
 void MVPPlayerDialog::slotViewHitPlayStopBtn()
@@ -115,6 +123,16 @@ void MVPPlayerDialog::slotSetPlaylistItemIndex( const int row )
     {
         widget.playlist->setCurrentRow( row );
     }
+}
+
+QString MVPPlayerDialog::slotOpenFile( const QString & title, const QString & extensions )
+{
+    return QFileDialog::getOpenFileName( QApplication::activeWindow(), title, "/Users", extensions );
+}
+
+void MVPPlayerDialog::slotDisplayError( const QString & msg )
+{
+    QMessageBox::critical( QApplication::activeWindow(), QObject::tr( "Error!" ), msg, QMessageBox::Ok | QMessageBox::Default);
 }
 
 }

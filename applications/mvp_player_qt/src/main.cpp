@@ -1,4 +1,3 @@
-#include "dlgUtils.hpp"
 #include <mvp-player-core/MVPPlayerEngine.hpp>
 #include <mvp-player-core/MVPPlayerLogic.hpp>
 #include <mvp-player-core/SoundPlayer.hpp>
@@ -32,7 +31,7 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerDialog>( int argc, char **argv )
     mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
 
     // Main dialog (view)
-    mvpplayer::gui::qt::MVPPlayerDialog::MVPPlayerDialog dlg;
+    mvpplayer::gui::qt::MVPPlayerDialog dlg;
 
     // Presenter (presenter: logic-glu between model and view)
     mvpplayer::logic::MVPPlayerPresenter presenter;
@@ -41,9 +40,9 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerDialog>( int argc, char **argv )
     // Specific connections (be careful of the order here)
 
     // Display a message box on errors
-    presenter.signalFailed.connect( boost::bind( &mvpplayer::gui::qt::displayError, _1 ) );
+    presenter.signalFailed.connect( boost::bind( &mvpplayer::gui::qt::MVPPlayerDialog::displayError, &dlg, _1 ) );
     // When no file is provided and we hit play button, ask for a music file
-    presenter.signalAskForFile.connect( boost::bind( &mvpplayer::gui::qt::openFile, _1, "Musics (*.wav, *.m3u)" ) );
+    presenter.signalAskForFile.connect( boost::bind( &mvpplayer::gui::qt::MVPPlayerDialog::openFile, &dlg, _1, "Musics (*.wav;*.m3u)" ) );
 
     // Setup Model View Presenter behavior (binds the whole thing)
     mvpplayer::gui::setupMainBehavior( playerEngine, dlg, presenter );
