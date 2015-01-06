@@ -6,7 +6,7 @@
 
 * LICENSE: LGPLv3 (except for the SoundPlayer.cpp file which is using fmod. Please check fmod license before using this)
 
-* By using this library, you accept the content of DISCLAIMER.txt
+* By using this library and its concepts and designs, you accept the content of DISCLAIMER.txt
 
 This is a proof of concept of a my personal way to implement the 
 model view presenter pattern.
