@@ -83,6 +83,7 @@ void MVPPlayerDialog::initPlaylist( const std::vector<std::string> & playlistIte
 
     _playlist = newCDKScroll( _cdkScreen, CENTER, TOP, RIGHT, 10, 78, "<C>Playlist", &itemsChars[0], itemsChars.size(), TRUE, A_REVERSE | A_BOLD, TRUE, FALSE );
     setCDKScrollBackgroundColor( _playlist, "</5>" );
+    refreshCDKScreen( _cdkScreen );
 }
 
 void MVPPlayerDialog::openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
@@ -199,6 +200,7 @@ void MVPPlayerDialog::clearPlaylist()
     boost::mutex::scoped_lock lock( _mutexGui );
     if ( _playlist )
     { destroyCDKItemlist( _playlist ); }
+    refreshCDKScreen( _cdkScreen );
 }
 
 void MVPPlayerDialog::addTrack( const boost::filesystem::path & filename )
