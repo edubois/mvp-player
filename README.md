@@ -8,11 +8,11 @@
 
 * By using this library and its concepts and designs, you accept the content of DISCLAIMER.txt
 
-This is a proof of concept of a my personal way to implement the 
+This is a proof of concept of my personal way to implement the 
 model view presenter pattern.
 
-This project's goal is to show a easy powerful way to deal with multiple GUI.
-To me, this (or similar) should exists on every C++ projects.
+This project shows an easy powerful way to deal with multiple GUI.
+To me, this pattern (or similar) should exist on every C++ projects.
 
 ////////////////////////////////////////////////////////////////////////////////
 
