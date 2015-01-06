@@ -7,6 +7,8 @@
 #include <boost/signals2.hpp>
 #include <boost/foreach.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/locks.hpp>
 
 #include <list>
 #include <iterator>
@@ -84,12 +86,7 @@ public:
     /**
      * @brief clear the playlist
      */
-    inline void clearPlaylist()
-    {
-        stop();
-        _playlist.clear();
-        _currentPosition = _playlist.begin();
-    }
+    void clearPlaylist();
 
     /**
      * @brief get current played track
@@ -101,12 +98,14 @@ public:
 
     inline void notifyEndOfTrack() const
     { signalEndOfTrack(); }
-    
+
 // Signals
 public:
     boost::signals2::signal<void(const std::vector<m3uParser::PlaylistItem>&)> signalOpenedPlaylist;///< Signals that we opened a playlist
     boost::signals2::signal<void(const boost::filesystem::path&)> signalTrackAddedToPlaylist;       ///< Signals that a track has been added to the playlist
+    boost::signals2::signal<void(const boost::filesystem::path&)> signalPlayedTrack;                ///< Signals that a track has been played
     boost::signals2::signal<void()> signalEndOfTrack;                                               ///< Signals that the track has ended
+    boost::signals2::signal<void()> signalClearedPlaylist;                                          ///< Signals that we cleared the playlist
     boost::signals2::signal<void(const boost::filesystem::path&, const int)> signalPlayingItemIndex;///< Signals that we are playing the 'index' track of the playlist
 
 protected:
@@ -114,6 +113,7 @@ protected:
     boost::filesystem::path _currentPlayedTrack;                            ///< Current played track
     std::list<boost::filesystem::path>::const_iterator _currentPosition;    ///< Current playing position
     std::list<boost::filesystem::path> _playlist;                           ///< Track playlist
+    mutable boost::mutex _mutex;                                            ///< Used for thread safetyness
 };
 
 }

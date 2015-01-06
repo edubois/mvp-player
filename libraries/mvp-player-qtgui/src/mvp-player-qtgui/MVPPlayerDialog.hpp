@@ -53,6 +53,13 @@ public:
 
     void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems );
 
+    inline void clearPlaylist()
+    { QMetaObject::invokeMethod( this, "slotClearPlaylist", Qt::BlockingQueuedConnection ); }
+
+    inline void addTrack( const boost::filesystem::path & filename )
+    { QMetaObject::invokeMethod( this, "slotAddTrack", Qt::BlockingQueuedConnection, Q_ARG( QString, QString::fromStdString( filename.string() ) ) ); }
+
+
 private:
     void dropEvent( QDropEvent *de );
     void dragEnterEvent( QDragEnterEvent *event );
@@ -72,6 +79,8 @@ private Q_SLOTS:
     QString slotOpenFile( const QString & title, const QString & extensions );
     void slotDisplayError( const QString & msg );
     void slotOpenedPlaylist( const QStringList & filenames );
+    void slotClearPlaylist();
+    void slotAddTrack( const QString & filename );
 
 private:
     Ui::MVPPlayerDialog widget;

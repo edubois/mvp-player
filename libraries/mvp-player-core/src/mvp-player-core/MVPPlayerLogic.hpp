@@ -14,8 +14,9 @@
 #include <boost/mpl/list.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
-#include <chrono>
+#include <boost/algorithm/string/predicate.hpp>
 
+#include <chrono>
 #include <string>
 #include <iostream>
 
@@ -65,12 +66,16 @@ struct Playing : sc::simple_state< Playing, Active >
     typedef boost::mpl::list<
       sc::custom_reaction< EvStop >,
       sc::custom_reaction< EvPlay >,
+      sc::custom_reaction< EvPlayed >,
       sc::custom_reaction< EvPreviousTrack >,
       sc::custom_reaction< EvNextTrack >,
       sc::custom_reaction< EvRestartTrack >,
       sc::custom_reaction< EvStartPlaylist >,
       sc::custom_reaction< EvOpenedPlaylist >,
+      sc::custom_reaction< EvAddTrack >,
+      sc::custom_reaction< EvAddedTrack >,
       sc::custom_reaction< EvClearPlaylist >,
+      sc::custom_reaction< EvModelClearedPlaylist >,
       sc::custom_reaction< EvPlayingItemIndex >,
       sc::custom_reaction< EvPlayItemAtIndex >,
       sc::custom_reaction< EvEndOfTrack >
@@ -100,6 +105,15 @@ struct Playing : sc::simple_state< Playing, Active >
     sc::result react( const EvClearPlaylist & ev )
     {
         context< PlayerStateMachine >().presenter.clearPlaylist();
+        return transit< Playing >();
+    }
+
+    /**
+     * @brief reaction on model clear playlist event
+     */
+    sc::result react( const EvModelClearedPlaylist & ev )
+    {
+        context< PlayerStateMachine >().presenter.modelClearedPlaylist();
         return transit< Stopped >();
     }
 
@@ -179,6 +193,38 @@ struct Playing : sc::simple_state< Playing, Active >
     }
 
     /**
+     * @brief reaction on add track event
+     */
+    sc::result react( const EvAddTrack & ev )
+    {
+        if ( !boost::iends_with( ev.filename().string(), ".m3u" ) 
+             && boost::filesystem::exists( ev.filename() ) )
+        {
+            context< PlayerStateMachine >().presenter.addTrack( ev.filename() );
+            return transit< Playing >();
+        }
+        return discard_event();
+    }
+
+    /**
+     * @brief reaction on track added event
+     */
+    sc::result react( const EvAddedTrack & ev )
+    {
+        context< PlayerStateMachine >().presenter.addedTrack( ev.filename() );
+        return transit< Playing >();
+    }
+
+    /**
+     * @brief reaction on played event
+     */
+    sc::result react( const EvPlayed & ev )
+    {
+        context< PlayerStateMachine >().presenter.played( ev.filename() );
+        return transit< Playing >();
+    }
+
+    /**
      * @brief reaction on play event
      */
     sc::result react( const EvPlay & ev )
@@ -187,7 +233,7 @@ struct Playing : sc::simple_state< Playing, Active >
         if ( boost::filesystem::exists( ev.filename() ) )
         {
             context< PlayerStateMachine >().lastPlayTime = std::chrono::system_clock::now();
-            context< PlayerStateMachine >().presenter.played( ev.filename() );
+            context< PlayerStateMachine >().presenter.playTrack( ev.filename() );
             return transit< Playing >();
         }
         else
@@ -206,12 +252,17 @@ struct Stopped : sc::simple_state< Stopped, Active >
 {
     typedef boost::mpl::list<
       sc::custom_reaction< EvPlay >,
+      sc::custom_reaction< EvPlayed >,
       sc::custom_reaction< EvClearPlaylist >,
+      sc::custom_reaction< EvModelClearedPlaylist >,
+      sc::custom_reaction< EvAddTrack >,
+      sc::custom_reaction< EvAddedTrack >,
       sc::custom_reaction< EvStartPlaylist >,
       sc::custom_reaction< EvOpenedPlaylist >,
       sc::custom_reaction< EvPreviousTrack >,
       sc::custom_reaction< EvNextTrack >,
-      sc::custom_reaction< EvPlayItemAtIndex >
+      sc::custom_reaction< EvPlayItemAtIndex >,
+      sc::custom_reaction< EvEndOfTrack >
     > reactions;
 
     /**
@@ -224,11 +275,44 @@ struct Stopped : sc::simple_state< Stopped, Active >
     }
 
     /**
+     * @brief reaction on add track event
+     */
+    sc::result react( const EvAddTrack & ev )
+    {
+        // Check if the file is not a playlist and if the file exists
+        if ( !boost::iends_with( ev.filename().string(), ".m3u" ) 
+             && boost::filesystem::exists( ev.filename() ) )
+        {
+            context< PlayerStateMachine >().presenter.addTrack( ev.filename() );
+            return transit< Stopped >();
+        }
+        return discard_event();
+    }
+
+    /**
+     * @brief reaction on track added event
+     */
+    sc::result react( const EvAddedTrack & ev )
+    {
+        context< PlayerStateMachine >().presenter.addedTrack( ev.filename() );
+        return transit< Stopped >();
+    }
+
+    /**
      * @brief reaction on clear playlist event
      */
     sc::result react( const EvClearPlaylist & ev )
     {
         context< PlayerStateMachine >().presenter.clearPlaylist();
+        return transit< Stopped >();
+    }
+
+    /**
+     * @brief reaction on model clear playlist event
+     */
+    sc::result react( const EvModelClearedPlaylist & ev )
+    {
+        context< PlayerStateMachine >().presenter.modelClearedPlaylist();
         return transit< Stopped >();
     }
 
@@ -277,7 +361,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
         if ( boost::filesystem::exists( ev.filename() ) )
         {
             context< PlayerStateMachine >().lastPlayTime = std::chrono::system_clock::now();
-            context< PlayerStateMachine >().presenter.played( ev.filename() );
+            context< PlayerStateMachine >().presenter.playTrack( ev.filename() );
             return transit< Playing >();
         }
         else
@@ -301,6 +385,21 @@ struct Stopped : sc::simple_state< Stopped, Active >
             }
             return discard_event();
         }
+    }
+
+    /**
+     * @brief reaction on end of track event
+     */
+    sc::result react( const EvEndOfTrack & )
+    { return discard_event(); }
+
+    /**
+     * @brief reaction on played event
+     */
+    sc::result react( const EvPlayed & ev )
+    {
+        context< PlayerStateMachine >().presenter.played( ev.filename() );
+        return transit< Playing >();
     }
 };
 

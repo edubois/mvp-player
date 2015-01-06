@@ -30,9 +30,15 @@ bool MVPPlayerEngine::playFile( const boost::filesystem::path & filename )
     }
     else
     {
-        _currentPlayedTrack = filename;
-        _soundPlayer->load( filename.string() );
-        return _soundPlayer->play();
+        bool ret = true;
+        {
+            boost::mutex::scoped_lock lock( _mutex );
+            _currentPlayedTrack = filename;
+            _soundPlayer->load( filename.string() );
+            ret = _soundPlayer->play();
+        }
+        signalPlayedTrack( filename );
+        return ret;
     }
 }
 
@@ -43,9 +49,14 @@ void MVPPlayerEngine::openPlaylist( const boost::filesystem::path & playlistFile
     if ( !playlistItems.size() )
     { return; }
 
-    for( const m3uParser::PlaylistItem playlistItem : playlistItems )
     {
-        _playlist.push_back( playlistItem.filename );
+        boost::mutex::scoped_lock lock( _mutex );
+        _playlist.clear();
+        for( const m3uParser::PlaylistItem playlistItem : playlistItems )
+        {
+            _playlist.push_back( playlistItem.filename );
+        }
+        _currentPosition = _playlist.begin();
     }
 
     // Signalize that we opened the playlist
@@ -55,7 +66,10 @@ void MVPPlayerEngine::openPlaylist( const boost::filesystem::path & playlistFile
 void MVPPlayerEngine::playList()
 {
     stop();
-    _currentPosition = _playlist.begin();
+    {
+        boost::mutex::scoped_lock lock( _mutex );
+        _currentPosition = _playlist.begin();
+    }
     playCurrent();
 }
 
@@ -66,8 +80,11 @@ void MVPPlayerEngine::playList()
 void MVPPlayerEngine::playPlaylistItem( const int index )
 {
     stop();
-    _currentPosition = _playlist.begin();
-    std::advance( _currentPosition, index );
+    {
+        boost::mutex::scoped_lock lock( _mutex );
+        _currentPosition = _playlist.begin();
+        std::advance( _currentPosition, index );
+    }
     playCurrent();
 }
 
@@ -79,8 +96,10 @@ bool MVPPlayerEngine::restart()
 
 void MVPPlayerEngine::playPrevious()
 {
+    boost::mutex::scoped_lock lock( _mutex );
     if ( --_currentPosition != _playlist.end() )
     {
+        lock.unlock();
         stop();
         playCurrent();
     }
@@ -92,8 +111,10 @@ void MVPPlayerEngine::playPrevious()
 
 void MVPPlayerEngine::playNext()
 {
+    boost::mutex::scoped_lock lock( _mutex );
     if ( ++_currentPosition != _playlist.end() )
     {
+        lock.unlock();
         stop();
         playCurrent();
     }
@@ -101,6 +122,7 @@ void MVPPlayerEngine::playNext()
 
 void MVPPlayerEngine::stop()
 {
+    boost::mutex::scoped_lock lock( _mutex );
     _currentPlayedTrack = boost::filesystem::path();
     // Stop all
     _soundPlayer->stop();
@@ -110,13 +132,38 @@ bool MVPPlayerEngine::playCurrent()
 {
     if ( _currentPosition != _playlist.end() )
     {
-        _currentPlayedTrack = *_currentPosition;
-        _soundPlayer->load( _currentPlayedTrack.string() );
-        _soundPlayer->play();
-        signalPlayingItemIndex( _currentPlayedTrack, std::distance( _playlist.cbegin(), _currentPosition ) );
+        boost::filesystem::path playedTrack;
+        int trackIndex = -1;
+        {
+            boost::mutex::scoped_lock lock( _mutex );
+            playedTrack = ( _currentPlayedTrack = *_currentPosition );
+            trackIndex = std::distance( _playlist.cbegin(), _currentPosition );
+            _soundPlayer->load( _currentPlayedTrack.string() );
+            _soundPlayer->play();
+        }
+        signalPlayedTrack( playedTrack );
+        signalPlayingItemIndex( playedTrack, trackIndex );
         return false;
     }
     return true;
 }
+
+/**
+ * @brief clear the playlist
+ */
+void MVPPlayerEngine::clearPlaylist()
+{
+    stop();
+
+    boost::mutex::scoped_lock lock( _mutex );
+    if ( _playlist.size() )
+    {
+        _playlist.clear();
+        _currentPosition = _playlist.begin();
+        lock.unlock();
+        signalClearedPlaylist();
+    }
+}
+
 
 }

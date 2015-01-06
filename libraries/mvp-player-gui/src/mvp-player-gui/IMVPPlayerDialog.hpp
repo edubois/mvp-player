@@ -34,7 +34,12 @@ public:
 
     virtual void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems ) = 0;
 
+    virtual void clearPlaylist() = 0;
+
+    virtual void addTrack( const boost::filesystem::path & filename ) = 0;
+
 public:
+    boost::signals2::signal<void( const std::function<void()> )> signalSequencial; ///< Signals that we want a sequencial run of the given lambda function
     boost::signals2::signal<void( const std::string& )> signalViewHitPlay; ///< Signals that user hit play button
     boost::signals2::signal<void( const int )> signalViewHitPlaylistItem; ///< Signals that user hit play on a playlist item
     boost::signals2::signal<void()> signalViewHitStop; ///< Signals that user hit stop button

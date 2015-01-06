@@ -13,7 +13,53 @@ namespace mvpplayer
 namespace logic
 {
 namespace sc = boost::statechart;
+namespace details
+{
 
+class SchedulerWorker
+{
+public:
+    SchedulerWorker( sc::fifo_scheduler<> & scheduler )
+    : _scheduler( scheduler )
+    , _stop( true )
+    {
+    }
+
+    inline void start()
+    {
+        _stop = false;
+        _thread.reset( new boost::thread( boost::bind( &SchedulerWorker::work, this ) ) );
+    }
+    
+    inline void join()
+    {
+        _stop = true;
+        _mutex.unlock();
+        _thread->join();
+    }
+
+    inline boost::mutex & mutex() const
+    { return _mutex; }
+
+private:    
+    void work()
+    {
+        while( !_stop )
+        {
+            _scheduler( 1 );
+            // Needed to handle pause in event processing
+            try { boost::mutex::scoped_lock lock( _mutex ); } catch( boost::lock_error& ) {}
+        }
+    }
+
+private:
+    sc::fifo_scheduler<> & _scheduler;
+    bool _stop;
+    std::unique_ptr<boost::thread> _thread;
+    mutable boost::mutex _mutex;
+};
+
+}
 /**
  * @brief the presenter is the glue between the model and the view,
  *        it also contains the player's state machine
@@ -23,6 +69,7 @@ class MVPPlayerPresenter
 public:
     MVPPlayerPresenter()
     : _scheduler( true )
+    , _schedulerWorker( _scheduler )
     {}
 
     template<class M>
@@ -32,21 +79,18 @@ public:
         _playerProcessor = _scheduler.create_processor< M >( boost::ref( *this ) );
         _scheduler.initiate_processor( _playerProcessor );
         // Start thread
-        _schedulerThread.reset( new boost::thread( boost::bind( &sc::fifo_scheduler<>::operator(), &_scheduler, 0 ) ) );
+        _schedulerWorker.start();
     }
 
     inline void waitUntilProcessed( const int n ) const
     { _scheduler( n ); }
 
     /**
-     * @brief playing item at a given index (status change)
-     * @param ev playing event
+     * @brief play track
+     * @param filename track filename
      */
-    inline void playingItemIndex( const boost::filesystem::path & filename, const int playlistIndex )
-    {
-        signalPlayedTrack( filename );
-        signalPlayingItemIndex( filename, playlistIndex );
-    }
+    inline void playTrack( const boost::filesystem::path & filename )
+    { signalPlayTrack( filename ); }
 
     /**
      * @brief played track (status)
@@ -54,6 +98,13 @@ public:
      */
     inline void played( const boost::filesystem::path & filename )
     { signalPlayedTrack( filename ); }
+
+    /**
+     * @brief playing item at a given index (status change)
+     * @param ev playing event
+     */
+    inline void playingItemIndex( const boost::filesystem::path & filename, const int playlistIndex )
+    { signalPlayingItemIndex( filename, playlistIndex ); }
 
     /**
      * @brief play item at a given index (action)
@@ -64,6 +115,12 @@ public:
     
     inline void stopped()
     { signalStopTrack(); }
+
+    inline void addedTrack( const boost::filesystem::path & filename )
+    { signalAddedTrack( filename ); }
+
+    inline void addTrack( const boost::filesystem::path & filename )
+    { signalAddTrack( filename ); }
 
     inline void previousTrack()
     { signalPreviousTrack(); }
@@ -77,6 +134,9 @@ public:
     inline void clearPlaylist()
     { signalClearPlaylist(); }
 
+    inline void modelClearedPlaylist()
+    { signalModelClearedPlaylist(); }
+
     inline void startPlaylist()
     { signalStartPlaylist(); }
 
@@ -88,6 +148,12 @@ public:
 
     boost::optional<boost::filesystem::path> askForFile( const std::string & question )
     { return signalAskForFile( question ); }
+
+    /**
+     * @brief pause the processor, call the lambda function, restart the processor
+     * @return true if error, false otherwise
+     */
+    bool processSequencial( const std::function<void()> lambda );
 
     /**
      * @brief send 'play item at given index' event
@@ -107,6 +173,9 @@ public:
     inline void processPlay( const boost::filesystem::path & filename )
     { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvPlay >( new EvPlay( filename ) ) ); }
 
+    inline void processPlayed( const boost::filesystem::path & filename )
+    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvPlayed >( new EvPlayed( filename ) ) ); }
+
     inline void processStop()
     { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvStop >( new EvStop() ) ); }
 
@@ -122,6 +191,15 @@ public:
     inline void processClearPlaylist()
     { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvClearPlaylist >( new EvClearPlaylist() ) ); }
 
+    inline void processModelClearedPlaylist()
+    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvModelClearedPlaylist >( new EvModelClearedPlaylist() ) ); }
+
+    inline void processAddTrack( const boost::filesystem::path& filename )
+    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvAddTrack >( new EvAddTrack( filename ) ) ); }
+
+    inline void processAddedTrack( const boost::filesystem::path& filename )
+    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvAddedTrack >( new EvAddedTrack( filename ) ) ); }
+
     inline void processStartPlaylist()
     { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvStartPlaylist >( new EvStartPlaylist() ) ); }
 
@@ -133,14 +211,18 @@ public:
     
     mutable sc::fifo_scheduler<> _scheduler;                    ///< Event asynchronous scheduler (used to queue events)
     sc::fifo_scheduler<>::processor_handle _playerProcessor;    ///< Event processor
-    std::unique_ptr<boost::thread> _schedulerThread;            ///< Event scheduler thread
+    details::SchedulerWorker _schedulerWorker;                  ///< Event scheduler thread
 
     boost::signals2::signal<void(const boost::filesystem::path&)> signalPlayedTrack;
+    boost::signals2::signal<void(const boost::filesystem::path&)> signalPlayTrack;
+    boost::signals2::signal<void(const boost::filesystem::path&)> signalAddTrack;
+    boost::signals2::signal<void(const boost::filesystem::path&)> signalAddedTrack;
     boost::signals2::signal<void()> signalStopTrack;
     boost::signals2::signal<void()> signalRestartTrack;
     boost::signals2::signal<void()> signalPreviousTrack;
     boost::signals2::signal<void()> signalNextTrack;
     boost::signals2::signal<void()> signalClearPlaylist;
+    boost::signals2::signal<void()> signalModelClearedPlaylist;
     boost::signals2::signal<void()> signalStartPlaylist;
     boost::signals2::signal<void(const int)> signalPlayItemAtIndex;
     boost::signals2::signal<void(const std::vector<m3uParser::PlaylistItem> &)> signalOpenedPlaylist;

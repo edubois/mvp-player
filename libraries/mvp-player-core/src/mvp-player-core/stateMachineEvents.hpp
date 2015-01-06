@@ -42,6 +42,11 @@ struct EvNextTrack : sc::event< EvNextTrack > {};
 struct EvClearPlaylist : sc::event< EvClearPlaylist > {};
 
 /**
+ * @brief event model cleared playlist
+ */
+struct EvModelClearedPlaylist : sc::event< EvModelClearedPlaylist > {};
+
+/**
  * @brief event start playlist
  */
 struct EvStartPlaylist : sc::event< EvStartPlaylist > {};
@@ -57,6 +62,54 @@ struct EvEndOfTrack : sc::event< EvEndOfTrack > {};
 struct EvPlay : sc::event< EvPlay >
 {
     EvPlay( const boost::filesystem::path & filename )
+    : _filename( filename )
+    {}
+
+    inline const boost::filesystem::path & filename() const
+    { return _filename; }
+
+private:
+    boost::filesystem::path _filename;      ///< Filename we want to play
+};
+
+/**
+ * @brief event played track
+ */
+struct EvPlayed : sc::event< EvPlayed >
+{
+    EvPlayed( const boost::filesystem::path & filename )
+    : _filename( filename )
+    {}
+
+    inline const boost::filesystem::path & filename() const
+    { return _filename; }
+
+private:
+    boost::filesystem::path _filename;      ///< Filename we want to play
+};
+
+/**
+ * @brief event add track
+ */
+struct EvAddTrack : sc::event< EvAddTrack >
+{
+    EvAddTrack( const boost::filesystem::path & filename )
+    : _filename( filename )
+    {}
+
+    inline const boost::filesystem::path & filename() const
+    { return _filename; }
+
+private:
+    boost::filesystem::path _filename;      ///< Filename we want to play
+};
+
+/**
+ * @brief event track added
+ */
+struct EvAddedTrack : sc::event< EvAddedTrack >
+{
+    EvAddedTrack( const boost::filesystem::path & filename )
     : _filename( filename )
     {}
 

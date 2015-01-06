@@ -64,14 +64,13 @@ void MVPPlayerDialog::initWin( const std::string & currentTrack, const bool play
     refreshCDKScreen( _cdkScreen );
 }
 
-void MVPPlayerDialog::openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
+void MVPPlayerDialog::initPlaylist( const std::vector<std::string> & playlistItemsStr )
 {
-    std::vector<char*> itemsChars( playlistItems.size() );
-    std::vector<std::unique_ptr<char[]> > itemsAlloc( playlistItems.size() );
+    std::vector<char*> itemsChars( playlistItemsStr.size() );
+    std::vector<std::unique_ptr<char[]> > itemsAlloc( playlistItemsStr.size() );
     std::size_t i = 0;
-    for( const m3uParser::PlaylistItem & item: playlistItems )
+    for( const std::string & itemStr: playlistItemsStr )
     {
-        const std::string itemStr = item.infos.size() ? item.infos : item.filename.string();
         itemsAlloc[i].reset( new char[ itemStr.size() + 1 ] );
         strcpy( itemsAlloc[i].get(), itemStr.c_str() );
         itemsChars[i] = itemsAlloc[i].get();
@@ -84,6 +83,17 @@ void MVPPlayerDialog::openedPlaylist( const std::vector<m3uParser::PlaylistItem>
 
     _playlist = newCDKScroll( _cdkScreen, CENTER, TOP, RIGHT, 10, 78, "<C>Playlist", &itemsChars[0], itemsChars.size(), TRUE, A_REVERSE | A_BOLD, TRUE, FALSE );
     setCDKScrollBackgroundColor( _playlist, "</5>" );
+}
+
+void MVPPlayerDialog::openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
+{
+    typedef std::vector<m3uParser::PlaylistItem> VecM3uItems;
+    _playlistItemsStr.clear();
+    std::for_each( playlistItems.begin(), playlistItems.end(),
+        [this](typename VecM3uItems::const_reference item){ _playlistItemsStr.push_back( item.infos.size() ? item.infos : item.filename.string() ); }
+    );
+
+    initPlaylist( _playlistItemsStr );
 }
 
 void MVPPlayerDialog::setCurrentTrack( const boost::filesystem::path & filename )
@@ -131,7 +141,6 @@ int MVPPlayerDialog::exec()
             wrefresh( _childwin->win );
             selection = injectCDKDialog( _childwin, input );
         }
-        
 
         switch( selection )
         {
@@ -154,7 +163,13 @@ int MVPPlayerDialog::exec()
                         item = openFile( _cdkScreen, "Open file or playlist", "*" );
                     }
 
-                    signalViewHitPlay( item.string() );
+                    signalSequencial(
+                        [this, &item]()
+                        {
+                            signalViewClearPlaylist();
+                            signalViewHitPlay( item.string() );
+                        }
+                    );
                 }
                 break;
             }
@@ -177,6 +192,19 @@ int MVPPlayerDialog::exec()
     }
     
     return 0;
+}
+
+void MVPPlayerDialog::clearPlaylist()
+{
+    boost::mutex::scoped_lock lock( _mutexGui );
+    if ( _playlist )
+    { destroyCDKItemlist( _playlist ); }
+}
+
+void MVPPlayerDialog::addTrack( const boost::filesystem::path & filename )
+{
+    _playlistItemsStr.push_back( filename.string() );
+    initPlaylist( _playlistItemsStr );
 }
 
 }

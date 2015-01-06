@@ -41,8 +41,13 @@ public:
 
     void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems );
 
+    void clearPlaylist();
+
+    void addTrack( const boost::filesystem::path & filename );
+
 private:
     void initWin( const std::string & currentTrack, const bool playButton = true );
+    void initPlaylist( const std::vector<std::string> & playlistItemsStr );
 
 private:
     CDKSCREEN* _cdkScreen;
@@ -50,7 +55,8 @@ private:
     CDKSCROLL* _playlist;
     bool _isPlaying;
 
-    mutable boost::mutex _mutexGui;               ///< For thread safetyness
+    std::vector<std::string> _playlistItemsStr;     ///< Playlist items
+    mutable boost::mutex _mutexGui;                 ///< For thread safetyness
 };
 
 }

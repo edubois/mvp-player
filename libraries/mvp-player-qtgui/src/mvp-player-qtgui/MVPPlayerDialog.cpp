@@ -93,17 +93,33 @@ void MVPPlayerDialog::dropEvent( QDropEvent *de )
     if ( de->mimeData()->hasUrls() )
     {
         QList<QUrl> urlList = de->mimeData()->urls();
-        widget.playlist->clear();
-        signalViewClearPlaylist();
-        for ( int i = 0; i < urlList.size(); ++i )
+        if ( urlList.size() && urlList.first().path().endsWith( ".m3u" ) )
         {
-            const QString url = urlList.at( i ).path();
-            widget.playlist->addItem( url );
-            signalViewAddTrack( url.toStdString() );
+            signalSequencial(
+                [this, &urlList]()
+                {
+                    signalViewClearPlaylist();
+                    signalViewHitPlay( urlList.first().path().toStdString() );
+                }
+            );
         }
-        if ( urlList.size() )
+        else
         {
-            signalViewStartPlaylist();
+            signalSequencial(
+                [this, &urlList](){
+                    signalViewHitStop();
+                    signalViewClearPlaylist();
+                    for ( int i = 0; i < urlList.size(); ++i )
+                    {
+                        const QString url = urlList.at( i ).path();
+                        signalViewAddTrack( url.toStdString() );
+                    }
+                    if ( urlList.size() )
+                    {
+                        signalViewStartPlaylist();
+                    }
+                }
+            );
         }
     }
 }
@@ -146,9 +162,25 @@ QString MVPPlayerDialog::slotOpenFile( const QString & title, const QString & ex
 
 void MVPPlayerDialog::slotOpenedPlaylist( const QStringList & filenames )
 {
+    widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
     widget.playlist->clear();
     widget.playlist->addItems( filenames );
+    widget.playlist->blockSignals( false );
     signalViewStartPlaylist();
+}
+
+void MVPPlayerDialog::slotClearPlaylist()
+{
+    widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
+    widget.playlist->clear();
+    widget.playlist->blockSignals( false );
+}
+
+void MVPPlayerDialog::slotAddTrack( const QString & filename )
+{
+    widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
+    widget.playlist->addItem( filename );
+    widget.playlist->blockSignals( false );
 }
 
 void MVPPlayerDialog::slotDisplayError( const QString & msg )
