@@ -16,6 +16,13 @@ To me, this pattern (or similar) should exist on every C++ projects.
 
 ////////////////////////////////////////////////////////////////////////////////
 
+## Main features
+
+* Multiplatform music (MP3, WAV, FLAC, ...) player
+* Qt music player Gui
+* Console music player (ncurses)
+* Support of M3U playlist
+
 ## Compilation
 
 To compile, you will need Qt5, Boost, Fmod, ncurses, cdk and scons:
