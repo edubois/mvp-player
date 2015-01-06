@@ -1,6 +1,8 @@
 #include "MVPPlayerDialog.hpp"
 #include "fileUtils.hpp"
 
+#include <boost/thread.hpp>
+
 #include <iostream>
 
 namespace mvpplayer
@@ -9,6 +11,20 @@ namespace gui
 {
 namespace ncurses
 {
+namespace
+{
+    int kbhit()
+    {
+        struct timeval tv;
+        fd_set fds;
+        tv.tv_sec = 0;
+        tv.tv_usec = 0;
+        FD_ZERO(&fds);
+        FD_SET(STDIN_FILENO, &fds); //STDIN_FILENO is 0
+        select(STDIN_FILENO+1, &fds, NULL, NULL, &tv);
+        return FD_ISSET(STDIN_FILENO, &fds);
+    }
+}
 
 MVPPlayerDialog::MVPPlayerDialog( CDKSCREEN *cdkScreen, const int width, const int height, const int x, const int y )
 : _cdkScreen( cdkScreen )
@@ -134,10 +150,12 @@ int MVPPlayerDialog::exec()
     {
         int selection;
 
-        boolean functionKey;
-        const chtype input = static_cast<chtype>( getchCDKObject (ObjOf (_childwin), &functionKey) );
+        while( !kbhit() )
+        { boost::this_thread::sleep( boost::posix_time::milliseconds( 20 ) ); }
+
         {
             boost::mutex::scoped_lock lock( _mutexGui );
+            const chtype input = static_cast<chtype>( getcCDKObject (ObjOf (_childwin) ) );
             drawCDKDialog( _childwin, ObjOf (_childwin)->box );
             wrefresh( _childwin->win );
             selection = injectCDKDialog( _childwin, input );
