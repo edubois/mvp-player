@@ -4,7 +4,7 @@
 
 * Done by Eloi du Bois
 
-* LICENSE: LGPLv3 (except if for the SoundPlayer.cpp file which is using fmod. Please check fmod license before using this)
+* LICENSE: LGPLv3 (except for the SoundPlayer.cpp file which is using fmod. Please check fmod license before using this)
 
 This is a proof of concept of a my personal way to implement the 
 model view presenter pattern.
