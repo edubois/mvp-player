@@ -97,7 +97,7 @@ void MVPPlayerDialog::initPlaylist( const std::vector<std::string> & playlistIte
     if ( _playlist )
     { destroyCDKItemlist( _playlist ); }
 
-    _playlist = newCDKScroll( _cdkScreen, CENTER, TOP, RIGHT, 10, 78, "<C>Playlist", &itemsChars[0], itemsChars.size(), TRUE, A_REVERSE | A_BOLD, TRUE, FALSE );
+    _playlist = newCDKScroll( _cdkScreen, CENTER, TOP, RIGHT, 10, 78, "<C></U>Playlist", &itemsChars[0], itemsChars.size(), NUMBERS, A_BLINK, TRUE, FALSE );
     setCDKScrollBackgroundColor( _playlist, "</5>" );
     refreshCDKScreen( _cdkScreen );
 }
@@ -136,6 +136,7 @@ void MVPPlayerDialog::setPlaylistItemIndex( const int row )
     {
         boost::mutex::scoped_lock lock( _mutexGui );
         setCDKScrollCurrentItem( _playlist, row );
+        refreshCDKScreen( _cdkScreen );
     }
 }
 
@@ -151,7 +152,7 @@ int MVPPlayerDialog::exec()
         int selection;
 
         while( !kbhit() )
-        { boost::this_thread::sleep( boost::posix_time::milliseconds( 20 ) ); }
+        { boost::this_thread::sleep( boost::posix_time::milliseconds( 40 ) ); }
 
         {
             boost::mutex::scoped_lock lock( _mutexGui );
