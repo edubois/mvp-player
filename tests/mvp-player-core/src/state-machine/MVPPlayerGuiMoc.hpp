@@ -31,6 +31,12 @@ public:
 
     virtual void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
     { /* No GUI */ }
+
+    virtual void addTrack( const boost::filesystem::path & filename )
+    { /* No GUI */ }
+
+    virtual void clearPlaylist()
+    { /* No GUI */ }
 };
 
 }
