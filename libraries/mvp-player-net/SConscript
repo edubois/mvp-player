@@ -1,0 +1,14 @@
+Import( 'project' )
+Import( 'libs' )
+
+project.StaticLibrary( 'mvp_player_net',
+                       sources   = project.scanFiles( ['src'] ),
+                       includes  = ['src'],
+                       libraries = [
+                                     libs.boost,
+                                     libs.boost_asio,
+                                     libs.boost_thread,
+                                     libs.mvp_player_core
+                                    ],
+                       shared = False
+                      )
