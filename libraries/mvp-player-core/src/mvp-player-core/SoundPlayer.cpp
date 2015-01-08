@@ -2,8 +2,10 @@
 
 #include <cassert>
 #include <iostream>
+
 #include <boost/asio.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/thread.hpp>
 
 namespace mvpplayer
 {
@@ -22,16 +24,15 @@ void SoundPlayer::initialize()
 void SoundPlayer::updater()
 {
     assert( fmodsystem != nullptr );
-    boost::asio::io_service io;
     while( on )
     {
         {
             boost::mutex::scoped_lock lock( _mutexPlayer );
             fmodsystem->update();
         }
+
         // Wait 25ms
-        boost::asio::deadline_timer timer( io, boost::posix_time::milliseconds( 25 ) );
-        timer.wait();
+        boost::this_thread::sleep( boost::posix_time::milliseconds( 25 ) );
     }
 }
 
