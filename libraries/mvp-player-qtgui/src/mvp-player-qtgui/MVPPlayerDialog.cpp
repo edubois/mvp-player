@@ -19,7 +19,7 @@ MVPPlayerDialog::MVPPlayerDialog( QWidget *parent )
     
     setAcceptDrops(true);
 
-    connect( widget.btnPlay, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
+    connect( widget.btnPlayStop, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
     connect( widget.btnPrevious, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPreviousBtn() ) );
     connect( widget.btnNext, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitNextBtn() ) );
     connect( widget.playlist, SIGNAL( currentRowChanged(int) ), this, SLOT( playPlaylistItemAtIndex(int) ) );
@@ -38,7 +38,7 @@ boost::filesystem::path MVPPlayerDialog::openFile( const std::string & title, co
 
 void MVPPlayerDialog::slotViewHitPlayStopBtn()
 {
-    if ( widget.btnPlay->text().toStdString() == kStopCaption )
+    if ( widget.btnPlayStop->text().toStdString() == kStopCaption )
     {
         signalViewHitStop();
     }

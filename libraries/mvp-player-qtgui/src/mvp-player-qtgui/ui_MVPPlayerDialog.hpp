@@ -14,11 +14,14 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDialog>
+#include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QToolButton>
 #include <QtWidgets/QVBoxLayout>
 
 QT_BEGIN_NAMESPACE
@@ -26,14 +29,24 @@ QT_BEGIN_NAMESPACE
 class Ui_MVPPlayerDialog
 {
 public:
+    QHBoxLayout *horizontalLayout_4;
+    QVBoxLayout *verticalLayout_2;
+    QHBoxLayout *horizontalLayout_3;
+    QToolButton *btnOpen;
+    QToolButton *btnServer;
+    QToolButton *btnSettings;
+    QSpacerItem *horizontalSpacer;
+    QFrame *line;
+    QHBoxLayout *horizontalLayout;
+    QPushButton *btnPrevious;
+    QPushButton *btnPlayStop;
+    QPushButton *btnNext;
+    QSpacerItem *verticalSpacer;
+    QFrame *line_2;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout_2;
     QLabel *label;
     QLabel *lblCurrentTrack;
-    QHBoxLayout *horizontalLayout;
-    QPushButton *btnPrevious;
-    QPushButton *btnPlay;
-    QPushButton *btnNext;
     QLabel *label_2;
     QListWidget *playlist;
 
@@ -41,9 +54,106 @@ public:
     {
         if (MVPPlayerDialog->objectName().isEmpty())
             MVPPlayerDialog->setObjectName(QStringLiteral("MVPPlayerDialog"));
-        MVPPlayerDialog->resize(517, 212);
+        MVPPlayerDialog->resize(610, 364);
+        MVPPlayerDialog->setSizeGripEnabled(true);
         MVPPlayerDialog->setModal(true);
-        verticalLayout = new QVBoxLayout(MVPPlayerDialog);
+        horizontalLayout_4 = new QHBoxLayout(MVPPlayerDialog);
+        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout_2->setContentsMargins(-1, 23, -1, -1);
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        horizontalLayout_3->setContentsMargins(-1, 0, -1, -1);
+        btnOpen = new QToolButton(MVPPlayerDialog);
+        btnOpen->setObjectName(QStringLiteral("btnOpen"));
+        QIcon icon;
+        icon.addFile(QStringLiteral(":/mvpplayer/action/open.png"), QSize(), QIcon::Normal, QIcon::Off);
+        btnOpen->setIcon(icon);
+        btnOpen->setIconSize(QSize(32, 32));
+
+        horizontalLayout_3->addWidget(btnOpen);
+
+        btnServer = new QToolButton(MVPPlayerDialog);
+        btnServer->setObjectName(QStringLiteral("btnServer"));
+        QIcon icon1;
+        icon1.addFile(QStringLiteral(":/mvpplayer/toolbar/connection.png"), QSize(), QIcon::Normal, QIcon::Off);
+        btnServer->setIcon(icon1);
+        btnServer->setIconSize(QSize(32, 32));
+
+        horizontalLayout_3->addWidget(btnServer);
+
+        btnSettings = new QToolButton(MVPPlayerDialog);
+        btnSettings->setObjectName(QStringLiteral("btnSettings"));
+        QIcon icon2;
+        icon2.addFile(QStringLiteral(":/mvpplayer/toolbar/applications-settings.png"), QSize(), QIcon::Normal, QIcon::Off);
+        btnSettings->setIcon(icon2);
+        btnSettings->setIconSize(QSize(32, 32));
+
+        horizontalLayout_3->addWidget(btnSettings);
+
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_3->addItem(horizontalSpacer);
+
+
+        verticalLayout_2->addLayout(horizontalLayout_3);
+
+        line = new QFrame(MVPPlayerDialog);
+        line->setObjectName(QStringLiteral("line"));
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+
+        verticalLayout_2->addWidget(line);
+
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        btnPrevious = new QPushButton(MVPPlayerDialog);
+        btnPrevious->setObjectName(QStringLiteral("btnPrevious"));
+        btnPrevious->setMinimumSize(QSize(32, 32));
+        QIcon icon3;
+        icon3.addFile(QStringLiteral(":/mvpplayer/action/backward.png"), QSize(), QIcon::Normal, QIcon::Off);
+        btnPrevious->setIcon(icon3);
+        btnPrevious->setIconSize(QSize(32, 32));
+
+        horizontalLayout->addWidget(btnPrevious);
+
+        btnPlayStop = new QPushButton(MVPPlayerDialog);
+        btnPlayStop->setObjectName(QStringLiteral("btnPlayStop"));
+        QIcon icon4;
+        icon4.addFile(QStringLiteral(":/mvpplayer/action/play.png"), QSize(), QIcon::Normal, QIcon::Off);
+        btnPlayStop->setIcon(icon4);
+        btnPlayStop->setIconSize(QSize(32, 32));
+
+        horizontalLayout->addWidget(btnPlayStop);
+
+        btnNext = new QPushButton(MVPPlayerDialog);
+        btnNext->setObjectName(QStringLiteral("btnNext"));
+        QIcon icon5;
+        icon5.addFile(QStringLiteral(":/mvpplayer/action/forward.png"), QSize(), QIcon::Normal, QIcon::Off);
+        btnNext->setIcon(icon5);
+        btnNext->setIconSize(QSize(32, 32));
+
+        horizontalLayout->addWidget(btnNext);
+
+
+        verticalLayout_2->addLayout(horizontalLayout);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_2->addItem(verticalSpacer);
+
+        line_2 = new QFrame(MVPPlayerDialog);
+        line_2->setObjectName(QStringLiteral("line_2"));
+        line_2->setFrameShape(QFrame::HLine);
+        line_2->setFrameShadow(QFrame::Sunken);
+
+        verticalLayout_2->addWidget(line_2);
+
+
+        horizontalLayout_4->addLayout(verticalLayout_2);
+
+        verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
@@ -60,27 +170,6 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_2);
 
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        btnPrevious = new QPushButton(MVPPlayerDialog);
-        btnPrevious->setObjectName(QStringLiteral("btnPrevious"));
-        btnPrevious->setMinimumSize(QSize(32, 32));
-
-        horizontalLayout->addWidget(btnPrevious);
-
-        btnPlay = new QPushButton(MVPPlayerDialog);
-        btnPlay->setObjectName(QStringLiteral("btnPlay"));
-
-        horizontalLayout->addWidget(btnPlay);
-
-        btnNext = new QPushButton(MVPPlayerDialog);
-        btnNext->setObjectName(QStringLiteral("btnNext"));
-
-        horizontalLayout->addWidget(btnNext);
-
-
-        verticalLayout->addLayout(horizontalLayout);
-
         label_2 = new QLabel(MVPPlayerDialog);
         label_2->setObjectName(QStringLiteral("label_2"));
 
@@ -93,6 +182,15 @@ public:
         verticalLayout->addWidget(playlist);
 
 
+        horizontalLayout_4->addLayout(verticalLayout);
+
+        QWidget::setTabOrder(btnOpen, btnServer);
+        QWidget::setTabOrder(btnServer, btnSettings);
+        QWidget::setTabOrder(btnSettings, btnPrevious);
+        QWidget::setTabOrder(btnPrevious, btnPlayStop);
+        QWidget::setTabOrder(btnPlayStop, btnNext);
+        QWidget::setTabOrder(btnNext, playlist);
+
         retranslateUi(MVPPlayerDialog);
 
         QMetaObject::connectSlotsByName(MVPPlayerDialog);
@@ -101,11 +199,14 @@ public:
     void retranslateUi(QDialog *MVPPlayerDialog)
     {
         MVPPlayerDialog->setWindowTitle(QApplication::translate("MVPPlayerDialog", "MVPPlayer", 0));
+        btnOpen->setText(QApplication::translate("MVPPlayerDialog", "O", 0));
+        btnServer->setText(QApplication::translate("MVPPlayerDialog", "C", 0));
+        btnSettings->setText(QApplication::translate("MVPPlayerDialog", "P", 0));
+        btnPrevious->setText(QString());
+        btnPlayStop->setText(QString());
+        btnNext->setText(QString());
         label->setText(QApplication::translate("MVPPlayerDialog", "Current track:", 0));
         lblCurrentTrack->setText(QString());
-        btnPrevious->setText(QApplication::translate("MVPPlayerDialog", "<<", 0));
-        btnPlay->setText(QApplication::translate("MVPPlayerDialog", "|>", 0));
-        btnNext->setText(QApplication::translate("MVPPlayerDialog", ">>", 0));
         label_2->setText(QApplication::translate("MVPPlayerDialog", "Playlist:", 0));
     } // retranslateUi
 

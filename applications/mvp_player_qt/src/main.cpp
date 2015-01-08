@@ -3,6 +3,7 @@
 #include <mvp-player-core/SoundPlayer.hpp>
 #include <mvp-player-gui/playerBehavior.hpp>
 #include <mvp-player-qtgui/MVPPlayerDialog.hpp>
+#include <mvp-player-qtgui/resources.hpp>
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMessageBox>
@@ -26,6 +27,8 @@ template<>
 int instanciateApp<mvpplayer::gui::qt::MVPPlayerDialog>( int argc, char **argv )
 {
     QApplication app( argc, argv );
+
+    initResources();
 
     // Core (model): a sound player engine
     mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
