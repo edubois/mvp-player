@@ -139,6 +139,18 @@ void MVPPlayerDialog::dragLeaveEvent( QDragLeaveEvent *event )
     event->accept();
 }
 
+void MVPPlayerDialog::slotSetIconStop()
+{
+    widget.btnPlayStop->setText( kStopCaption.c_str() );
+    widget.btnPlayStop->setIcon( QIcon( ":/mvpplayer/action/stop.png" ) );
+}
+
+void MVPPlayerDialog::slotSetIconPlay()
+{
+    widget.btnPlayStop->setText( kPlayCaption.c_str() );
+    widget.btnPlayStop->setIcon( QIcon( ":/mvpplayer/action/play.png" ) );
+}
+
 void MVPPlayerDialog::slotSetPlaylistItemIndex( const int row )
 {
     widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks

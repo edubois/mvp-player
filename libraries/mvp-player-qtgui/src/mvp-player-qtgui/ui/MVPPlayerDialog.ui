@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>610</width>
-    <height>364</height>
+    <height>344</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <property name="topMargin">
-      <number>23</number>
+      <number>0</number>
      </property>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -106,15 +106,9 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QPushButton" name="btnPrevious">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
+        <widget class="QToolButton" name="btnPrevious">
          <property name="text">
-          <string/>
+          <string>&lt;&lt;</string>
          </property>
          <property name="icon">
           <iconset resource="../resources/mvpplayer.qrc">
@@ -129,9 +123,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnPlayStop">
+        <widget class="QToolButton" name="btnPlayStop">
          <property name="text">
-          <string/>
+          <string>|&gt;</string>
          </property>
          <property name="icon">
           <iconset resource="../resources/mvpplayer.qrc">
@@ -146,9 +140,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnNext">
+        <widget class="QToolButton" name="btnNext">
          <property name="text">
-          <string/>
+          <string>&gt;&gt;</string>
          </property>
          <property name="icon">
           <iconset resource="../resources/mvpplayer.qrc">
@@ -160,22 +154,12 @@
            <height>32</height>
           </size>
          </property>
+         <property name="popupMode">
+          <enum>QToolButton::DelayedPopup</enum>
+         </property>
         </widget>
        </item>
       </layout>
-     </item>
-     <item>
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
      </item>
      <item>
       <widget class="Line" name="line_2">
@@ -184,41 +168,41 @@
        </property>
       </widget>
      </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QLabel" name="label">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Current track:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblCurrentTrack">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Current track:</string>
+          <string>Playlist:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="lblCurrentTrack">
-         <property name="text">
-          <string/>
+        <widget class="QListWidget" name="playlist">
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::DropOnly</enum>
          </property>
         </widget>
        </item>
       </layout>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Playlist:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QListWidget" name="playlist">
-       <property name="dragDropMode">
-        <enum>QAbstractItemView::DropOnly</enum>
-       </property>
-      </widget>
      </item>
     </layout>
    </item>

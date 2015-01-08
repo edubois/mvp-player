@@ -72,10 +72,8 @@ private Q_SLOTS:
     void slotViewHitPreviousBtn();
     void slotViewHitNextBtn();
     void slotSetPlaylistItemIndex( const int row );
-    void slotSetIconStop()
-    { widget.btnPlayStop->setText( kStopCaption.c_str() ); }
-    void slotSetIconPlay()
-    { widget.btnPlayStop->setText( kPlayCaption.c_str() ); }
+    void slotSetIconStop();
+    void slotSetIconPlay();
     QString slotOpenFile( const QString & title, const QString & extensions );
     void slotDisplayError( const QString & msg );
     void slotOpenedPlaylist( const QStringList & filenames );
