@@ -4,6 +4,7 @@
 #include <mvp-player-gui/playerBehavior.hpp>
 #include <mvp-player-qtgui/MVPPlayerDialog.hpp>
 #include <mvp-player-qtgui/resources.hpp>
+#include <mvp-player-net/server/Server.hpp>
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMessageBox>
@@ -32,6 +33,7 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerDialog>( int argc, char **argv )
 
     // Core (model): a sound player engine
     mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
+    mvpplayer::network::server::Server mvpPlayerServer;
 
     // Main dialog (view)
     mvpplayer::gui::qt::MVPPlayerDialog dlg;
@@ -49,6 +51,10 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerDialog>( int argc, char **argv )
 
     // Setup Model View Presenter behavior (binds the whole thing)
     mvpplayer::gui::setupMainBehavior( playerEngine, dlg, presenter );
+
+    // Network connexion
+    dlg.signalViewStartServer.connect( boost::bind( &mvpplayer::network::server::Server::run, &mvpPlayerServer ) );
+    dlg.signalViewStopServer.connect( boost::bind( &mvpplayer::network::server::Server::stop, &mvpPlayerServer ) );
 
     if ( !dlg.exec() )
     {

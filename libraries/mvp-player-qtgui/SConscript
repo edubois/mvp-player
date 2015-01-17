@@ -11,6 +11,7 @@ project.StaticLibrary( 'mvp_player_qtgui',
                                      libs.boost,
                                      libs.qt5( modules=[ 'QtCore', 'QtGui', 'QtWidgets', 'QtMultimedia' ], uiFiles=mvpPlayerSourcesUi ),
                                      libs.mvp_player_gui,
+                                     libs.mvp_player_net,
                                     ],
                        shared = False
                       )

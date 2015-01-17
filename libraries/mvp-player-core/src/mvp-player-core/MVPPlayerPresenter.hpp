@@ -13,6 +13,7 @@ namespace mvpplayer
 namespace logic
 {
 namespace sc = boost::statechart;
+
 namespace details
 {
 
@@ -60,6 +61,7 @@ private:
 };
 
 }
+
 /**
  * @brief the presenter is the glue between the model and the view,
  *        it also contains the player's state machine
@@ -160,7 +162,11 @@ public:
      * @param index playlist index
      */
     inline void processPlayItemAtIndex( const int index )
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvPlayItemAtIndex >( new EvPlayItemAtIndex( index ) ) ); }
+    {
+        using EventT = EvPlayItemAtIndex;
+        EventT *event = new EventT( index );
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
 
     /**
      * @brief send 'playing item at given index (status)' event
@@ -168,46 +174,102 @@ public:
      * @param index playlist index
      */
     inline void processPlayingItemIndex( const boost::filesystem::path & filename, const int index )
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvPlayingItemIndex >( new EvPlayingItemIndex( filename, index ) ) ); }
+    {
+        using EventT = EvPlayingItemIndex;
+        EvPlayingItemIndex *event = new EventT( filename, index );
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
 
     inline void processPlay( const boost::filesystem::path & filename )
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvPlay >( new EvPlay( filename ) ) ); }
+    {
+        using EventT = EvPlay;
+        EventT *event = new EventT( filename );
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
 
     inline void processPlayed( const boost::filesystem::path & filename )
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvPlayed >( new EvPlayed( filename ) ) ); }
+    {
+        using EventT = EvPlayed;
+        EventT *event = new EventT( filename );
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
 
     inline void processStop()
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvStop >( new EvStop() ) ); }
+    {
+        using EventT = EvStop;
+        EventT *event = new EventT();
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
 
     inline void processRestart()
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvRestartTrack >( new EvRestartTrack() ) ); }
+    {
+        using EventT = EvRestartTrack;
+        EventT *event = new EventT();
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
 
     inline void processPrevious()
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvPreviousTrack >( new EvPreviousTrack() ) ); }
+    {
+        using EventT = EvPreviousTrack;
+        EventT *event = new EventT();
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
 
     inline void processNext()
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvNextTrack >( new EvNextTrack() ) ); }
+    {
+        using EventT = EvNextTrack;
+        EventT *event = new EventT();
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
 
     inline void processClearPlaylist()
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvClearPlaylist >( new EvClearPlaylist() ) ); }
+    {
+        using EventT = EvClearPlaylist;
+        EventT *event = new EvClearPlaylist();
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
 
     inline void processModelClearedPlaylist()
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvModelClearedPlaylist >( new EvModelClearedPlaylist() ) ); }
+    {
+        using EventT = EvModelClearedPlaylist;
+        EventT *event = new EventT();
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
 
     inline void processAddTrack( const boost::filesystem::path& filename )
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvAddTrack >( new EvAddTrack( filename ) ) ); }
+    {
+        using EventT = EvAddTrack;
+        EventT *event = new EventT( filename );
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
 
     inline void processAddedTrack( const boost::filesystem::path& filename )
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvAddedTrack >( new EvAddedTrack( filename ) ) ); }
+    {
+        using EventT = EvAddedTrack;
+        EventT *event = new EventT( filename );
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
 
     inline void processStartPlaylist()
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvStartPlaylist >( new EvStartPlaylist() ) ); }
+    {
+        using EventT = EvStartPlaylist;
+        EventT *event = new EventT();
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
 
     inline void processEndOfTrack()
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvEndOfTrack >( new EvEndOfTrack() ) ); }
+    {
+        using EventT = EvEndOfTrack;
+        EventT *event = new EventT();
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
 
     inline void processOpenedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
-    { _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EvOpenedPlaylist >( new EvOpenedPlaylist( playlistItems ) ) ); }
+    {
+        using EventT = EvOpenedPlaylist;
+        EventT *event = new EventT( playlistItems );
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
     
     mutable sc::fifo_scheduler<> _scheduler;                    ///< Event asynchronous scheduler (used to queue events)
     sc::fifo_scheduler<>::processor_handle _playerProcessor;    ///< Event processor

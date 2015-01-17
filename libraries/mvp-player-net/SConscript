@@ -8,6 +8,7 @@ project.StaticLibrary( 'mvp_player_net',
                                      libs.boost,
                                      libs.boost_asio,
                                      libs.boost_thread,
+                                     libs.boost_serialization,
                                      libs.mvp_player_core
                                     ],
                        shared = False

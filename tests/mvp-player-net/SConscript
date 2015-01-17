@@ -1,0 +1,13 @@
+Import( 'project', 'libs' )
+
+project.UnitTest(
+    target = project.getDirs([-1]),
+    dirs = ['.'],
+    includes = ['../'],
+    libraries = [
+        libs.mvp_player_core,
+        libs.mvp_player_net,
+        libs.boost_unit_test_framework,
+    ]
+)
+

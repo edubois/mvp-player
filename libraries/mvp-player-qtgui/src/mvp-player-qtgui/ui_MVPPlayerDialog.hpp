@@ -31,6 +31,7 @@ public:
     QHBoxLayout *horizontalLayout_4;
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout_3;
+    QSpacerItem *horizontalSpacer_2;
     QToolButton *btnOpen;
     QToolButton *btnServer;
     QToolButton *btnSettings;
@@ -63,6 +64,10 @@ public:
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
         horizontalLayout_3->setContentsMargins(-1, 0, -1, -1);
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_3->addItem(horizontalSpacer_2);
+
         btnOpen = new QToolButton(MVPPlayerDialog);
         btnOpen->setObjectName(QStringLiteral("btnOpen"));
         QIcon icon;
@@ -78,6 +83,7 @@ public:
         icon1.addFile(QStringLiteral(":/mvpplayer/toolbar/connection.png"), QSize(), QIcon::Normal, QIcon::Off);
         btnServer->setIcon(icon1);
         btnServer->setIconSize(QSize(32, 32));
+        btnServer->setCheckable(true);
 
         horizontalLayout_3->addWidget(btnServer);
 

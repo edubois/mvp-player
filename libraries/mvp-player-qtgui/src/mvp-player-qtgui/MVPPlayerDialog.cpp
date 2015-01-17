@@ -22,6 +22,7 @@ MVPPlayerDialog::MVPPlayerDialog( QWidget *parent )
     connect( widget.btnPlayStop, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
     connect( widget.btnPrevious, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPreviousBtn() ) );
     connect( widget.btnNext, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitNextBtn() ) );
+    connect( widget.btnServer, SIGNAL( clicked(bool) ), this, SLOT( startStopServer( const bool ) ) );
     connect( widget.playlist, SIGNAL( currentRowChanged(int) ), this, SLOT( playPlaylistItemAtIndex(int) ) );
 }
 
@@ -137,6 +138,18 @@ void MVPPlayerDialog::dragMoveEvent( QDragMoveEvent *event )
 void MVPPlayerDialog::dragLeaveEvent( QDragLeaveEvent *event )
 {
     event->accept();
+}
+
+void MVPPlayerDialog::startStopServer( const bool start )
+{
+    if ( start )
+    {
+        signalViewStartServer();
+    }
+    else
+    {
+        signalViewStopServer();
+    }
 }
 
 void MVPPlayerDialog::slotSetIconStop()

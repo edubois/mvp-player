@@ -19,6 +19,7 @@ if 'sharedNoUndefined' in project.CC:
 
 SConscript( [
               'libraries/mvp-player-core/SConscript',
+              'libraries/mvp-player-net/SConscript',
               'libraries/mvp-player-gui/SConscript',
               'libraries/mvp-player-qtgui/SConscript',
               'libraries/mvp-player-ncursesgui/SConscript',

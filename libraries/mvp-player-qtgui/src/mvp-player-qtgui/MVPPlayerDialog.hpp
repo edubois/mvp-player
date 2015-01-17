@@ -67,6 +67,7 @@ private:
     void dragLeaveEvent( QDragLeaveEvent *event );
 
 private Q_SLOTS:
+    void startStopServer( const bool start = true );
     void playPlaylistItemAtIndex( const int playlistIndex );
     void slotViewHitPlayStopBtn();
     void slotViewHitPreviousBtn();
@@ -82,6 +83,10 @@ private Q_SLOTS:
 
 private:
     Ui::MVPPlayerDialog widget;
+
+public:
+    boost::signals2::signal<void()> signalViewStartServer;  ///< Signal 'start server'
+    boost::signals2::signal<void()> signalViewStopServer;  ///< Signal 'stop server'
 };
 
 }

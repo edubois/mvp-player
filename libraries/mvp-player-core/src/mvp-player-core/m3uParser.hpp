@@ -4,6 +4,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <boost/serialization/access.hpp>
 
 #define BOOST_SPIRIT_UNICODE // We'll use unicode (UTF8) all throughout
 #include <boost/spirit/include/qi.hpp>
@@ -34,6 +35,15 @@ struct PlaylistItem
     
     PlaylistItem( const std::string & filename, const long duration, const std::string & infos )
     : filename( filename ), duration( duration ), infos( infos ) {}
+
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & filename;
+        ar & duration;
+        ar & infos;
+    }
 
     boost::filesystem::path filename;
     long duration;
