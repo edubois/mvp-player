@@ -39,7 +39,8 @@ void SoundPlayer::updater()
 //sets the actual playing sound's volume
 void SoundPlayer::setVolume( const float v )
 {
-    if ( channel && possible && on && v >= 0.0f && v <= 1.0f )
+    _currentVolume = v;
+    if ( channel && v >= 0.0f && v <= 1.0f )
     {
         channel->setVolume( v );
     }
@@ -109,10 +110,10 @@ bool SoundPlayer::play( const bool pause )
         assert( channel != NULL );
         channel->setUserData( this );
         channel->setCallback( &playEndedCallback );
-        // We need to call update every 20 ms to get fmod system status
-        setVolume( 1.0f );
         on = true;
+        setVolume( _currentVolume );
         // Start fmod updater thread
+        // We need to call update every 20 ms to get fmod system status
         _updaterThread.reset( new boost::thread( boost::bind( &SoundPlayer::updater, this ) ) );
         return false;
     }

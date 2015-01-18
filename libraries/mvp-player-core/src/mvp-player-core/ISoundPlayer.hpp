@@ -12,7 +12,7 @@ namespace mvpplayer
 class ISoundPlayer
 {
 public:
-    ISoundPlayer() {}
+    ISoundPlayer(): _currentVolume( 1.0f ) {}
     virtual ~ISoundPlayer() {}
     
     /**
@@ -73,10 +73,19 @@ public:
      */
     virtual void togglePause() = 0;
 
+    /**
+     * @brief get current volume
+     */
+    inline float currentVolume() const
+    { return _currentVolume; }
+
 // Signals
 public:
     boost::signals2::signal<void()> signalEndOfTrack;                        ///< Signalize end of track
     boost::signals2::signal<void( const long, const long)> signalTrackPos;   ///< Signalize track position
+
+protected:
+    float _currentVolume;           ///< Current player volume
 };
 
 }
