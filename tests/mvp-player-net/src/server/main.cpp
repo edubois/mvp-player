@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE player_state_machine_test
+#define BOOST_TEST_MODULE player_network_server_test
 #include <unittest.hpp>
 
 #include <mvp-player-net/server/Server.hpp>
@@ -72,12 +72,34 @@ BOOST_AUTO_TEST_CASE( server_client_event_communication )
     BOOST_CHECK( server.clients().size() == 1 );
     if ( server.clients().size() )
     {
-        mvpplayer::logic::EvPlay receivedEvent( "" );
-        client1.signalizeEvent.connect( [&receivedEvent](const mvpplayer::IEvent & event){ receivedEvent = dynamic_cast<const mvpplayer::logic::EvPlay&>( event ); } );
-        mvpplayer::logic::EvPlay eventPlay( "foo.ogg" );
-        server.sendEventMulticast( eventPlay );
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-        BOOST_CHECK( receivedEvent.filename() == eventPlay.filename() );
+        // Server to client
+        {
+            bool receivedEvent = false;
+            mvpplayer::logic::EvPlay eventPlay( "foo.ogg" );
+            client1.signalEvent.connect( [&receivedEvent, &eventPlay](mvpplayer::IEvent & event)
+                                         {
+                                            receivedEvent = true;
+                                            BOOST_CHECK( dynamic_cast<const mvpplayer::logic::EvPlay&>( event ).filename() == eventPlay.filename() );
+                                         }
+                                       );
+            server.sendEventMulticast( eventPlay );
+            BOOST_CHECK( receivedEvent == true );
+        }
+        
+        // Client to server
+        {
+            bool receivedEvent = false;
+            mvpplayer::logic::EvPlay eventPlay( "foo.ogg" );
+            server.signalEventFrom.connect( [&receivedEvent, &eventPlay, &client1](const std::string & clientAddress, mvpplayer::IEvent & event)
+                                         {
+                                            receivedEvent = true;
+                                            BOOST_CHECK( clientAddress == client1.address() );
+                                            BOOST_CHECK( dynamic_cast<const mvpplayer::logic::EvPlay&>( event ).filename() == eventPlay.filename() );
+                                         }
+                                       );
+            client1.sendEvent( eventPlay );
+            BOOST_CHECK( receivedEvent == true );
+        }
     }
     server.stop();
     BOOST_CHECK( server.stopped() == true );

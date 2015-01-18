@@ -41,7 +41,11 @@ public:
     PeerInfo peerInfo() const;
 
     void sendEventMulticast( const IEvent & event );
-    
+
+public:
+    boost::signals2::signal<void(const std::string&, IEvent&)> signalEventFrom; ///< Signals that a client sent an event
+    boost::signals2::signal<void(const std::string&)> signalNewClient;          ///< Signals new client connection
+
 private:
     void handleNewConnection( Peer * serverPeer, const boost::system::error_code& error );
 

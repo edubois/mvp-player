@@ -22,5 +22,13 @@ bool MVPPlayerPresenter::processSequencial( const std::function<void()> lambda )
     }
 }
 
+/**
+ * @brief process an event
+ */
+void MVPPlayerPresenter::processEvent( IEvent & event )
+{
+    event.processSelf( _scheduler, _playerProcessor );
+}
+
 }
 }

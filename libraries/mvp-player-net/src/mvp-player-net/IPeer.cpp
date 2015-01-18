@@ -54,9 +54,17 @@ void IPeer::handleReceiving()
             // Read event
             IEvent *event = nullptr;
             recv( event );
+
             if ( event )
             {
-                signalizeEvent( *event );
+                try
+                {
+                    signalEvent( *event );
+                }
+                catch( ... )
+                {
+                    std::cerr << ::boost::current_exception_diagnostic_information() << std::endl;
+                }
             }
         }
     }
@@ -83,7 +91,7 @@ void IPeer::handleEvent( const boost::system::error_code& error, std::size_t nby
         readEvent( event, _commandLen );
         if ( event )
         {
-            signalizeEvent( *event );
+            signalEvent( *event );
         }
     }
     _receivingLock.notify_one();
@@ -151,6 +159,7 @@ boost::system::error_code IPeer::sendEvent( const IEvent * event )
 boost::system::error_code IPeer::send(  const Data & data )
 {
     boost::system::error_code error;
+
     // Prepare buffers
     if ( !data.length )
     { return boost::system::errc::make_error_code( boost::system::errc::message_size ); }

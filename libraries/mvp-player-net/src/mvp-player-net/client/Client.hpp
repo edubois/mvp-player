@@ -33,10 +33,18 @@ public:
     { return _disconnected; }
 
     PeerInfo peerInfo() const;
+    
+    /**
+     * @brief return client address
+     */
+    inline std::string address() const
+    { return _serverPeer->address(); }
+
+    void sendEvent( const IEvent & event );
 
 public:
 //- signals
-    boost::signals2::signal<void( const IEvent& )> signalizeEvent;
+    boost::signals2::signal<void( IEvent& )> signalEvent;
 
 private:
     bool _disconnected;                                                         ///< Disconnected flag

@@ -58,7 +58,7 @@ private:
 
 public:
 //- signals
-    boost::signals2::signal<void( const IEvent& )> signalizeEvent;
+    boost::signals2::signal<void( IEvent& )> signalEvent;
 
 private:
     std::unique_ptr<boost::asio::io_service> _ioScopedService; ///< Boost asio IO service

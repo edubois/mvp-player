@@ -36,7 +36,7 @@ boost::system::error_code Client::connect( const std::string & ipAdress, const u
     boost::system::error_code error;
     _serverPeer.reset( new Peer( &_ioService ) );
     // Signal proxy (transfer the signal)
-    _serverPeer->signalizeEvent.connect( [this](const IEvent & event){ signalizeEvent( event ); } );
+    _serverPeer->signalEvent.connect( [this](IEvent & event){ signalEvent( event ); } );
     _ioThread.reset( new boost::thread( boost::bind( &boost::asio::io_service::run, &_ioService ) ) );
     _serverPeer->socket().connect( boost::asio::ip::tcp::endpoint( boost::asio::ip::address::from_string( ipAdress ), port ), error );
     _serverPeer->receivePeerInfo();
@@ -68,6 +68,13 @@ PeerInfo Client::peerInfo() const
     return peerInfo;
 }
 
+void Client::sendEvent( const IEvent & event )
+{
+    if ( _serverPeer )
+    {
+        _serverPeer->sendEvent( &event );
+    }
+}
 
 }
 }

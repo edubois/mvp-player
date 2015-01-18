@@ -158,6 +158,11 @@ public:
     bool processSequencial( const std::function<void()> lambda );
 
     /**
+     * @brief send event
+     */
+    void processEvent( IEvent & event );
+
+    /**
      * @brief send 'play item at given index' event
      * @param index playlist index
      */
@@ -165,6 +170,7 @@ public:
     {
         using EventT = EvPlayItemAtIndex;
         EventT *event = new EventT( index );
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
@@ -177,6 +183,7 @@ public:
     {
         using EventT = EvPlayingItemIndex;
         EvPlayingItemIndex *event = new EventT( filename, index );
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
@@ -184,6 +191,7 @@ public:
     {
         using EventT = EvPlay;
         EventT *event = new EventT( filename );
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
@@ -191,6 +199,7 @@ public:
     {
         using EventT = EvPlayed;
         EventT *event = new EventT( filename );
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
@@ -198,6 +207,7 @@ public:
     {
         using EventT = EvStop;
         EventT *event = new EventT();
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
@@ -205,6 +215,7 @@ public:
     {
         using EventT = EvRestartTrack;
         EventT *event = new EventT();
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
@@ -212,6 +223,7 @@ public:
     {
         using EventT = EvPreviousTrack;
         EventT *event = new EventT();
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
@@ -219,6 +231,7 @@ public:
     {
         using EventT = EvNextTrack;
         EventT *event = new EventT();
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
@@ -226,6 +239,7 @@ public:
     {
         using EventT = EvClearPlaylist;
         EventT *event = new EvClearPlaylist();
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
@@ -233,6 +247,7 @@ public:
     {
         using EventT = EvModelClearedPlaylist;
         EventT *event = new EventT();
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
@@ -240,6 +255,7 @@ public:
     {
         using EventT = EvAddTrack;
         EventT *event = new EventT( filename );
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
@@ -247,6 +263,7 @@ public:
     {
         using EventT = EvAddedTrack;
         EventT *event = new EventT( filename );
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
@@ -254,6 +271,7 @@ public:
     {
         using EventT = EvStartPlaylist;
         EventT *event = new EventT();
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
@@ -261,6 +279,7 @@ public:
     {
         using EventT = EvEndOfTrack;
         EventT *event = new EventT();
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
@@ -268,6 +287,7 @@ public:
     {
         using EventT = EvOpenedPlaylist;
         EventT *event = new EventT( playlistItems );
+        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
     
@@ -275,6 +295,8 @@ public:
     sc::fifo_scheduler<>::processor_handle _playerProcessor;    ///< Event processor
     details::SchedulerWorker _schedulerWorker;                  ///< Event scheduler thread
 
+    //- signals
+    boost::signals2::signal<void( IEvent& )> signalEvent;
     boost::signals2::signal<void(const boost::filesystem::path&)> signalPlayedTrack;
     boost::signals2::signal<void(const boost::filesystem::path&)> signalPlayTrack;
     boost::signals2::signal<void(const boost::filesystem::path&)> signalAddTrack;

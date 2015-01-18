@@ -72,6 +72,19 @@ When you are ready, enter:
 
 This should build an executable showing a player dialog, where you can play a music (I tried .wav, mp3 and playlist m3u, it was working well on both GUI).
 
+To start the network remote, use:
+
+```mvp_player_qt --remote```
+
+
+* You can also chose to run all the unittests:
+```scons unittest```
+
+OR some of them:
+```scons unittest-mvp-player-core```
+```scons unittest-remote-mvp-player-net```
+
+
 ## Tags
 I put some tags so you can have a better understanding of the different developement steps.
 

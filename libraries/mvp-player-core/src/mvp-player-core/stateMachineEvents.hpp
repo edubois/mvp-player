@@ -28,9 +28,29 @@ namespace sc = boost::statechart;
  */
 struct EvStop : IEvent, sc::event< EvStop >
 {
+private:
+    typedef EvStop This;
+public:
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+    }
+
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 };
 
 /**
@@ -38,9 +58,29 @@ struct EvStop : IEvent, sc::event< EvStop >
  */
 struct EvRestartTrack : IEvent, sc::event< EvRestartTrack >
 {
+private:
+    typedef EvRestartTrack This;
+public:
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+    }
+
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 };
 
 /**
@@ -48,9 +88,29 @@ struct EvRestartTrack : IEvent, sc::event< EvRestartTrack >
  */
 struct EvPreviousTrack : IEvent, sc::event< EvPreviousTrack >
 {
+private:
+    typedef EvPreviousTrack This;
+public:
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+    }
+
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 };
 
 /**
@@ -58,9 +118,29 @@ struct EvPreviousTrack : IEvent, sc::event< EvPreviousTrack >
  */
 struct EvNextTrack : IEvent, sc::event< EvNextTrack >
 {
+private:
+    typedef EvNextTrack This;
+public:
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+    }
+
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 };
 
 /**
@@ -68,9 +148,29 @@ struct EvNextTrack : IEvent, sc::event< EvNextTrack >
  */
 struct EvClearPlaylist : IEvent, sc::event< EvClearPlaylist >
 {
+private:
+    typedef EvClearPlaylist This;
+public:
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+    }
+
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 };
 
 /**
@@ -78,9 +178,29 @@ struct EvClearPlaylist : IEvent, sc::event< EvClearPlaylist >
  */
 struct EvModelClearedPlaylist : IEvent, sc::event< EvModelClearedPlaylist >
 {
+private:
+    typedef EvModelClearedPlaylist This;
+public:
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+    }
+
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 };
 
 /**
@@ -88,9 +208,29 @@ struct EvModelClearedPlaylist : IEvent, sc::event< EvModelClearedPlaylist >
  */
 struct EvStartPlaylist : IEvent, sc::event< EvStartPlaylist >
 {
+private:
+    typedef EvStartPlaylist This;
+public:
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+    }
+
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 };
 
 /**
@@ -98,9 +238,29 @@ struct EvStartPlaylist : IEvent, sc::event< EvStartPlaylist >
  */
 struct EvEndOfTrack : IEvent, sc::event< EvEndOfTrack >
 {
+private:
+    typedef EvEndOfTrack This;
+public:
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+    }
+
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 };
 
 /**
@@ -108,6 +268,9 @@ struct EvEndOfTrack : IEvent, sc::event< EvEndOfTrack >
  */
 struct EvPlay : IEvent, sc::event< EvPlay >
 {
+private:
+    typedef EvPlay This;
+public:
     EvPlay()
     {
     }
@@ -131,6 +294,15 @@ struct EvPlay : IEvent, sc::event< EvPlay >
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 private:
     boost::filesystem::path _filename;      ///< Filename we want to play
 };
@@ -140,6 +312,9 @@ private:
  */
 struct EvPlayed : IEvent, sc::event< EvPlayed >
 {
+private:
+    typedef EvPlayed This;
+public:
     EvPlayed()
     {}
 
@@ -161,6 +336,15 @@ struct EvPlayed : IEvent, sc::event< EvPlayed >
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 private:
     boost::filesystem::path _filename;      ///< Filename we want to play
 };
@@ -170,6 +354,9 @@ private:
  */
 struct EvAddTrack : IEvent, sc::event< EvAddTrack >
 {
+private:
+    typedef EvAddTrack This;
+public:
     EvAddTrack()
     {}
 
@@ -191,6 +378,15 @@ struct EvAddTrack : IEvent, sc::event< EvAddTrack >
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 private:
     boost::filesystem::path _filename;      ///< Filename we want to play
 };
@@ -200,6 +396,9 @@ private:
  */
 struct EvAddedTrack : IEvent, sc::event< EvAddedTrack >
 {
+private:
+    typedef EvAddedTrack This;
+public:
     EvAddedTrack()
     {}
 
@@ -221,6 +420,15 @@ struct EvAddedTrack : IEvent, sc::event< EvAddedTrack >
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 private:
     boost::filesystem::path _filename;      ///< Filename we want to play
 };
@@ -230,6 +438,9 @@ private:
  */
 struct EvOpenedPlaylist : IEvent, sc::event< EvOpenedPlaylist >
 {
+private:
+    typedef EvOpenedPlaylist This;
+public:
     EvOpenedPlaylist()
     {}
 
@@ -251,6 +462,15 @@ struct EvOpenedPlaylist : IEvent, sc::event< EvOpenedPlaylist >
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 private:
     std::vector<m3uParser::PlaylistItem> _playlistItems; ///< Playlist items
 };
@@ -260,6 +480,9 @@ private:
  */
 struct EvPlayingItemIndex : IEvent, sc::event< EvPlayingItemIndex >
 {
+private:
+    typedef EvPlayingItemIndex This;
+public:
     EvPlayingItemIndex()
     : _playlistIndex( -1 )
     {}
@@ -287,6 +510,15 @@ struct EvPlayingItemIndex : IEvent, sc::event< EvPlayingItemIndex >
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 private:
     boost::filesystem::path _filename;      ///< Filename we want to play
     int _playlistIndex;                     ///< Playlist index
@@ -298,6 +530,9 @@ private:
  */
 struct EvPlayItemAtIndex : IEvent, sc::event< EvPlayItemAtIndex >
 {
+private:
+    typedef EvPlayItemAtIndex This;
+public:
     EvPlayItemAtIndex()
     : _playlistIndex( -1 )
     {}
@@ -320,6 +555,15 @@ struct EvPlayItemAtIndex : IEvent, sc::event< EvPlayItemAtIndex >
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 private:
     int _playlistIndex;                     ///< Playlist index
 };
@@ -329,6 +573,9 @@ private:
  */
 struct EvReset : IEvent, sc::event< EvReset >
 {
+private:
+    typedef EvReset This;
+public:
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version)
     {
@@ -339,6 +586,15 @@ struct EvReset : IEvent, sc::event< EvReset >
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
     friend class boost::serialization::access;
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
 };
 
 template<class Archive>

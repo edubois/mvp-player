@@ -7,6 +7,7 @@
 #include <boost/serialization/export.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+#include <boost/statechart/fifo_scheduler.hpp>
 
 
 namespace mvpplayer
@@ -24,6 +25,13 @@ struct IEvent
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
     {}
+
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    virtual void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor ) = 0;
 };
 
 }

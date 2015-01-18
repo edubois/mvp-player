@@ -14,6 +14,8 @@ namespace gui
  * @brief Setup music player's behavior (connect signals between the model/view/presenter)
  */
 void setupMainBehavior( mvpplayer::MVPPlayerEngine & m, mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logic::MVPPlayerPresenter & p );
+void connectViewPresenter( mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logic::MVPPlayerPresenter & p );
+void connectPresenterModel( mvpplayer::logic::MVPPlayerPresenter & p, mvpplayer::MVPPlayerEngine & m );
 
 }
 }

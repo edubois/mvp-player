@@ -50,9 +50,13 @@ void Server::handleNewConnection( Peer * peerPtr, const boost::system::error_cod
         serverPeer->receivePeerInfo();
         // Start peer thread
         serverPeer->start();
+        // Subscribe to events received from server peer
+        const std::string clientAddress = serverPeer->address();
+        serverPeer->signalEvent.connect( [this,clientAddress]( IEvent& event ){ signalEventFrom( clientAddress, event ); } );
 
         std::string peerAddress = serverPeer->address();
         _clients.insert( peerAddress, serverPeer.release() );
+        signalNewClient( peerAddress );
         // Go back to new connection handling
 		handleConnection();
 	}
