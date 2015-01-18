@@ -49,10 +49,7 @@ public:
 private:
     template<class T>
     boost::system::error_code recv( T & data );
-
-    void readEvent();
     boost::system::error_code readEvent( IEvent *&event, const boost::uint32_t cmdLen );
-    void handleEvent( const boost::system::error_code& error, std::size_t nbytes );
     boost::system::error_code send( const Data & data );
     void handleReceiving();
 
@@ -65,7 +62,6 @@ private:
     boost::asio::io_service *_ioService;                ///< Boost asio IO service
     std::size_t _commandLen;                            ///< Command length
     bool _stop;                                         ///< Stop receiver thread
-    mutable boost::condition_variable _receivingLock;   ///< Condition variable notified when there is data to read
     mutable boost::mutex _receiverMutex;                ///< Mutex for read data waiter
     boost::asio::ip::tcp::socket _socket;               ///< Socket for the connection
     boost::scoped_ptr<boost::thread> _receivingThread;  ///< Thread for receiver loop

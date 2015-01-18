@@ -74,29 +74,6 @@ void IPeer::handleReceiving()
     }
 }
 
-void IPeer::readEvent()
-{
-    _commandLen = 0;
-    boost::asio::async_read( _socket, boost::asio::buffer( &_commandLen, sizeof( _commandLen ) ),
-        boost::bind( &This::handleEvent, this,
-                     boost::asio::placeholders::error,
-                     boost::asio::placeholders::bytes_transferred ) );
-}
-
-void IPeer::handleEvent( const boost::system::error_code& error, std::size_t nbytes )
-{
-    if ( !error )
-    {
-        IEvent *event = nullptr;
-        readEvent( event, _commandLen );
-        if ( event )
-        {
-            signalEvent( *event );
-        }
-    }
-    _receivingLock.notify_one();
-}
-
 void IPeer::disconnect()
 {
     _stop = true;
@@ -104,12 +81,6 @@ void IPeer::disconnect()
     if ( _ioScopedService )
     {
         _ioScopedService->stop();
-    }
-
-    if ( _receivingThread )
-    {
-        _receivingLock.notify_one();
-        _receivingThread.reset( nullptr );
     }
 
     if ( _socket.is_open() )
@@ -123,6 +94,11 @@ void IPeer::disconnect()
         // Ignore errors
         catch( ... )
         {}
+    }
+
+    if ( _receivingThread )
+    {
+        _receivingThread.reset( nullptr );
     }
 }
 
