@@ -279,7 +279,6 @@ public:
     {
         using EventT = EvEndOfTrack;
         EventT *event = new EventT();
-        signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
