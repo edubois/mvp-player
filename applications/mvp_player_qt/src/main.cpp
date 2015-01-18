@@ -7,7 +7,6 @@
 #include <mvp-player-qtgui/resources.hpp>
 #include <mvp-player-net/client/Client.hpp>
 #include <mvp-player-net/server/Server.hpp>
-#include <mvp-player-net/server/MVPPlayerRemote.hpp>
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMessageBox>
@@ -119,7 +118,6 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerDialog>( int argc, char **argv )
     trayIcon.setVisible( true );
 
     Dialog dlg;
-    mvpplayer::network::server::MVPPlayerRemote remoteView( mvpPlayerServer );
 
     // Presenter (presenter: logic-glu between model and view)
     mvpplayer::logic::MVPPlayerPresenter presenter;
