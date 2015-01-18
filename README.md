@@ -21,6 +21,7 @@ To me, this pattern (or similar) should exist on every C++ projects.
 * Multiplatform music (MP3, WAV, FLAC, ...) player
 * Qt music player Gui
 * Console music player (ncurses)
+* Network client/server to remotely play music
 * Support of M3U playlist
 
 ## Compilation
@@ -76,6 +77,7 @@ To start the network remote, use:
 
 ```mvp_player_qt --remote```
 
+Please note that, if using a firewall, you must allow communication on port 11999
 
 * You can also chose to run all the unittests:
 ```scons unittest```
