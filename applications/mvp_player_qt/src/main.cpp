@@ -59,7 +59,7 @@ int instanciateApp<gui::MVPPlayerRemoteDialog>( int argc, char **argv )
     // Display a message box on errors
     presenter.signalFailed.connect( boost::bind( &Dialog::displayError, &dlg, _1 ) );
     // When no file is provided and we hit play button, ask for a music file
-    presenter.signalAskForFile.connect( boost::bind( &Dialog::openFile, &dlg, _1, "Musics (*.wav;*.m3u)" ) );
+    presenter.signalAskForFile.connect( boost::bind( &Dialog::openFile, &dlg, _1, "Musics (*.wav;*.flac;*.mp3;*.m3u);; All files (*.*)" ) );
 
     // Setup Model View Presenter behavior (binds the whole thing)
     mvpplayer::gui::setupMainBehavior( playerEngine, dlg, presenter );
@@ -128,7 +128,7 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerDialog>( int argc, char **argv )
     // Display a message box on errors
     presenter.signalFailed.connect( boost::bind( &Dialog::displayError, &dlg, _1 ) );
     // When no file is provided and we hit play button, ask for a music file
-    presenter.signalAskForFile.connect( boost::bind( &Dialog::openFile, &dlg, _1, "Musics (*.wav;*.m3u)" ) );
+    presenter.signalAskForFile.connect( boost::bind( &Dialog::openFile, &dlg, _1, "Musics (*.wav;*.flac;*.mp3;*.m3u);; All files (*.*)" ) );
 
     // Setup Model View Presenter behavior (binds the whole thing)
     mvpplayer::gui::setupMainBehavior( playerEngine, dlg, presenter );
@@ -163,6 +163,9 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerDialog>( int argc, char **argv )
  */
 int main( int argc, char **argv )
 {
+#ifdef FORCE_REMOTE_BY_DEFAULT
+        return instanciateApp<gui::MVPPlayerRemoteDialog>( argc, argv );
+#else
     if ( argc > 1 && ( std::string( argv[1] ) == "--remote" || std::string( argv[1] ) == "-r" ) )
     {
         return instanciateApp<gui::MVPPlayerRemoteDialog>( argc, argv );
@@ -171,4 +174,5 @@ int main( int argc, char **argv )
     {
         return instanciateApp<gui::MVPPlayerDialog>( argc, argv );
     }
+#endif
 }
