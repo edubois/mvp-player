@@ -8,5 +8,7 @@
     <file>action/backward.png</file>
     <file>toolbar/connection.png</file>
     <file>toolbar/applications-settings.png</file>
+    <file>app/icon.png</file>
+    <file>app/splashscreen.png</file>
   </qresource>
 </RCC>
