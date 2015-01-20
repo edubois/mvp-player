@@ -8,7 +8,6 @@ project.StaticLibrary( 'mvp_player_gui',
                        includes  = ['src'],
                        libraries = [
                                      libs.boost,
-                                     libs.ncurses,
                                      libs.mvp_player_core,
                                     ],
                        shared = False
