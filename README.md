@@ -55,9 +55,30 @@ Now, it's time to edit default.sconf according to your configuration.
 In the default configuration, I made a parent directory 3rdParties where I put
 my 3rd party libraries. To change your external libraries base dir, 
 edit the variable extern in this file (default.sconf).
+
 If you are using Mac, adapt the last lines according to your
 XCode configuration.
+
 If you are not using Mac, remove the lines after '# Mac only'
+
+## Compilation for android
+
+* compile (or obtain) boost, qt and fmod for android-armv7
+
+* copy ```default-android-armv7.sconf``` to ```default.sconf``` and adapt the file according to your configuration
+
+* compile the qt player with ```scons```
+
+* edit the root file ```android-mvpPlayerQt.so-deployment-settings.json```, adapt the paths according to the generated application binary
+
+* edit ```build_mvpPlayerQt_android.sh```, correct the paths
+
+* run ```build_mvpPlayerQt_android.sh```, this will generate the right .apk: ```./android_dist/bin/QtApp-debug.apk```
+
+* Copy this file on your android device and install it by means of a file browser.
+
+* All should work :)
+
 
 ## Running
 
@@ -83,7 +104,9 @@ Please note that, if using a firewall, you must allow communication on port 1199
 ```scons unittest```
 
 OR some of them:
+
 ```scons unittest-mvp-player-core```
+
 ```scons unittest-remote-mvp-player-net```
 
 
