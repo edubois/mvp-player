@@ -1,5 +1,6 @@
 #include "IPeer.hpp"
 #include <boost/exception/all.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace mvpplayer
 {
@@ -31,7 +32,7 @@ void IPeer::start()
 std::string IPeer::address() const
 {
     return _socket.remote_endpoint().address().to_string() + ":" + 
-           std::to_string( _socket.remote_endpoint().port() );
+           boost::lexical_cast<std::string>( _socket.remote_endpoint().port() );
 }
 
 void IPeer::presentation( const PeerInfo & peerInfo )
