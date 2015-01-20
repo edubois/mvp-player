@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<manifest android:versionCode="1" xmlns:android="http://schemas.android.com/apk/res/android" package="org.edubois.mvpPlayerQt" android:versionName="1.0" android:installLocation="internalOnly">
+    <application android:hardwareAccelerated="true" android:label="@string/app_name" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:icon="@drawable/icon">
+        <activity android:label="@string/app_name" android:name="org.qtproject.qt5.android.bindings.QtActivity" android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation" android:screenOrientation="unspecified">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <meta-data android:name="android.app.lib_name" android:value="mvp_player_qt"/>
+            <meta-data android:name="android.app.qt_sources_resource_id" android:resource="@array/qt_sources"/>
+            <meta-data android:name="android.app.repository" android:value="default"/>
+            <meta-data android:name="android.app.qt_libs_resource_id" android:resource="@array/qt_libs"/>
+            <meta-data android:name="android.app.bundled_libs_resource_id" android:resource="@array/bundled_libs"/>
+            <!-- Deploy Qt libs as part of package -->
+            <meta-data android:name="android.app.bundle_local_qt_libs" android:value="1"/>
+            <meta-data android:name="android.app.bundled_in_lib_resource_id" android:resource="@array/bundled_in_lib"/>
+            <meta-data android:name="android.app.bundled_in_assets_resource_id" android:resource="@array/bundled_in_assets"/>
+            <!-- Run with local libs -->
+            <meta-data android:name="android.app.use_local_qt_libs" android:value="1"/>
+            <meta-data android:name="android.app.libs_prefix" android:value="/data/local/tmp/qt/"/>
+            <meta-data android:name="android.app.load_local_libs" android:value="plugins/platforms/android/libqtforandroid.so:plugins/mediaservice/libqtmedia_android.so:plugins/imageformats/libqjpeg.so:plugins/imageformats/libqtiff.so:plugins/mediaservice/libqtmedia_android.so:plugins/sqldrivers/libqsqlite.so:libQt5Core.so:libQt5Gui.so:libQt5OpenGL.so:libQt5Widgets.so:libQt5PrintSupport.so:libQt5Script.so:libQt5Xml.so:libQt5Sql.so:libQt5Network.so:libQt5Multimedia.so:libfmod.so"/>
+            <meta-data android:name="android.app.load_local_jars" android:value="jar/QtAndroid.jar:jar/QtAndroidAccessibility.jar:jar/QtAndroid-bundled.jar:jar/QtAndroidAccessibility-bundled.jar:jar/QtMultimedia.jar:jar/QtMultimedia-bundled.jar:jar/fmod.jar"/>
+            <meta-data android:name="android.app.static_init_classes" android:value="org.qtproject.qt5.android.multimedia.QtMultimediaUtils:org.qtproject.qt5.android.multimedia.QtMultimediaUtils"/>
+            <!--  Messages maps -->
+            <meta-data android:name="android.app.ministro_not_found_msg" android:value="@string/ministro_not_found_msg"/>
+            <meta-data android:name="android.app.ministro_needed_msg" android:value="@string/ministro_needed_msg"/>
+            <meta-data android:name="android.app.fatal_error_msg" android:value="@string/fatal_error_msg"/>
+            <!--  Messages maps -->
+            <!-- Splash screen -->
+            <meta-data android:name="android.app.splash_screen" android:resource="@layout/splash"/>
+            <!-- Splash screen -->
+        </activity>
+    </application>
+    <supports-screens android:largeScreens="true" android:anyDensity="true" android:normalScreens="true" android:smallScreens="true"/>
+    <!-- %%INSERT_PERMISSIONS -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- %%INSERT_FEATURES -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+</manifest>

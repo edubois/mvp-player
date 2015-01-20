@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <array name="qt_sources">
+        <item>https://download.qt-project.org/ministro/android/qt5/qt-5.3</item>
+    </array>
+
+    <array name="bundled_libs">
+        <item>fmod</item>
+        <item>fmodL</item>
+    </array>
+
+     <array name="qt_libs">
+        <item>gnustl_shared</item>
+	<item>Qt5Core</item>
+	<item>Qt5Script</item>
+	<item>Qt5Sql</item>
+	<item>Qt5Gui</item>
+	<item>Qt5Xml</item>
+	<item>Qt5Widgets</item>
+	<item>Qt5OpenGL</item>
+	<item>Qt5PrintSupport</item>
+	<item>Qt5Network</item>
+	<item>Qt5Multimedia</item>
+     </array>
+
+    <array name="bundled_in_lib">
+        <item>libplugins_sqldrivers_libqsqlite.so:plugins/sqldrivers/libqsqlite.so</item>
+	<item>libplugins_platforms_android_libqtforandroid.so:plugins/platforms/android/libqtforandroid.so</item>
+	<item>libplugins_platforms_libqeglfs.so:plugins/platforms/libqeglfs.so</item>
+	<item>libplugins_platforms_libqminimal.so:plugins/platforms/libqminimal.so</item>
+	<item>libplugins_platforms_libqoffscreen.so:plugins/platforms/libqoffscreen.so</item>
+	<item>libplugins_imageformats_libqgif.so:plugins/imageformats/libqgif.so</item>
+	<item>libplugins_imageformats_libqico.so:plugins/imageformats/libqico.so</item>
+	<item>libplugins_imageformats_libqjpeg.so:plugins/imageformats/libqjpeg.so</item>
+	<item>libplugins_imageformats_libqmng.so:plugins/imageformats/libqmng.so</item>
+	<item>libplugins_imageformats_libqtga.so:plugins/imageformats/libqtga.so</item>
+	<item>libplugins_imageformats_libqtiff.so:plugins/imageformats/libqtiff.so</item>
+	<item>libplugins_imageformats_libqwbmp.so:plugins/imageformats/libqwbmp.so</item>
+        <item>libplugins_audio_libqtaudio_opensles.so:plugins/audio/libqtaudio_opensles.so</item>
+ 	<item>libplugins_playlistformats_libqtmultimedia_m3u.so:plugins/playlistformats/libqtmultimedia_m3u.so</item>
+	<item>libplugins_mediaservice_libqtmedia_android.so:plugins/mediaservice/libqtmedia_android.so</item>
+ 	<item>libplugins_video_videonode_libqtsgvideonode_android.so:plugins/video/videonode/libqtsgvideonode_android.so</item>
+    </array>
+
+    <array name="bundled_in_assets">
+    </array>
+
+</resources>
