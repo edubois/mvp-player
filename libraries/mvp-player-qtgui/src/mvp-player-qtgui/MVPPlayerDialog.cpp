@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QDesktopWidget>
 
 #include <iostream>
 
@@ -24,6 +25,13 @@ MVPPlayerDialog::MVPPlayerDialog( QWidget *parent )
     connect( widget.btnNext, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitNextBtn() ) );
     connect( widget.btnServer, SIGNAL( clicked(bool) ), this, SLOT( startStopServer( const bool ) ) );
     connect( widget.playlist, SIGNAL( currentRowChanged(int) ), this, SLOT( playPlaylistItemAtIndex(int) ) );
+
+    // Center window
+#ifndef ANDROID
+    move( QApplication::desktop()->screen()->rect().center() - rect().center() );
+#else
+    showMaximized();
+#endif
 }
 
 MVPPlayerDialog::~MVPPlayerDialog()
