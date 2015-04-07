@@ -1,4 +1,5 @@
 #include "MVPPlayerDialog.hpp"
+#include "MVPPlayerSettingsDialog.hpp"
 
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
@@ -25,6 +26,7 @@ MVPPlayerDialog::MVPPlayerDialog( QWidget *parent )
     connect( widget.btnNext, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitNextBtn() ) );
     connect( widget.btnServer, SIGNAL( clicked(bool) ), this, SLOT( startStopServer( const bool ) ) );
     connect( widget.playlist, SIGNAL( currentRowChanged(int) ), this, SLOT( playPlaylistItemAtIndex(int) ) );
+    connect( widget.btnSettings, SIGNAL( clicked(bool) ), this, SLOT( editSettings() ) );
 
     // Center window
 #ifndef ANDROID
@@ -130,6 +132,15 @@ void MVPPlayerDialog::dropEvent( QDropEvent *de )
                 }
             );
         }
+    }
+}
+
+void MVPPlayerDialog::editSettings()
+{
+    MVPPlayerSettingsDialog settingsDialog( this );
+    if ( settingsDialog.exec() )
+    {
+        
     }
 }
 

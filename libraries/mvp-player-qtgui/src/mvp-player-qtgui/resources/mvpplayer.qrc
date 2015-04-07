@@ -6,6 +6,7 @@
     <file>action/stop.png</file>
     <file>action/forward.png</file>
     <file>action/backward.png</file>
+    <file>action/record.png</file>
     <file>toolbar/connection.png</file>
     <file>toolbar/applications-settings.png</file>
     <file>app/icon.png</file>

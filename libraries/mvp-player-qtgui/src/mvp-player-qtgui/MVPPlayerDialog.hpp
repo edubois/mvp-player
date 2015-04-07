@@ -67,6 +67,7 @@ private:
     void dragLeaveEvent( QDragLeaveEvent *event );
 
 private Q_SLOTS:
+    void editSettings();
     void startStopServer( const bool start = true );
     void playPlaylistItemAtIndex( const int playlistIndex );
     void slotViewHitPlayStopBtn();
