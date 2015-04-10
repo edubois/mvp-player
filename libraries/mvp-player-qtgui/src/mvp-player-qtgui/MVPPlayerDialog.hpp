@@ -1,17 +1,12 @@
-#ifndef _MVPPLAYERDIALOG_HPP
-#define	_MVPPLAYERDIALOG_HPP
-
-#include "ui_MVPPlayerDialog.hpp"
+#ifndef _GUI_MVPPLAYERDIALOG_HPP_
+#define	_GUI_MVPPLAYERDIALOG_HPP_
 
 #include <mvp-player-gui/IMVPPlayerDialog.hpp>
 
-#include <QtGui/QDropEvent>
-#include <QtGui/QDragMoveEvent>
-#include <QtCore/QMimeData>
-
-#include <boost/signals2.hpp>
-#include <boost/filesystem/path.hpp>
-#include <string>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QDesktopWidget>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QToolButton>
 
 namespace mvpplayer
 {
@@ -20,9 +15,6 @@ namespace gui
 namespace qt
 {
 
-/**
- * @brief mvp-player qt dialog
- */
 class MVPPlayerDialog : public QDialog, public IMVPPlayerDialog
 {
     Q_OBJECT
@@ -30,64 +22,54 @@ public:
     MVPPlayerDialog( QWidget *parent = NULL );
     virtual ~MVPPlayerDialog();
 
-    void displayError( const std::string & msg )
-    { QMetaObject::invokeMethod( this, "slotDisplayError", Qt::BlockingQueuedConnection, Q_ARG( QString, msg.c_str() ) ); }
+protected:
+    template<class Dlg>
+    void initDialog( Dlg & widget )
+    {
+        setAcceptDrops(true);
 
-    boost::filesystem::path openFile( const std::string & title, const std::string & extensions );
+        // Transform descriptor into real player buttons
+        for( const ButtonDescriptor & desc: _buttonsBar.buttons() )
+        {
+            // Checkable button
+            QToolButton * button = new QToolButton( this );
+            widget.layoutButtonsBar->addWidget( button );
+            if ( desc.property<std::string>( "captionPushed" ).size() )
+            {
+                button->setCheckable( true );
+            }
 
-    /**
-     * In the following sections, we use invokeMethod because of asynchronous
-     * calls that might come from other threads.
-     */
-    inline void setIconStop()
-    { QMetaObject::invokeMethod( this, "slotSetIconStop", Qt::BlockingQueuedConnection ); }
+            button->setText( desc.property<std::string>( "captionNormal" ).c_str() );
+            button->setStyleSheet( desc.property<std::string>( "styleSheet" ).c_str() );
 
-    inline void setIconPlay()
-    { QMetaObject::invokeMethod( this, "slotSetIconPlay", Qt::BlockingQueuedConnection ); }
+            // Connect the right signals according to buttons' names
+            const std::string buttonName = desc.property<std::string>( "name" );
+            if ( buttonName == "Play" )
+            {
+                _btnPlayPause = button;
+            }
+            else if ( buttonName == "Previous" )
+            {
+                _btnPrevious = button;
+            }
+            else if ( buttonName == "Next" )
+            {
+                _btnNext = button;
+            }
+        }
 
-    inline void setCurrentTrack( const boost::filesystem::path & filename )
-    { QMetaObject::invokeMethod( widget.lblCurrentTrack, "setText", Qt::BlockingQueuedConnection, Q_ARG( QString, QString::fromStdString( filename.filename().string() ) ) ); }
+        // Center window
+    #ifndef ANDROID
+        move( QApplication::desktop()->screen()->rect().center() - rect().center() );
+    #else
+        showMaximized();
+    #endif
+    }
 
-    inline void setPlaylistItemIndex( const int row )
-    { QMetaObject::invokeMethod( this, "slotSetPlaylistItemIndex", Qt::BlockingQueuedConnection, Q_ARG( int, row ) ); }
-
-    void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems );
-
-    inline void clearPlaylist()
-    { QMetaObject::invokeMethod( this, "slotClearPlaylist", Qt::BlockingQueuedConnection ); }
-
-    inline void addTrack( const boost::filesystem::path & filename )
-    { QMetaObject::invokeMethod( this, "slotAddTrack", Qt::BlockingQueuedConnection, Q_ARG( QString, QString::fromStdString( filename.filename().string() ) ) ); }
-
-
-private:
-    void dropEvent( QDropEvent *de );
-    void dragEnterEvent( QDragEnterEvent *event );
-    void dragMoveEvent( QDragMoveEvent *event );
-    void dragLeaveEvent( QDragLeaveEvent *event );
-
-private Q_SLOTS:
-    void editSettings();
-    void startStopServer( const bool start = true );
-    void playPlaylistItemAtIndex( const int playlistIndex );
-    void slotViewHitPlayStopBtn();
-    void slotViewHitPreviousBtn();
-    void slotViewHitNextBtn();
-    void slotSetPlaylistItemIndex( const int row );
-    void slotSetIconStop();
-    void slotSetIconPlay();
-    QString slotOpenFile( const QString & title, const QString & extensions );
-    void slotDisplayError( const QString & msg );
-    void slotOpenedPlaylist( const QStringList & filenames );
-    void slotClearPlaylist();
-    void slotAddTrack( const QString & filename );
-
-private:
-    Ui::MVPPlayerDialog widget;
-
-public:
-    boost::signals2::signal<void()> signalViewStartServer;  ///< Signal 'start server'
-    boost::signals2::signal<void()> signalViewStopServer;  ///< Signal 'stop server'
+protected:
+    QToolButton *_btnPlayPause;
+    QToolButton *_btnPrevious;
+    QToolButton *_btnNext;
 };
 
 }

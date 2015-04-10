@@ -7,8 +7,9 @@
 namespace mvpplayer
 {
 
-MVPPlayerEngine::MVPPlayerEngine( ISoundPlayer *soundPlayer )
+MVPPlayerEngine::MVPPlayerEngine( ISoundPlayer *soundPlayer, ISoundRecorder *soundRecorder )
 : _soundPlayer( soundPlayer )
+, _soundRecorder( soundRecorder )
 {
     // Subscribe to sound player's end of track notifications
     _soundPlayer->signalEndOfTrack.connect( boost::bind( &MVPPlayerEngine::notifyEndOfTrack, this ) );

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'MVPPlayerRemoteDialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.4.0
+** Created by: Qt User Interface Compiler version 5.4.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -32,9 +32,7 @@ public:
     QVBoxLayout *verticalLayout_3;
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout;
-    QToolButton *btnPrevious;
-    QToolButton *btnPlayStop;
-    QToolButton *btnNext;
+    QHBoxLayout *layoutButtonsBar;
     QSpacerItem *horizontalSpacer;
     QToolButton *btnServer;
     QFrame *line_2;
@@ -58,33 +56,10 @@ public:
         verticalLayout_2->setContentsMargins(-1, 0, -1, -1);
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        btnPrevious = new QToolButton(MVPPlayerRemoteDialog);
-        btnPrevious->setObjectName(QStringLiteral("btnPrevious"));
-        QIcon icon;
-        icon.addFile(QStringLiteral(":/mvpplayer/action/backward.png"), QSize(), QIcon::Normal, QIcon::Off);
-        btnPrevious->setIcon(icon);
-        btnPrevious->setIconSize(QSize(32, 32));
+        layoutButtonsBar = new QHBoxLayout();
+        layoutButtonsBar->setObjectName(QStringLiteral("layoutButtonsBar"));
 
-        horizontalLayout->addWidget(btnPrevious);
-
-        btnPlayStop = new QToolButton(MVPPlayerRemoteDialog);
-        btnPlayStop->setObjectName(QStringLiteral("btnPlayStop"));
-        QIcon icon1;
-        icon1.addFile(QStringLiteral(":/mvpplayer/action/play.png"), QSize(), QIcon::Normal, QIcon::Off);
-        btnPlayStop->setIcon(icon1);
-        btnPlayStop->setIconSize(QSize(32, 32));
-
-        horizontalLayout->addWidget(btnPlayStop);
-
-        btnNext = new QToolButton(MVPPlayerRemoteDialog);
-        btnNext->setObjectName(QStringLiteral("btnNext"));
-        QIcon icon2;
-        icon2.addFile(QStringLiteral(":/mvpplayer/action/forward.png"), QSize(), QIcon::Normal, QIcon::Off);
-        btnNext->setIcon(icon2);
-        btnNext->setIconSize(QSize(32, 32));
-        btnNext->setPopupMode(QToolButton::DelayedPopup);
-
-        horizontalLayout->addWidget(btnNext);
+        horizontalLayout->addLayout(layoutButtonsBar);
 
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -92,9 +67,9 @@ public:
 
         btnServer = new QToolButton(MVPPlayerRemoteDialog);
         btnServer->setObjectName(QStringLiteral("btnServer"));
-        QIcon icon3;
-        icon3.addFile(QStringLiteral(":/mvpplayer/toolbar/connection.png"), QSize(), QIcon::Normal, QIcon::Off);
-        btnServer->setIcon(icon3);
+        QIcon icon;
+        icon.addFile(QStringLiteral(":/mvpplayer/toolbar/connection.png"), QSize(), QIcon::Normal, QIcon::Off);
+        btnServer->setIcon(icon);
         btnServer->setIconSize(QSize(32, 32));
         btnServer->setCheckable(true);
 
@@ -150,9 +125,6 @@ public:
 
         verticalLayout_3->addLayout(verticalLayout_2);
 
-        QWidget::setTabOrder(btnPrevious, btnPlayStop);
-        QWidget::setTabOrder(btnPlayStop, btnNext);
-        QWidget::setTabOrder(btnNext, btnServer);
         QWidget::setTabOrder(btnServer, cbMute);
         QWidget::setTabOrder(cbMute, playlist);
 
@@ -164,9 +136,6 @@ public:
     void retranslateUi(QDialog *MVPPlayerRemoteDialog)
     {
         MVPPlayerRemoteDialog->setWindowTitle(QApplication::translate("MVPPlayerRemoteDialog", "MVPPlayer - Remote", 0));
-        btnPrevious->setText(QApplication::translate("MVPPlayerRemoteDialog", "<<", 0));
-        btnPlayStop->setText(QApplication::translate("MVPPlayerRemoteDialog", "|>", 0));
-        btnNext->setText(QApplication::translate("MVPPlayerRemoteDialog", ">>", 0));
         btnServer->setText(QApplication::translate("MVPPlayerRemoteDialog", "C", 0));
         cbMute->setText(QApplication::translate("MVPPlayerRemoteDialog", "Mute", 0));
         label->setText(QApplication::translate("MVPPlayerRemoteDialog", "Current track:", 0));

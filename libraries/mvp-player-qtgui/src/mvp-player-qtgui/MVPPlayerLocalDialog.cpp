@@ -1,4 +1,5 @@
-#include "MVPPlayerRemoteDialog.hpp"
+#include "MVPPlayerLocalDialog.hpp"
+#include "MVPPlayerSettingsDialog.hpp"
 
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
@@ -13,35 +14,34 @@ namespace gui
 namespace qt
 {
 
-MVPPlayerRemoteDialog::MVPPlayerRemoteDialog( QWidget *parent )
+MVPPlayerLocalDialog::MVPPlayerLocalDialog( QWidget *parent )
 : Parent( parent )
 {
     widget.setupUi(this);
-
+    
     initDialog( widget );
-
     connect( _btnNext, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitNextBtn() ) );
     connect( _btnPrevious, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPreviousBtn() ) );
     connect( _btnPlayPause, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
-    connect( widget.cbMute, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitMute(const bool) ) );
-    connect( widget.btnServer, SIGNAL( clicked(bool) ), this, SLOT( connectDisconnectClient( const bool ) ) );
+    connect( widget.btnServer, SIGNAL( clicked(bool) ), this, SLOT( startStopServer( const bool ) ) );
     connect( widget.playlist, SIGNAL( currentRowChanged(int) ), this, SLOT( playPlaylistItemAtIndex(int) ) );
+    connect( widget.btnSettings, SIGNAL( clicked(bool) ), this, SLOT( editSettings() ) );
 }
 
-MVPPlayerRemoteDialog::~MVPPlayerRemoteDialog()
+MVPPlayerLocalDialog::~MVPPlayerLocalDialog()
 {
 }
 
-boost::filesystem::path MVPPlayerRemoteDialog::openFile( const std::string & title, const std::string & extensions )
+boost::filesystem::path MVPPlayerLocalDialog::openFile( const std::string & title, const std::string & extensions )
 {
     QString result;
     QMetaObject::invokeMethod( this, "slotOpenFile", Qt::BlockingQueuedConnection, Q_RETURN_ARG( QString, result ), Q_ARG( QString, QString::fromStdString( title ) ), Q_ARG( QString, QString::fromStdString( extensions ) ) );
     return result.toStdString();
 }
 
-void MVPPlayerRemoteDialog::slotViewHitPlayStopBtn()
+void MVPPlayerLocalDialog::slotViewHitPlayStopBtn()
 {
-    if ( _btnPlayPause->isChecked() )
+    if ( _btnPlayPause->isChecked() == false )
     {
         signalViewHitStop();
     }
@@ -65,22 +65,22 @@ void MVPPlayerRemoteDialog::slotViewHitPlayStopBtn()
     }
 }
 
-void MVPPlayerRemoteDialog::slotViewHitPreviousBtn()
+void MVPPlayerLocalDialog::slotViewHitPreviousBtn()
 {
     signalViewHitPrevious();
 }
 
-void MVPPlayerRemoteDialog::slotViewHitNextBtn()
+void MVPPlayerLocalDialog::slotViewHitNextBtn()
 {
     signalViewHitNext();
 }
 
-void MVPPlayerRemoteDialog::playPlaylistItemAtIndex( const int playlistIndex )
+void MVPPlayerLocalDialog::playPlaylistItemAtIndex( const int playlistIndex )
 {
     signalViewHitPlaylistItem( playlistIndex );
 }
 
-void MVPPlayerRemoteDialog::openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
+void MVPPlayerLocalDialog::openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
 {
     QStringList filenames;
     for( const m3uParser::PlaylistItem & item: playlistItems )
@@ -90,7 +90,7 @@ void MVPPlayerRemoteDialog::openedPlaylist( const std::vector<m3uParser::Playlis
     QMetaObject::invokeMethod( this, "slotOpenedPlaylist", Qt::BlockingQueuedConnection, Q_ARG( QStringList, filenames ) );
 }
 
-void MVPPlayerRemoteDialog::dropEvent( QDropEvent *de )
+void MVPPlayerLocalDialog::dropEvent( QDropEvent *de )
 {
     // Unpack dropped data and handle it
     if ( de->mimeData()->hasUrls() )
@@ -127,49 +127,53 @@ void MVPPlayerRemoteDialog::dropEvent( QDropEvent *de )
     }
 }
 
-void MVPPlayerRemoteDialog::dragEnterEvent( QDragEnterEvent *event )
+void MVPPlayerLocalDialog::editSettings()
+{
+    MVPPlayerSettingsDialog settingsDialog( this );
+    if ( settingsDialog.exec() )
+    {
+        
+    }
+}
+
+void MVPPlayerLocalDialog::dragEnterEvent( QDragEnterEvent *event )
 {
     event->acceptProposedAction();
 }
 
-void MVPPlayerRemoteDialog::dragMoveEvent( QDragMoveEvent *event )
+void MVPPlayerLocalDialog::dragMoveEvent( QDragMoveEvent *event )
 {
     event->acceptProposedAction();
 }
 
-void MVPPlayerRemoteDialog::dragLeaveEvent( QDragLeaveEvent *event )
+void MVPPlayerLocalDialog::dragLeaveEvent( QDragLeaveEvent *event )
 {
     event->accept();
 }
 
-void MVPPlayerRemoteDialog::connectDisconnectClient( const bool start )
+void MVPPlayerLocalDialog::startStopServer( const bool start )
 {
     if ( start )
     {
-        signalViewConnect();
+        signalViewStartServer();
     }
     else
     {
-        signalViewDisconnect();
+        signalViewStopServer();
     }
 }
 
-void MVPPlayerRemoteDialog::slotViewHitMute( const bool checked )
-{
-    signalViewMute( checked );
-}
-
-void MVPPlayerRemoteDialog::slotSetIconStop()
+void MVPPlayerLocalDialog::slotSetIconStop()
 {
     _btnPlayPause->setChecked( true );
 }
 
-void MVPPlayerRemoteDialog::slotSetIconPlay()
+void MVPPlayerLocalDialog::slotSetIconPlay()
 {
     _btnPlayPause->setChecked( false );
 }
 
-void MVPPlayerRemoteDialog::slotSetPlaylistItemIndex( const int row )
+void MVPPlayerLocalDialog::slotSetPlaylistItemIndex( const int row )
 {
     widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
 
@@ -185,12 +189,12 @@ void MVPPlayerRemoteDialog::slotSetPlaylistItemIndex( const int row )
     widget.playlist->blockSignals( false );
 }
 
-QString MVPPlayerRemoteDialog::slotOpenFile( const QString & title, const QString & extensions )
+QString MVPPlayerLocalDialog::slotOpenFile( const QString & title, const QString & extensions )
 {
     return QFileDialog::getOpenFileName( QApplication::activeWindow(), title, QDir::currentPath(), extensions );
 }
 
-void MVPPlayerRemoteDialog::slotOpenedPlaylist( const QStringList & filenames )
+void MVPPlayerLocalDialog::slotOpenedPlaylist( const QStringList & filenames )
 {
     widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
     widget.playlist->clear();
@@ -199,21 +203,21 @@ void MVPPlayerRemoteDialog::slotOpenedPlaylist( const QStringList & filenames )
     signalViewStartPlaylist();
 }
 
-void MVPPlayerRemoteDialog::slotClearPlaylist()
+void MVPPlayerLocalDialog::slotClearPlaylist()
 {
     widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
     widget.playlist->clear();
     widget.playlist->blockSignals( false );
 }
 
-void MVPPlayerRemoteDialog::slotAddTrack( const QString & filename )
+void MVPPlayerLocalDialog::slotAddTrack( const QString & filename )
 {
     widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
     widget.playlist->addItem( filename );
     widget.playlist->blockSignals( false );
 }
 
-void MVPPlayerRemoteDialog::slotDisplayError( const QString & msg )
+void MVPPlayerLocalDialog::slotDisplayError( const QString & msg )
 {
     QMessageBox::critical( QApplication::activeWindow(), QObject::tr( "Error!" ), msg, QMessageBox::Ok | QMessageBox::Default);
 }

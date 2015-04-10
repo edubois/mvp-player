@@ -2,6 +2,7 @@
 #define	_CORE_MVPPLAYERENGINE_HPP_
 
 #include "ISoundPlayer.hpp"
+#include "ISoundRecorder.hpp"
 #include "m3uParser.hpp"
 
 #include <boost/signals2.hpp>
@@ -21,7 +22,7 @@ namespace mvpplayer
 class MVPPlayerEngine
 {
 public:
-    MVPPlayerEngine( ISoundPlayer *soundPlayer );
+    MVPPlayerEngine( ISoundPlayer *soundPlayer, ISoundRecorder *soundRecorder );
     virtual ~MVPPlayerEngine();
 
     /**
@@ -110,6 +111,7 @@ public:
 
 protected:
     ISoundPlayer *_soundPlayer;                                             ///< Pointer to a sound player instance
+    ISoundRecorder *_soundRecorder;                                         ///< Pointer to a sound recorder instance
     boost::filesystem::path _currentPlayedTrack;                            ///< Current played track
     std::list<boost::filesystem::path>::const_iterator _currentPosition;    ///< Current playing position
     std::list<boost::filesystem::path> _playlist;                           ///< Track playlist

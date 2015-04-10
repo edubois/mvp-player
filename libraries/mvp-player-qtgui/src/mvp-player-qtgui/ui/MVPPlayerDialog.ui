@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>537</width>
+    <width>565</width>
     <height>344</height>
    </rect>
   </property>
@@ -19,7 +19,78 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_4">
+  <layout class="QHBoxLayout" name="horizontalLayout_3">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QToolButton" name="btnOpen">
+       <property name="text">
+        <string>O</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/mvpplayer.qrc">
+         <normaloff>:/mvpplayer/action/open.png</normaloff>:/mvpplayer/action/open.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnSettings">
+       <property name="text">
+        <string>P</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/mvpplayer.qrc">
+         <normaloff>:/mvpplayer/toolbar/applications-settings.png</normaloff>:/mvpplayer/toolbar/applications-settings.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnServer">
+       <property name="text">
+        <string>C</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/mvpplayer.qrc">
+         <normaloff>:/mvpplayer/toolbar/connection.png</normaloff>:/mvpplayer/toolbar/connection.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <property name="topMargin">
@@ -36,121 +107,7 @@
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QToolButton" name="btnOpen">
-         <property name="text">
-          <string>O</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../resources/mvpplayer.qrc">
-           <normaloff>:/mvpplayer/action/open.png</normaloff>:/mvpplayer/action/open.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="btnServer">
-         <property name="text">
-          <string>C</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../resources/mvpplayer.qrc">
-           <normaloff>:/mvpplayer/toolbar/connection.png</normaloff>:/mvpplayer/toolbar/connection.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="btnSettings">
-         <property name="text">
-          <string>P</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../resources/mvpplayer.qrc">
-           <normaloff>:/mvpplayer/toolbar/applications-settings.png</normaloff>:/mvpplayer/toolbar/applications-settings.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="Line" name="line">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QToolButton" name="btnRecord">
-         <property name="toolTip">
-          <string>Record from input device</string>
-         </property>
-         <property name="text">
-          <string>O</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../resources/mvpplayer.qrc">
-           <normaloff>:/mvpplayer/action/record.png</normaloff>:/mvpplayer/action/record.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
-        </widget>
-       </item>
        <item>
         <spacer name="horizontalSpacer_3">
          <property name="orientation">
@@ -165,58 +122,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QToolButton" name="btnPrevious">
-         <property name="text">
-          <string>&lt;&lt;</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../resources/mvpplayer.qrc">
-           <normaloff>:/mvpplayer/action/backward.png</normaloff>:/mvpplayer/action/backward.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="btnPlayStop">
-         <property name="text">
-          <string>|&gt;</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../resources/mvpplayer.qrc">
-           <normaloff>:/mvpplayer/action/play.png</normaloff>:/mvpplayer/action/play.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="btnNext">
-         <property name="text">
-          <string>&gt;&gt;</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../resources/mvpplayer.qrc">
-           <normaloff>:/mvpplayer/action/forward.png</normaloff>:/mvpplayer/action/forward.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="popupMode">
-          <enum>QToolButton::DelayedPopup</enum>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="layoutButtonsBar"/>
        </item>
        <item>
         <spacer name="horizontalSpacer_4">
@@ -282,12 +188,8 @@
  </widget>
  <tabstops>
   <tabstop>btnOpen</tabstop>
-  <tabstop>btnServer</tabstop>
   <tabstop>btnSettings</tabstop>
-  <tabstop>btnRecord</tabstop>
-  <tabstop>btnPrevious</tabstop>
-  <tabstop>btnPlayStop</tabstop>
-  <tabstop>btnNext</tabstop>
+  <tabstop>btnServer</tabstop>
   <tabstop>playlist</tabstop>
  </tabstops>
  <resources>

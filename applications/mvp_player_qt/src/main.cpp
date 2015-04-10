@@ -1,8 +1,9 @@
 #include <mvp-player-core/MVPPlayerEngine.hpp>
 #include <mvp-player-core/MVPPlayerLogic.hpp>
 #include <mvp-player-core/SoundPlayer.hpp>
+#include <mvp-player-core/SoundRecorder.hpp>
 #include <mvp-player-gui/playerBehavior.hpp>
-#include <mvp-player-qtgui/MVPPlayerDialog.hpp>
+#include <mvp-player-qtgui/MVPPlayerLocalDialog.hpp>
 #include <mvp-player-qtgui/MVPPlayerRemoteDialog.hpp>
 #include <mvp-player-qtgui/resources.hpp>
 #include <mvp-player-net/client/Client.hpp>
@@ -41,7 +42,7 @@ int instanciateApp<gui::MVPPlayerRemoteDialog>( int argc, char **argv )
     initResources();
 
     // Core (model): a sound player engine
-    mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
+    mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance(), &mvpplayer::SoundRecorder::getInstance() );
     mvpplayer::SoundPlayer::getInstance().setVolume( 0.0f );
 
     // Network remote
@@ -101,16 +102,16 @@ int instanciateApp<gui::MVPPlayerRemoteDialog>( int argc, char **argv )
  * Specialization for QT gui (server)
  */
 template<>
-int instanciateApp<mvpplayer::gui::qt::MVPPlayerDialog>( int argc, char **argv )
+int instanciateApp<mvpplayer::gui::qt::MVPPlayerLocalDialog>( int argc, char **argv )
 {
-    using Dialog = mvpplayer::gui::qt::MVPPlayerDialog;
+    using Dialog = mvpplayer::gui::qt::MVPPlayerLocalDialog;
 
     QApplication app( argc, argv );
 
     initResources();
 
     // Core (model): a sound player engine
-    mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
+    mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance(), &mvpplayer::SoundRecorder::getInstance() );
     mvpplayer::network::server::Server mvpPlayerServer;
 
     // Main dialog (view)
@@ -172,7 +173,7 @@ int main( int argc, char **argv )
     }
     else
     {
-        return instanciateApp<gui::MVPPlayerDialog>( argc, argv );
+        return instanciateApp<gui::MVPPlayerLocalDialog>( argc, argv );
     }
 #endif
 }

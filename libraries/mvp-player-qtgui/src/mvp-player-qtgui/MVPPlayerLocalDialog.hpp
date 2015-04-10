@@ -1,7 +1,7 @@
-#ifndef _MVPPLAYERREMOTEDIALOG_HPP
-#define	_MVPPLAYERREMOTEDIALOG_HPP
+#ifndef _GUI_MVPPLAYERLOCALDIALOG_HPP_
+#define	_GUI_MVPPLAYERLOCALDIALOG_HPP_
 
-#include "ui_MVPPlayerRemoteDialog.hpp"
+#include "ui_MVPPlayerDialog.hpp"
 
 #include "MVPPlayerDialog.hpp"
 
@@ -23,14 +23,14 @@ namespace qt
 /**
  * @brief mvp-player qt dialog
  */
-class MVPPlayerRemoteDialog : public MVPPlayerDialog
+class MVPPlayerLocalDialog : public MVPPlayerDialog
 {
     Q_OBJECT
 private:
     typedef MVPPlayerDialog Parent;
 public:
-    MVPPlayerRemoteDialog( QWidget *parent = NULL );
-    virtual ~MVPPlayerRemoteDialog();
+    MVPPlayerLocalDialog( QWidget *parent = NULL );
+    virtual ~MVPPlayerLocalDialog();
 
     void displayError( const std::string & msg )
     { QMetaObject::invokeMethod( this, "slotDisplayError", Qt::BlockingQueuedConnection, Q_ARG( QString, msg.c_str() ) ); }
@@ -69,12 +69,12 @@ private:
     void dragLeaveEvent( QDragLeaveEvent *event );
 
 private Q_SLOTS:
-    void connectDisconnectClient( const bool start = true );
+    void editSettings();
+    void startStopServer( const bool start = true );
     void playPlaylistItemAtIndex( const int playlistIndex );
     void slotViewHitPlayStopBtn();
     void slotViewHitPreviousBtn();
     void slotViewHitNextBtn();
-    void slotViewHitMute( const bool mute );
     void slotSetPlaylistItemIndex( const int row );
     void slotSetIconStop();
     void slotSetIconPlay();
@@ -85,12 +85,11 @@ private Q_SLOTS:
     void slotAddTrack( const QString & filename );
 
 private:
-    Ui::MVPPlayerRemoteDialog widget;
+    Ui::MVPPlayerDialog widget;
 
 public:
-    boost::signals2::signal<void(const bool)> signalViewMute;                   ///< Mute sound player
-    boost::signals2::signal<void()> signalViewConnect;      ///< Signal connect
-    boost::signals2::signal<void()> signalViewDisconnect;   ///< Signal disconnect
+    boost::signals2::signal<void()> signalViewStartServer;  ///< Signal 'start server'
+    boost::signals2::signal<void()> signalViewStopServer;  ///< Signal 'stop server'
 };
 
 }
