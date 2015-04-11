@@ -10,6 +10,7 @@
 #include <boost/serialization/export.hpp>
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/optional.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
@@ -275,13 +276,16 @@ public:
     {
     }
 
-    EvPlay( const boost::filesystem::path & filename )
+    EvPlay( const boost::optional<boost::filesystem::path> & filename )
     : _filename( filename )
     {
     }
 
-    inline const boost::filesystem::path & filename() const
+    inline const boost::optional<boost::filesystem::path> & filename() const
     { return _filename; }
+
+    inline bool hasFilename() const
+    { return _filename != boost::none; }
 
     friend class boost::serialization::access;
 	template<class Archive>
@@ -304,7 +308,7 @@ public:
         scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
     }
 private:
-    boost::filesystem::path _filename;      ///< Filename we want to play
+    boost::optional<boost::filesystem::path> _filename;      ///< Filename we want to play, empty for resume
 };
 
 /**

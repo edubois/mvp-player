@@ -131,6 +131,7 @@ struct Playing : sc::simple_state< Playing, Active >
      */
     sc::result react( const EvOpenedPlaylist & ev )
     {
+        _nItemsPlaylist = ev.playlistItems().size();
         context< PlayerStateMachine >().presenter.openedPlaylist( ev.playlistItems() );
         return transit< Playing >();
     }
@@ -140,6 +141,7 @@ struct Playing : sc::simple_state< Playing, Active >
      */
     sc::result react( const EvPlayingItemIndex & ev )
     {
+        _currentPlaylistIndex = ev.playlistIndex();
         context< PlayerStateMachine >().lastPlayTime = std::chrono::system_clock::now();
         context< PlayerStateMachine >().presenter.playingItemIndex( ev.filename(), ev.playlistIndex() );
         return transit< Playing >();
@@ -229,20 +231,54 @@ struct Playing : sc::simple_state< Playing, Active >
      */
     sc::result react( const EvPlay & ev )
     {
-        // Check if file exists
-        if ( boost::filesystem::exists( ev.filename() ) )
+        // Check if we want to resume the track
+        if ( !ev.hasFilename() )
         {
-            context< PlayerStateMachine >().lastPlayTime = std::chrono::system_clock::now();
-            context< PlayerStateMachine >().presenter.playTrack( ev.filename() );
-            return transit< Playing >();
+            if ( _nItemsPlaylist )
+            {
+                if ( _currentPlaylistIndex >= 0 )
+                {
+                    context< PlayerStateMachine >().presenter.playItemAtIndex( _currentPlaylistIndex );
+                }
+                else
+                {
+                    context< PlayerStateMachine >().presenter.startPlaylist();
+                }
+                return transit< Playing >();
+            }
+            else
+            {
+                return discard_event();
+            }
         }
         else
         {
-            // Signalize that we are playing the file
-            context< PlayerStateMachine >().presenter.failed( ( boost::format( _tr( "The file %1% doesn't exists!" ) ) % ev.filename() ).str() );
-            return discard_event();
+            // Check if file exists
+            const boost::filesystem::path filename = ev.filename().get();
+            if ( boost::filesystem::exists( filename ) )
+            {
+                context< PlayerStateMachine >().lastPlayTime = std::chrono::system_clock::now();
+                context< PlayerStateMachine >().presenter.playTrack( filename );
+
+                if ( _nItemsPlaylist == 0 )
+                {
+                    _currentPlaylistIndex = -1;
+                }
+                return transit< Playing >();
+            }
+            else
+            {
+                // Signalize that we are playing the file
+                context< PlayerStateMachine >().presenter.failed( ( boost::format( _tr( "The file %1% doesn't exists!" ) ) % filename ).str() );
+                return discard_event();
+            }
         }
     }
+    
+    
+private:
+    int _currentPlaylistIndex = -1;
+    std::size_t _nItemsPlaylist = 0;
 };
 
 /**
@@ -358,10 +394,10 @@ struct Stopped : sc::simple_state< Stopped, Active >
     sc::result react( const EvPlay & ev )
     {
         // Check if file exists
-        if ( boost::filesystem::exists( ev.filename() ) )
+        if ( ev.hasFilename() && boost::filesystem::exists( ev.filename().get() ) )
         {
             context< PlayerStateMachine >().lastPlayTime = std::chrono::system_clock::now();
-            context< PlayerStateMachine >().presenter.playTrack( ev.filename() );
+            context< PlayerStateMachine >().presenter.playTrack( ev.filename().get() );
             return transit< Playing >();
         }
         else

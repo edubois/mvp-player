@@ -41,27 +41,13 @@ boost::filesystem::path MVPPlayerRemoteDialog::openFile( const std::string & tit
 
 void MVPPlayerRemoteDialog::slotViewHitPlayStopBtn()
 {
-    if ( _btnPlayPause->isChecked() )
+    if ( _btnPlayPause->isChecked() == false )
     {
         signalViewHitStop();
     }
     else
     {
-        if ( widget.playlist->count() )
-        {
-            if ( widget.playlist->currentRow() >= 0 )
-            {
-                signalViewHitPlaylistItem( widget.playlist->currentRow() );
-            }
-            else
-            {
-                signalViewStartPlaylist();
-            }
-        }
-        else
-        {
-            signalViewHitPlay( std::string() );
-        }
+        signalViewHitPlay( boost::none );
     }
 }
 
@@ -102,7 +88,7 @@ void MVPPlayerRemoteDialog::dropEvent( QDropEvent *de )
                 [this, &urlList]()
                 {
                     signalViewClearPlaylist();
-                    signalViewHitPlay( urlList.first().path().toStdString() );
+                    signalViewHitPlay( boost::filesystem::path( urlList.first().path().toStdString() ) );
                 }
             );
         }

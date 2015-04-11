@@ -187,7 +187,7 @@ public:
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
-    inline void processPlay( const boost::filesystem::path & filename )
+    inline void processPlay( const boost::optional<boost::filesystem::path> & filename )
     {
         using EventT = EvPlay;
         EventT *event = new EventT( filename );

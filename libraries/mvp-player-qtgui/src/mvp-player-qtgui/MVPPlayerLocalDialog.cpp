@@ -47,21 +47,7 @@ void MVPPlayerLocalDialog::slotViewHitPlayStopBtn()
     }
     else
     {
-        if ( widget.playlist->count() )
-        {
-            if ( widget.playlist->currentRow() >= 0 )
-            {
-                signalViewHitPlaylistItem( widget.playlist->currentRow() );
-            }
-            else
-            {
-                signalViewStartPlaylist();
-            }
-        }
-        else
-        {
-            signalViewHitPlay( std::string() );
-        }
+        signalViewHitPlay( boost::none );
     }
 }
 
@@ -102,7 +88,7 @@ void MVPPlayerLocalDialog::dropEvent( QDropEvent *de )
                 [this, &urlList]()
                 {
                     signalViewClearPlaylist();
-                    signalViewHitPlay( urlList.first().path().toStdString() );
+                    signalViewHitPlay( boost::filesystem::path( urlList.first().path().toStdString() ) );
                 }
             );
         }
