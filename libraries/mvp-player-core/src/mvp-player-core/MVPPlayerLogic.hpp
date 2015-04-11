@@ -439,6 +439,58 @@ struct Stopped : sc::simple_state< Stopped, Active >
     }
 };
 
+/**
+ * @brief playing state
+ */
+struct Paused : sc::simple_state< Paused, Active >
+{
+    typedef boost::mpl::list<
+      sc::custom_reaction< EvStop >,
+      sc::custom_reaction< EvPlay >,
+      sc::custom_reaction< EvPreviousTrack >,
+      sc::custom_reaction< EvNextTrack >,
+      sc::custom_reaction< EvStartPlaylist >,
+      sc::custom_reaction< EvPlayItemAtIndex >
+    > reactions;
+
+    /**
+     * @brief reaction on stop track event
+     */
+    sc::result react( const EvStop & ev )
+    {
+        context< PlayerStateMachine >().presenter.stopped();
+        return transit< Stopped >();
+    }
+
+    /**
+     * @brief reaction on start playlist event
+     */
+    sc::result react( const EvStartPlaylist & )
+    {
+        context< PlayerStateMachine >().presenter.startPlaylist();
+        return transit< Playing >();
+    }
+
+    /**
+     * @brief reaction on previous track event
+     */
+    sc::result react( const EvPreviousTrack & ev )
+    {
+        context< PlayerStateMachine >().presenter.previousTrack();
+        return transit< Playing >();
+    }
+
+    /**
+     * @brief reaction on previous track event
+     */
+    sc::result react( const EvNextTrack & ev )
+    {
+        context< PlayerStateMachine >().presenter.nextTrack();
+        return transit< Playing >();
+    }
+
+};
+
 }
 }
 

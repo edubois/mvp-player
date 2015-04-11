@@ -1,7 +1,6 @@
 #include <mvp-player-core/MVPPlayerEngine.hpp>
 #include <mvp-player-core/MVPPlayerLogic.hpp>
 #include <mvp-player-core/SoundPlayer.hpp>
-#include <mvp-player-core/SoundRecorder.hpp>
 #include <mvp-player-gui/playerBehavior.hpp>
 #include <mvp-player-qtgui/MVPPlayerLocalDialog.hpp>
 #include <mvp-player-qtgui/MVPPlayerRemoteDialog.hpp>
@@ -42,7 +41,7 @@ int instanciateApp<gui::MVPPlayerRemoteDialog>( int argc, char **argv )
     initResources();
 
     // Core (model): a sound player engine
-    mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance(), &mvpplayer::SoundRecorder::getInstance() );
+    mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
     mvpplayer::SoundPlayer::getInstance().setVolume( 0.0f );
 
     // Network remote
@@ -111,7 +110,7 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerLocalDialog>( int argc, char **a
     initResources();
 
     // Core (model): a sound player engine
-    mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance(), &mvpplayer::SoundRecorder::getInstance() );
+    mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
     mvpplayer::network::server::Server mvpPlayerServer;
 
     // Main dialog (view)
