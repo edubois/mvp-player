@@ -23,8 +23,9 @@ SConscript( [
               'libraries/mvp-player-net/SConscript',
               'libraries/mvp-player-qtgui/SConscript',
               'libraries/mvp-player-ncursesgui/SConscript',
+              'libraries/mvp-player-pluger/SConscript',
             ]
             +
-            project.scanFiles( ['applications', 'tests'], accept=['SConscript'] )
+            project.scanFiles( ['plugins', 'applications', 'tests'], accept=['SConscript'] )
           )
 

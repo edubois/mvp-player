@@ -1,0 +1,13 @@
+Import( 'project' )
+Import( 'libs' )
+
+project.StaticLibrary( 'mvp_player_pluger',
+                       sources   = project.scanFiles( ['src'] ),
+                       includes  = ['src'],
+                       libraries = [
+                                     libs.mvp_player_core,
+                                     libs.mvp_player_gui,
+                                    ],
+                       shared = False
+                      )
+
