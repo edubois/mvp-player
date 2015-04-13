@@ -1,5 +1,5 @@
-#ifndef _CORE_ISOUNDRECORDER_HPP_
-#define	_CORE_ISOUNDRECORDER_HPP_
+#ifndef _PLUG_ISOUNDRECORDER_HPP_
+#define	_PLUG_ISOUNDRECORDER_HPP_
 
 #include <boost/filesystem/path.hpp>
 #include <string>

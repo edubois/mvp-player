@@ -1,5 +1,5 @@
-#ifndef _CORE_SOUNDRECORDER_HPP_
-#define	_CORE_SOUNDRECORDER_HPP_
+#ifndef _PLUG_SOUNDRECORDER_HPP_
+#define	_PLUG_SOUNDRECORDER_HPP_
 
 #include "ISoundRecorder.hpp"
 #include <mvp-player-core/Singleton.hpp>

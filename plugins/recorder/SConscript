@@ -8,7 +8,7 @@ project.SharedLibrary( 'MVPPlayerRecorderPlugin',
                        libraries = [
                                      libs.mvp_player_core,
                                      libs.mvp_player_pluger,
-                                     libs.qt5( modules=[ 'QtCore', 'QtGui', 'QtWidgets', 'QtPrintSupport', 'QtMultimedia' ] ),
+                                     libs.qt5( modules=[ 'QtCore', 'QtGui', 'QtWidgets' ] ),
                                     ],
                        installDir = project.inOutputBin( 'plugins/' ),
                        localEnvFlags={ 'CPPDEFINES': ['QT_NO_DEBUG', 'QT_PLUGIN'] }

@@ -1,0 +1,5 @@
+{
+            "name" : "mvpplayer::plugins::MVPPlayerRecorderPlugin",
+         "version" : "1.0",
+    "dependencies" : []
+}
