@@ -18,6 +18,7 @@ if 'sharedNoUndefined' in project.CC:
 	mvpPlayerFlags['SHLINKFLAGS'] = [project.CC['sharedNoUndefined']]
 
 SConscript( [
+              'libraries/boost-adds/SConscript',
               'libraries/mvp-player-core/SConscript',
               'libraries/mvp-player-gui/SConscript',
               'libraries/mvp-player-net/SConscript',

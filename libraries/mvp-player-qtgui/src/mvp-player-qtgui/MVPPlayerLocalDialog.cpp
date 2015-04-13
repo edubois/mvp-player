@@ -20,8 +20,6 @@ MVPPlayerLocalDialog::MVPPlayerLocalDialog( QWidget *parent )
     widget.setupUi(this);
     
     initDialog( widget );
-    connect( _btnNext, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitNextBtn() ) );
-    connect( _btnPrevious, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPreviousBtn() ) );
     connect( _btnPlayPause, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
     connect( widget.btnServer, SIGNAL( clicked(bool) ), this, SLOT( startStopServer( const bool ) ) );
     connect( widget.playlist, SIGNAL( currentRowChanged(int) ), this, SLOT( playPlaylistItemAtIndex(int) ) );
@@ -43,22 +41,12 @@ void MVPPlayerLocalDialog::slotViewHitPlayStopBtn()
 {
     if ( _btnPlayPause->isChecked() == false )
     {
-        signalViewHitStop();
+        signalViewHitButton( "Stop" );
     }
     else
     {
-        signalViewHitPlay( boost::none );
+        signalViewHitButton( "Play" );
     }
-}
-
-void MVPPlayerLocalDialog::slotViewHitPreviousBtn()
-{
-    signalViewHitPrevious();
-}
-
-void MVPPlayerLocalDialog::slotViewHitNextBtn()
-{
-    signalViewHitNext();
 }
 
 void MVPPlayerLocalDialog::playPlaylistItemAtIndex( const int playlistIndex )
@@ -88,7 +76,8 @@ void MVPPlayerLocalDialog::dropEvent( QDropEvent *de )
                 [this, &urlList]()
                 {
                     signalViewClearPlaylist();
-                    signalViewHitPlay( boost::filesystem::path( urlList.first().path().toStdString() ) );
+                    signalViewAddTrack( urlList.first().path().toStdString() );
+                    signalViewStartPlaylist();
                 }
             );
         }
@@ -96,7 +85,7 @@ void MVPPlayerLocalDialog::dropEvent( QDropEvent *de )
         {
             signalSequencial(
                 [this, &urlList](){
-                    signalViewHitStop();
+                    signalViewHitButton( "Stop" );
                     signalViewClearPlaylist();
                     for ( int i = 0; i < urlList.size(); ++i )
                     {

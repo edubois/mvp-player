@@ -5,6 +5,7 @@ libraries = [
               libs.mvp_player_core,
               libs.mvp_player_gui,
               libs.mvp_player_qtgui,
+              libs.mvp_player_pluger,
               libs.boost_program_options,
               libs.qt5( modules=[ 'QtCore', 'QtGui', 'QtWidgets', 'QtPrintSupport', 'QtMultimedia' ] ),
             ]

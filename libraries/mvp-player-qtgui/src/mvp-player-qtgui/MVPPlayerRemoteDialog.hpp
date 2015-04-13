@@ -72,8 +72,6 @@ private Q_SLOTS:
     void connectDisconnectClient( const bool start = true );
     void playPlaylistItemAtIndex( const int playlistIndex );
     void slotViewHitPlayStopBtn();
-    void slotViewHitPreviousBtn();
-    void slotViewHitNextBtn();
     void slotViewHitMute( const bool mute );
     void slotSetPlaylistItemIndex( const int row );
     void slotSetIconStop();

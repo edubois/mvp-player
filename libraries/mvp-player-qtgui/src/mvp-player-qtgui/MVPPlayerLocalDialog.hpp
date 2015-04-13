@@ -73,8 +73,6 @@ private Q_SLOTS:
     void startStopServer( const bool start = true );
     void playPlaylistItemAtIndex( const int playlistIndex );
     void slotViewHitPlayStopBtn();
-    void slotViewHitPreviousBtn();
-    void slotViewHitNextBtn();
     void slotSetPlaylistItemIndex( const int row );
     void slotSetIconStop();
     void slotSetIconPlay();

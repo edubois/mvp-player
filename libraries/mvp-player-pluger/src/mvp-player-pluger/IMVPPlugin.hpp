@@ -5,6 +5,8 @@
 #include <mvp-player-core/MVPPlayerEngine.hpp>
 #include <mvp-player-gui/IMVPPlayerDialog.hpp>
 
+#include <QtCore/QtCore>
+
 namespace mvpplayer
 {
 namespace plugins
@@ -13,11 +15,24 @@ namespace plugins
 /**
  * Interface for MVP Player plugins
  */
-class IMVPPlugin
+class IMVPPlugin : public QObject
 {
+    Q_OBJECT
 public:
-    IMVPPlugin();
-    virtual ~IMVPPlugin();
+    IMVPPlugin( QObject *parent = NULL )
+    : QObject( parent )
+    {}
+
+    IMVPPlugin( const std::string & name, QObject *parent = NULL )
+    : QObject( parent )
+    , _pluginName( name )
+    {}
+
+    virtual ~IMVPPlugin()
+    {}
+
+    inline const std::string & pluginName() const
+    { return _pluginName; }
 
     /**
      * @brief must be called to setup the plugin
@@ -25,17 +40,18 @@ public:
      * @param view the MVP Player view
      * @param presenter the MVP Player presenter
      */
-    virtual void setup( MVPPlayerEngine & model, gui::IMVPPlayerDialog & view, logic::MVPPlayerPresenter & presenter )
+    virtual void setup( mvpplayer::MVPPlayerEngine & model, mvpplayer::gui::IMVPPlayerDialog & view, mvpplayer::logic::MVPPlayerPresenter & presenter )
     {
         _model = &model;
         _view = &view;
         _presenter = &presenter;
     }
-
+protected:
+    std::string _pluginName;                        ///< The plugin's name
 private:
-    MVPPlayerEngine *_model;                        ///< MVP Player model
-    gui::IMVPPlayerDialog     *_view;               ///< MVP Player view
-    logic::MVPPlayerPresenter *_presenter;          ///< MVP Player presenter
+    mvpplayer::MVPPlayerEngine *_model;                        ///< MVP Player model
+    mvpplayer::gui::IMVPPlayerDialog     *_view;               ///< MVP Player view
+    mvpplayer::logic::MVPPlayerPresenter *_presenter;          ///< MVP Player presenter
 };
 
 }

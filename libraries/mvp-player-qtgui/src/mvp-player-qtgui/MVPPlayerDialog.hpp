@@ -44,11 +44,18 @@ protected:
 
             // Connect the right signals according to buttons' names
             const std::string buttonName = desc.property<std::string>( "name" );
+            button->setObjectName( buttonName.c_str() );
+
             if ( buttonName == "Play" )
             {
                 _btnPlayPause = button;
             }
-            else if ( buttonName == "Previous" )
+            else
+            {
+                connect( button, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitButton() ) );
+            }
+
+            if ( buttonName == "Previous" )
             {
                 _btnPrevious = button;
             }
@@ -64,6 +71,12 @@ protected:
     #else
         showMaximized();
     #endif
+    }
+protected Q_SLOTS:
+    void slotViewHitButton()
+    {
+        assert( sender() );
+        signalViewHitButton( sender()->objectName().toStdString() );
     }
 
 protected:

@@ -161,6 +161,12 @@ public:
      * @brief send event
      */
     void processEvent( IEvent & event );
+    
+    /**
+     * @brief process play, stop, next, previous commands
+     * @param commandName command name
+     */
+    void processCommand( const std::string & commandName );
 
     /**
      * @brief send 'play item at given index' event

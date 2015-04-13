@@ -6,6 +6,7 @@
 #include "boost-filesystem-path-serialization.hpp"
 
 #include <boost/statechart/event.hpp>
+#include <boost/statechart/transition.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/serialization/export.hpp>
 #include <boost/serialization/serialization.hpp>
@@ -601,6 +602,56 @@ public:
     }
 };
 
+/**
+ * @brief event custom state
+ */
+struct EvCustomState : IEvent, sc::event< EvCustomState >
+{
+private:
+    typedef EvCustomState This;
+public:
+    EvCustomState()
+    {}
+    
+    EvCustomState( const sc::result & nextState )
+    : _nextState( nextState )
+    {}
+
+    // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
+    static void operator delete( void *p, const std::size_t n )
+    { ::operator delete(p); }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+        ///@todo: serialize next state
+    }
+
+    /**
+     * @brief set the state to set after the reaction to this event
+     */
+    void setTransitionState( const sc::result & nextState )
+    { _nextState = nextState; }
+
+    inline const sc::result & nextTransitionState() const
+    { return _nextState; }
+        
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
+
+private:
+    sc::result _nextState;
+};
+
 template<class Archive>
 void registerClassInArchive( Archive & ar )
 {
@@ -620,6 +671,7 @@ void registerClassInArchive( Archive & ar )
     ar.template register_type< EvPlayingItemIndex >();
     ar.template register_type< EvPlayItemAtIndex >();
     ar.template register_type< EvReset >();
+    ar.template register_type< EvCustomState >();
 }
 
 }

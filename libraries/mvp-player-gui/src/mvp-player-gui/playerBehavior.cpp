@@ -23,8 +23,8 @@ void connectViewPresenter( mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logi
     //@{ Connections (behavior), note that the order is important
     // To send events in a sequencial way, we need to inform the presenter to pause the event processor
     v.signalSequencial.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processSequencial, &p, _1 ) );
-    // When we hit stop button, we want to react by sending a stop event to the state machine
-    v.signalViewHitStop.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processStop, &p ) );
+    // When we hit a button, we want to react by sending a the right event to the state machine
+    v.signalViewHitButton.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processCommand, &p, _1 ) );
     // When we hit clear playlist button, we want to react by sending a clear playlist event to the state machine
     v.signalViewClearPlaylist.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processClearPlaylist, &p ) );
     p.signalModelClearedPlaylist.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::clearPlaylist, &v ) );
@@ -36,8 +36,6 @@ void connectViewPresenter( mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logi
     p.signalAddedTrack.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::addTrack, &v, _1 ) );
     // When the view want to play a playlist item, react by sending the event to the state machine
     v.signalViewHitPlaylistItem.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processPlayItemAtIndex, &p, _1 ) );
-    // When we hit play button, we want to react by sending a play event to the state machine
-    v.signalViewHitPlay.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processPlay, &p, _1 ) );
     // Connect stop event to change play button to [*]
     p.signalPlayedTrack.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setIconStop, &v ) );
     // Connect played event to display track filename function
@@ -46,10 +44,6 @@ void connectViewPresenter( mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logi
     p.signalStopTrack.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setCurrentTrack, &v, boost::filesystem::path() ) );
     // Connect stop event to change play button to |>
     p.signalStopTrack.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setIconPlay, &v ) );
-    // When we hit previous button, we want to react by sending a 'previous track' event to the state machine
-    v.signalViewHitPrevious.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processPrevious, &p ) );
-    // When we hit next button, we want to react by sending a 'next track' event to the state machine
-    v.signalViewHitNext.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processNext, &p ) );
     // When the model plays another playlist track, inform the view
     p.signalPlayingItemIndex.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setPlaylistItemIndex, &v, _2 ) );
     // When the presenter notify that it opened a playlist, inform the view

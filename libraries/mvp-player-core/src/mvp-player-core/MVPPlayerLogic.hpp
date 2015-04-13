@@ -78,7 +78,8 @@ struct Playing : sc::simple_state< Playing, Active >
       sc::custom_reaction< EvModelClearedPlaylist >,
       sc::custom_reaction< EvPlayingItemIndex >,
       sc::custom_reaction< EvPlayItemAtIndex >,
-      sc::custom_reaction< EvEndOfTrack >
+      sc::custom_reaction< EvEndOfTrack >,
+      sc::custom_reaction< EvCustomState >
     > reactions;
 
     /**
@@ -88,6 +89,14 @@ struct Playing : sc::simple_state< Playing, Active >
     {
         context< PlayerStateMachine >().presenter.stopped();
         return transit< Stopped >();
+    }
+
+    /**
+     * @brief reaction on EvCustomState event
+     */
+    sc::result react( const EvCustomState & ev )
+    {
+        return ev.nextTransitionState();
     }
 
     /**

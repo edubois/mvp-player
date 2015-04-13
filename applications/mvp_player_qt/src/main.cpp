@@ -7,6 +7,7 @@
 #include <mvp-player-qtgui/resources.hpp>
 #include <mvp-player-net/client/Client.hpp>
 #include <mvp-player-net/server/Server.hpp>
+#include <mvp-player-pluger/PluginLoader.hpp>
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMessageBox>
@@ -63,6 +64,8 @@ int instanciateApp<gui::MVPPlayerRemoteDialog>( int argc, char **argv )
 
     // Setup Model View Presenter behavior (binds the whole thing)
     mvpplayer::gui::setupMainBehavior( playerEngine, dlg, presenter );
+    // Load plugins
+    mvpplayer::plugins::PluginLoader::getInstance().loadPlugins( playerEngine, dlg, presenter );
 
     // React on mute event
     // We don't want to share this event
@@ -132,6 +135,8 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerLocalDialog>( int argc, char **a
 
     // Setup Model View Presenter behavior (binds the whole thing)
     mvpplayer::gui::setupMainBehavior( playerEngine, dlg, presenter );
+    // Load plugins
+    mvpplayer::plugins::PluginLoader::getInstance().loadPlugins( playerEngine, dlg, presenter );
 
     // Transfer events received from the network to the presenter's state machine
     mvpPlayerServer.signalEventFrom.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processEvent, &presenter, _2 ) );

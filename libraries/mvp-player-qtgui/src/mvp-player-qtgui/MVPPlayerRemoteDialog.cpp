@@ -21,8 +21,6 @@ MVPPlayerRemoteDialog::MVPPlayerRemoteDialog( QWidget *parent )
     initDialog( widget );
 
     connect( _btnNext, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitNextBtn() ) );
-    connect( _btnPrevious, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPreviousBtn() ) );
-    connect( _btnPlayPause, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
     connect( widget.cbMute, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitMute(const bool) ) );
     connect( widget.btnServer, SIGNAL( clicked(bool) ), this, SLOT( connectDisconnectClient( const bool ) ) );
     connect( widget.playlist, SIGNAL( currentRowChanged(int) ), this, SLOT( playPlaylistItemAtIndex(int) ) );
@@ -43,22 +41,12 @@ void MVPPlayerRemoteDialog::slotViewHitPlayStopBtn()
 {
     if ( _btnPlayPause->isChecked() == false )
     {
-        signalViewHitStop();
+        signalViewHitButton( "Stop" );
     }
     else
     {
-        signalViewHitPlay( boost::none );
+        signalViewHitButton( "Play" );
     }
-}
-
-void MVPPlayerRemoteDialog::slotViewHitPreviousBtn()
-{
-    signalViewHitPrevious();
-}
-
-void MVPPlayerRemoteDialog::slotViewHitNextBtn()
-{
-    signalViewHitNext();
 }
 
 void MVPPlayerRemoteDialog::playPlaylistItemAtIndex( const int playlistIndex )
@@ -88,7 +76,8 @@ void MVPPlayerRemoteDialog::dropEvent( QDropEvent *de )
                 [this, &urlList]()
                 {
                     signalViewClearPlaylist();
-                    signalViewHitPlay( boost::filesystem::path( urlList.first().path().toStdString() ) );
+                    signalViewAddTrack( urlList.first().path().toStdString() );
+                    signalViewStartPlaylist();
                 }
             );
         }
@@ -96,7 +85,7 @@ void MVPPlayerRemoteDialog::dropEvent( QDropEvent *de )
         {
             signalSequencial(
                 [this, &urlList](){
-                    signalViewHitStop();
+                    signalViewHitButton( "Stop" );
                     signalViewClearPlaylist();
                     for ( int i = 0; i < urlList.size(); ++i )
                     {
