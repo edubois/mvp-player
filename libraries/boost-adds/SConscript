@@ -1,0 +1,14 @@
+Import( 'project' )
+Import( 'libs' )
+
+project.StaticLibrary( 'boostAdds',
+                       sources   = project.scanFiles( ['src'] ),
+                       includes  = ['src'],
+                       libraries = [
+                                     libs.boost,
+                                    ],
+                       localEnvFlags={ 'CXXFLAGS' : '-fPIC', 'CPPDEFINES': 'BOOST_ADDS_STATIC_BUILD' },
+                       externEnvFlags={ 'CPPDEFINES': 'BOOST_ADDS_STATIC_BUILD' },
+                       shared=False,
+                      )
+
