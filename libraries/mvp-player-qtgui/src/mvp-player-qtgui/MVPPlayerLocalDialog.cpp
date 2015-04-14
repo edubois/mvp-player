@@ -1,8 +1,6 @@
 #include "MVPPlayerLocalDialog.hpp"
 #include "MVPPlayerSettingsDialog.hpp"
 
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
 #include <QtWidgets/QDesktopWidget>
 
 #include <iostream>
@@ -30,22 +28,15 @@ MVPPlayerLocalDialog::~MVPPlayerLocalDialog()
 {
 }
 
-boost::filesystem::path MVPPlayerLocalDialog::openFile( const std::string & title, const std::string & extensions )
-{
-    QString result;
-    QMetaObject::invokeMethod( this, "slotOpenFile", Qt::BlockingQueuedConnection, Q_RETURN_ARG( QString, result ), Q_ARG( QString, QString::fromStdString( title ) ), Q_ARG( QString, QString::fromStdString( extensions ) ) );
-    return result.toStdString();
-}
-
 void MVPPlayerLocalDialog::slotViewHitPlayStopBtn()
 {
     if ( _btnPlayPause->isChecked() == false )
     {
-        signalViewHitButton( "Stop" );
+        signalViewHitButton( "Stop", true );
     }
     else
     {
-        signalViewHitButton( "Play" );
+        signalViewHitButton( "Play", true );
     }
 }
 
@@ -85,7 +76,7 @@ void MVPPlayerLocalDialog::dropEvent( QDropEvent *de )
         {
             signalSequencial(
                 [this, &urlList](){
-                    signalViewHitButton( "Stop" );
+                    signalViewHitButton( "Stop", true );
                     signalViewClearPlaylist();
                     for ( int i = 0; i < urlList.size(); ++i )
                     {
@@ -164,11 +155,6 @@ void MVPPlayerLocalDialog::slotSetPlaylistItemIndex( const int row )
     widget.playlist->blockSignals( false );
 }
 
-QString MVPPlayerLocalDialog::slotOpenFile( const QString & title, const QString & extensions )
-{
-    return QFileDialog::getOpenFileName( QApplication::activeWindow(), title, QDir::currentPath(), extensions );
-}
-
 void MVPPlayerLocalDialog::slotOpenedPlaylist( const QStringList & filenames )
 {
     widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
@@ -190,11 +176,6 @@ void MVPPlayerLocalDialog::slotAddTrack( const QString & filename )
     widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
     widget.playlist->addItem( filename );
     widget.playlist->blockSignals( false );
-}
-
-void MVPPlayerLocalDialog::slotDisplayError( const QString & msg )
-{
-    QMessageBox::critical( QApplication::activeWindow(), QObject::tr( "Error!" ), msg, QMessageBox::Ok | QMessageBox::Default);
 }
 
 }

@@ -60,7 +60,7 @@ int instanciateApp<gui::MVPPlayerRemoteDialog>( int argc, char **argv )
     // Display a message box on errors
     presenter.signalFailed.connect( boost::bind( &Dialog::displayError, &dlg, _1 ) );
     // When no file is provided and we hit play button, ask for a music file
-    presenter.signalAskForFile.connect( boost::bind( &Dialog::openFile, &dlg, _1, "Musics (*.wav;*.flac;*.mp3;*.m3u);; All files (*.*)" ) );
+    presenter.signalAskForFile.connect( boost::bind( &Dialog::openFile, &dlg, _1, _2, "Musics (*.wav *.flac *.mp3 *.m3u);; All files (*.*)" ) );
 
     // Setup Model View Presenter behavior (binds the whole thing)
     mvpplayer::gui::setupMainBehavior( playerEngine, dlg, presenter );
@@ -131,7 +131,7 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerLocalDialog>( int argc, char **a
     // Display a message box on errors
     presenter.signalFailed.connect( boost::bind( &Dialog::displayError, &dlg, _1 ) );
     // When no file is provided and we hit play button, ask for a music file
-    presenter.signalAskForFile.connect( boost::bind( &Dialog::openFile, &dlg, _1, "Musics (*.wav;*.flac;*.mp3;*.m3u);; All files (*.*)" ) );
+    presenter.signalAskForFile.connect( boost::bind( &Dialog::openFile, &dlg, _1, _2, "Musics (*.wav *.flac *.mp3 *.m3u);; All files (*.*)" ) );
 
     // Setup Model View Presenter behavior (binds the whole thing)
     mvpplayer::gui::setupMainBehavior( playerEngine, dlg, presenter );

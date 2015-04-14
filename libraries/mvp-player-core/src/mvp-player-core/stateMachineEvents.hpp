@@ -610,33 +610,27 @@ struct EvCustomState : IEvent, sc::event< EvCustomState >
 private:
     typedef EvCustomState This;
 public:
-    EvCustomState()
-    {}
-    
-    EvCustomState( const sc::result & nextState )
-    : _nextState( nextState )
+    EvCustomState( const std::string & action = std::string() )
+    : _action( action )
     {}
 
+    /**
+     * @brief get action
+     */
+    inline const std::string & action() const
+    { return _action; }
+    
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
 
     friend class boost::serialization::access;
-	template<class Archive>
-	void serialize(Archive & ar, const unsigned int version)
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version)
     {
         ar & boost::serialization::base_object<IEvent>( *this );
-        ///@todo: serialize next state
+        ar & _action;
     }
-
-    /**
-     * @brief set the state to set after the reaction to this event
-     */
-    void setTransitionState( const sc::result & nextState )
-    { _nextState = nextState; }
-
-    inline const sc::result & nextTransitionState() const
-    { return _nextState; }
         
     /**
      * @brief process this event (needed to avoid dynamic_casts)
@@ -647,9 +641,8 @@ public:
     {
         scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
     }
-
 private:
-    sc::result _nextState;
+    std::string _action;    ///< Custom action
 };
 
 template<class Archive>
@@ -693,5 +686,6 @@ BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvOpenedPlaylist );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvPlayingItemIndex );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvPlayItemAtIndex );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvReset );
+BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvCustomState );
 
 #endif

@@ -2,11 +2,14 @@
 #define	_GUI_MVPPLAYERDIALOG_HPP_
 
 #include <mvp-player-gui/IMVPPlayerDialog.hpp>
+#include <mvp-player-core/MVPPlayerPresenter.hpp>
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QToolButton>
+
+#include <boost/optional.hpp>
 
 namespace mvpplayer
 {
@@ -21,6 +24,11 @@ class MVPPlayerDialog : public QDialog, public IMVPPlayerDialog
 public:
     MVPPlayerDialog( QWidget *parent = NULL );
     virtual ~MVPPlayerDialog();
+
+    void displayError( const std::string & msg )
+    { QMetaObject::invokeMethod( this, "slotDisplayError", Qt::BlockingQueuedConnection, Q_ARG( QString, msg.c_str() ) ); }
+
+    boost::optional<boost::filesystem::path> openFile( const std::string & title, const logic::EFileDialogMode mode, const std::string & extensions );
 
 protected:
     template<class Dlg>
@@ -72,11 +80,22 @@ protected:
         showMaximized();
     #endif
     }
+
 protected Q_SLOTS:
+    QString slotOpenFile( const QString & title, const QString & extensions );
+    void slotDisplayError( const QString & msg );
     void slotViewHitButton()
     {
-        assert( sender() );
-        signalViewHitButton( sender()->objectName().toStdString() );
+        QToolButton *button = qobject_cast<QToolButton*>( sender() );
+        assert( button );
+        if ( button->isCheckable() )
+        {
+            signalViewHitButton( button->objectName().toStdString(), button->isChecked() );
+        }
+        else
+        {
+            signalViewHitButton( button->objectName().toStdString(), true );
+        }
     }
 
 protected:

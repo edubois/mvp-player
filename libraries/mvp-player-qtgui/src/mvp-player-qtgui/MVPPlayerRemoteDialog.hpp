@@ -32,11 +32,6 @@ public:
     MVPPlayerRemoteDialog( QWidget *parent = NULL );
     virtual ~MVPPlayerRemoteDialog();
 
-    void displayError( const std::string & msg )
-    { QMetaObject::invokeMethod( this, "slotDisplayError", Qt::BlockingQueuedConnection, Q_ARG( QString, msg.c_str() ) ); }
-
-    boost::filesystem::path openFile( const std::string & title, const std::string & extensions );
-
     /**
      * In the following sections, we use invokeMethod because of asynchronous
      * calls that might come from other threads.
@@ -76,8 +71,6 @@ private Q_SLOTS:
     void slotSetPlaylistItemIndex( const int row );
     void slotSetIconStop();
     void slotSetIconPlay();
-    QString slotOpenFile( const QString & title, const QString & extensions );
-    void slotDisplayError( const QString & msg );
     void slotOpenedPlaylist( const QStringList & filenames );
     void slotClearPlaylist();
     void slotAddTrack( const QString & filename );

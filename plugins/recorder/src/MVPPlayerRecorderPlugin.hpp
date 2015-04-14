@@ -18,8 +18,8 @@ namespace mvpplayer
 {
 namespace plugins
 {
-
 static const std::string kMVPPlayerPluginName( "recorderPlugin" );
+static const std::string kRecordAction( "kRecordAction" );
 
 class MVPPlayerRecorderPlugin : public IMVPPlugin
 {
@@ -35,8 +35,14 @@ public:
 
     /**
      * Triggered when the user click on the record button
+     * @param record shall we record or stop recording ?
      */
-    void recordClicked();
+    void recordClicked( const bool record );
+    
+    /**
+     * @brief Needed to enter into the Recording state
+     */
+    boost::statechart::result recordTransition( const std::string & action, logic::Stopped & state );
 };
 
 }

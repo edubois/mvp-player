@@ -1,4 +1,9 @@
 #include "MVPPlayerRecorderPlugin.hpp"
+#include "SoundRecorder.hpp"
+
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QApplication>
+#include <boost/filesystem/path.hpp>
 
 namespace mvpplayer
 {
@@ -10,15 +15,47 @@ void MVPPlayerRecorderPlugin::setup( MVPPlayerEngine & model, gui::IMVPPlayerDia
     // Call base class' setup
     IMVPPlugin::setup( model, view, presenter );
     // Intercept record button click
-    view.signalViewHitButton.connect( [this, &presenter]( const std::string & commandName ) { if ( commandName == "Record" ) this->recordClicked(); } );
+    view.signalViewHitButton.connect( [this, &presenter]( const std::string & commandName, const bool record ) { if ( commandName == "Record" ) this->recordClicked( record ); } );
+    SoundRecorder::getInstance().setSampleRate( 44100 );
+    SoundRecorder::getInstance().setBitDepth( 16 );
+    SoundRecorder::getInstance().setChannels( 1 );
+    presenter.askStoppedStateExternalTransition.connect( boost::bind( &MVPPlayerRecorderPlugin::recordTransition, this, _1, _2 ) );
 }
 
 /**
  * Triggered when the user click on the record button
  */
-void MVPPlayerRecorderPlugin::recordClicked()
+void MVPPlayerRecorderPlugin::recordClicked( const bool activated )
 {
-    std::cout << "Record!" << std::endl;
+    if ( activated )
+    {
+        // Queue custom record event
+        using EventT = logic::EvCustomState;
+        EventT *event = new EventT( kRecordAction );
+        _presenter->signalEvent( *event );
+        _presenter->processEvent( *event );
+    }
+    else
+    {
+        // Queue stop event
+        _presenter->processStop();
+    }
+}
+
+/**
+ * @brief Needed to enter into the Recording state
+ */
+boost::statechart::result MVPPlayerRecorderPlugin::recordTransition( const std::string & action, logic::Stopped & state )
+{
+    std::cout << "recordTransition: " <<action << std::endl;
+    if ( action == kRecordAction )
+    {
+        return state.transit<logic::plugin::Recording>();
+    }
+    else
+    {
+        return boost::statechart::result( boost::statechart::detail::no_reaction );
+    }
 }
 
 }

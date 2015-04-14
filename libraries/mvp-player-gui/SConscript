@@ -3,12 +3,11 @@ Import( 'libs' )
 
 sourcesDir = 'src'
 
-project.StaticLibrary( 'mvp_player_gui',
+project.SharedLibrary( 'mvp_player_gui',
                        sources   = project.scanFiles( ['src'] ),
                        includes  = ['src'],
                        libraries = [
                                      libs.boost,
                                      libs.mvp_player_core,
                                     ],
-                       shared = False
                       )

@@ -30,22 +30,15 @@ MVPPlayerRemoteDialog::~MVPPlayerRemoteDialog()
 {
 }
 
-boost::filesystem::path MVPPlayerRemoteDialog::openFile( const std::string & title, const std::string & extensions )
-{
-    QString result;
-    QMetaObject::invokeMethod( this, "slotOpenFile", Qt::BlockingQueuedConnection, Q_RETURN_ARG( QString, result ), Q_ARG( QString, QString::fromStdString( title ) ), Q_ARG( QString, QString::fromStdString( extensions ) ) );
-    return result.toStdString();
-}
-
 void MVPPlayerRemoteDialog::slotViewHitPlayStopBtn()
 {
     if ( _btnPlayPause->isChecked() == false )
     {
-        signalViewHitButton( "Stop" );
+        signalViewHitButton( "Stop", true );
     }
     else
     {
-        signalViewHitButton( "Play" );
+        signalViewHitButton( "Play", true );
     }
 }
 
@@ -85,7 +78,7 @@ void MVPPlayerRemoteDialog::dropEvent( QDropEvent *de )
         {
             signalSequencial(
                 [this, &urlList](){
-                    signalViewHitButton( "Stop" );
+                    signalViewHitButton( "Stop", true );
                     signalViewClearPlaylist();
                     for ( int i = 0; i < urlList.size(); ++i )
                     {
@@ -160,11 +153,6 @@ void MVPPlayerRemoteDialog::slotSetPlaylistItemIndex( const int row )
     widget.playlist->blockSignals( false );
 }
 
-QString MVPPlayerRemoteDialog::slotOpenFile( const QString & title, const QString & extensions )
-{
-    return QFileDialog::getOpenFileName( QApplication::activeWindow(), title, QDir::currentPath(), extensions );
-}
-
 void MVPPlayerRemoteDialog::slotOpenedPlaylist( const QStringList & filenames )
 {
     widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
@@ -186,11 +174,6 @@ void MVPPlayerRemoteDialog::slotAddTrack( const QString & filename )
     widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
     widget.playlist->addItem( filename );
     widget.playlist->blockSignals( false );
-}
-
-void MVPPlayerRemoteDialog::slotDisplayError( const QString & msg )
-{
-    QMessageBox::critical( QApplication::activeWindow(), QObject::tr( "Error!" ), msg, QMessageBox::Ok | QMessageBox::Default);
 }
 
 }

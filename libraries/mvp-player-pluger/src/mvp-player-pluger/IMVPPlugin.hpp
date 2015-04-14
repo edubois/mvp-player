@@ -48,7 +48,6 @@ public:
     }
 protected:
     std::string _pluginName;                        ///< The plugin's name
-private:
     mvpplayer::MVPPlayerEngine *_model;                        ///< MVP Player model
     mvpplayer::gui::IMVPPlayerDialog     *_view;               ///< MVP Player view
     mvpplayer::logic::MVPPlayerPresenter *_presenter;          ///< MVP Player presenter

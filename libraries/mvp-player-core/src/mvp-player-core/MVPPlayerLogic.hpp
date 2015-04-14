@@ -33,10 +33,14 @@ static const std::size_t kDecideToSendPreviousThreshold( 2 );
 
 struct Active;
 
+struct Stopped;
+
+struct Playing;
+
 /**
  * @brief mvp-player's state machine (asynchronous is needed to be thread safe)
  */
-struct PlayerStateMachine : sc::asynchronous_state_machine< PlayerStateMachine, Active >
+struct PlayerStateMachine : sc::asynchronous_state_machine< PlayerStateMachine, Active>
 {
     PlayerStateMachine( my_context ctx, MVPPlayerPresenter & presenter )
     : my_base( ctx )
@@ -46,8 +50,6 @@ struct PlayerStateMachine : sc::asynchronous_state_machine< PlayerStateMachine, 
     MVPPlayerPresenter & presenter;                        ///< The state machine owner
     std::chrono::system_clock::time_point lastPlayTime;     ///< Last clock since we hit play
 };
-
-struct Stopped;
 
 /**
  * @brief Active is the outermost state and therefore needs to pass the
@@ -92,20 +94,30 @@ struct Playing : sc::simple_state< Playing, Active >
     }
 
     /**
-     * @brief reaction on EvCustomState event
-     */
-    sc::result react( const EvCustomState & ev )
-    {
-        return ev.nextTransitionState();
-    }
-
-    /**
      * @brief reaction on end of track event
      */
     sc::result react( const EvEndOfTrack & ev )
     {
         context< PlayerStateMachine >().presenter.processNext();
         return transit< Playing >();
+    }
+
+    /**
+     * @brief reaction on custom events
+     */
+    sc::result react( const EvCustomState & ev )
+    {
+        auto result = context< PlayerStateMachine >().presenter.askPlayingStateExternalTransition( ev.action(), *this );
+        // First boost::option level is happening when no slot is connected to the signal
+        if ( result != boost::none )
+        {
+            // Second boost::option level is happening when the action has been rejected
+            return *result;
+        }
+        else
+        {
+            return discard_event();
+        }
     }
 
     /**
@@ -307,8 +319,25 @@ struct Stopped : sc::simple_state< Stopped, Active >
       sc::custom_reaction< EvPreviousTrack >,
       sc::custom_reaction< EvNextTrack >,
       sc::custom_reaction< EvPlayItemAtIndex >,
-      sc::custom_reaction< EvEndOfTrack >
+      sc::custom_reaction< EvEndOfTrack >,
+      sc::custom_reaction< EvCustomState >
     > reactions;
+
+    /**
+     * @brief reaction on custom events
+     */
+    sc::result react( const EvCustomState & ev )
+    {
+        auto result = context< PlayerStateMachine >().presenter.askStoppedStateExternalTransition( ev.action(), boost::ref( *this ) );
+        if ( result != boost::none )
+        {
+            return *result;
+        }
+        else
+        {
+            return discard_event();
+        }
+    }
 
     /**
      * @brief reaction to playlist open
@@ -411,7 +440,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
         }
         else
         {
-            boost::optional<boost::filesystem::path> answer = context< PlayerStateMachine >().presenter.askForFile( _tr( "Select a music filename!" ) );
+            boost::optional<boost::filesystem::path> answer = context< PlayerStateMachine >().presenter.askForFile( _tr( "Select a music filename!" ), eFileDialogModeOpen );
             if ( answer && !answer.get().empty() )
             {
                 context< PlayerStateMachine >().presenter.processPlay( answer.get() );

@@ -1,5 +1,5 @@
-#ifndef _MVPPLAYERPRESENTER_HPP_
-#define	_MVPPLAYERPRESENTER_HPP_
+#ifndef _CORE_MVPPLAYERPRESENTER_HPP_
+#define	_CORE_MVPPLAYERPRESENTER_HPP_
 
 #include "stateMachineEvents.hpp"
 
@@ -12,7 +12,12 @@ namespace mvpplayer
 {
 namespace logic
 {
+struct Stopped;
+struct Playing;
+
 namespace sc = boost::statechart;
+
+enum EFileDialogMode { eFileDialogModeOpen, eFileDialogModeSave };
 
 namespace details
 {
@@ -148,8 +153,18 @@ public:
     inline void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
     { signalOpenedPlaylist( playlistItems ); }
 
-    boost::optional<boost::filesystem::path> askForFile( const std::string & question )
-    { return signalAskForFile( question ); }
+    boost::optional<boost::filesystem::path> askForFile( const std::string & question, const EFileDialogMode & mode )
+    {
+        auto sigAnswer = signalAskForFile( question, mode );
+        if ( sigAnswer != boost::none )
+        {
+            return *sigAnswer;
+        }
+        else
+        {
+            return boost::none;
+        }
+    }
 
     /**
      * @brief pause the processor, call the lambda function, restart the processor
@@ -302,6 +317,8 @@ public:
 
     //- signals
     boost::signals2::signal<void( IEvent& )> signalEvent;
+    boost::signals2::signal<sc::result(const std::string&, Playing &)> askPlayingStateExternalTransition;   ///< Bind this to a transition function to extend the state machine states (context is Playing state)
+    boost::signals2::signal<sc::result(const std::string&, Stopped &)> askStoppedStateExternalTransition;   ///< Bind this to a transition function to extend the state machine states (context is Stopped state)
     boost::signals2::signal<void(const boost::filesystem::path&)> signalPlayedTrack;
     boost::signals2::signal<void(const boost::filesystem::path&)> signalPlayTrack;
     boost::signals2::signal<void(const boost::filesystem::path&)> signalAddTrack;
@@ -317,7 +334,7 @@ public:
     boost::signals2::signal<void(const std::vector<m3uParser::PlaylistItem> &)> signalOpenedPlaylist;
     boost::signals2::signal<void(const boost::filesystem::path&, const int)> signalPlayingItemIndex;
     boost::signals2::signal<void(const std::string&)> signalFailed;
-    boost::signals2::signal<boost::filesystem::path(const std::string&)> signalAskForFile;
+    boost::signals2::signal<boost::optional<boost::filesystem::path> (const std::string&, const EFileDialogMode)> signalAskForFile;
 };
 
 }
