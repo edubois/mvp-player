@@ -43,6 +43,15 @@ public:
      * @brief Needed to enter into the Recording state
      */
     boost::statechart::result recordTransition( const std::string & action, logic::Stopped & state );
+
+    /**
+     * Triggered when we want to start the recording in a file
+     * @param filename output filename
+     */
+    void record( const boost::filesystem::path & filename );
+    
+private:
+    logic::plugin::RecorderPluginPresenter _plugPresenter;
 };
 
 }

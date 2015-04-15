@@ -20,6 +20,9 @@ void MVPPlayerRecorderPlugin::setup( MVPPlayerEngine & model, gui::IMVPPlayerDia
     SoundRecorder::getInstance().setBitDepth( 16 );
     SoundRecorder::getInstance().setChannels( 1 );
     presenter.askStoppedStateExternalTransition.connect( boost::bind( &MVPPlayerRecorderPlugin::recordTransition, this, _1, _2 ) );
+
+    presenter.registerPluginPresenter( kMVPPlayerPluginName, _plugPresenter );
+    _plugPresenter.signalRecord.connect( boost::bind( &MVPPlayerRecorderPlugin::record, this, _1 ) );
 }
 
 /**
@@ -65,6 +68,17 @@ boost::statechart::result MVPPlayerRecorderPlugin::recordTransition( const std::
         return boost::statechart::result( boost::statechart::detail::no_reaction );
     }
 }
+
+/**
+ * Triggered when we want to start the recording in a file
+ * @param filename output filename
+ */
+void MVPPlayerRecorderPlugin::record( const boost::filesystem::path & filename )
+{
+    // Recording goes here:
+    std::cout << "Record into: " << filename << std::endl;
+}
+
 
 }
 }

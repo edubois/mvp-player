@@ -19,6 +19,11 @@ namespace sc = boost::statechart;
 namespace plugin
 {
 
+struct RecorderPluginPresenter : IPluginPresenter
+{
+    boost::signals2::signal<void( const boost::filesystem::path & filename )> signalRecord;
+};
+
 /**
  * @brief Recording state
  */

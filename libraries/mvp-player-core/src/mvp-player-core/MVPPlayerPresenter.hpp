@@ -7,6 +7,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/signals2.hpp>
 #include <boost/thread.hpp>
+#include <map>
 
 namespace mvpplayer
 {
@@ -66,6 +67,15 @@ private:
 };
 
 }
+
+/**
+ * @brief For plugins
+ * Put your custom plugin signals in a class inheriting from this class
+ */
+struct IPluginPresenter
+{
+    virtual ~IPluginPresenter() {}
+};
 
 /**
  * @brief the presenter is the glue between the model and the view,
@@ -310,11 +320,26 @@ public:
         signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
+
+    inline void registerPluginPresenter( const std::string & pluginName, IPluginPresenter & pres )
+    {
+        _pluginPresenter.insert( std::make_pair( pluginName, &pres ) );
+    }
     
+    template<class P>
+    P & presenterOfPlugin( const std::string & pluginName )
+    {
+        auto it = _pluginPresenter.find( pluginName );
+        assert( it != _pluginPresenter.end() );
+        return dynamic_cast<P&>( *it->second );
+    }
+
+private:
     mutable sc::fifo_scheduler<> _scheduler;                    ///< Event asynchronous scheduler (used to queue events)
     sc::fifo_scheduler<>::processor_handle _playerProcessor;    ///< Event processor
     details::SchedulerWorker _schedulerWorker;                  ///< Event scheduler thread
 
+public:
     //- signals
     boost::signals2::signal<void( IEvent& )> signalEvent;
     boost::signals2::signal<sc::result(const std::string&, Playing &)> askPlayingStateExternalTransition;   ///< Bind this to a transition function to extend the state machine states (context is Playing state)
@@ -335,6 +360,9 @@ public:
     boost::signals2::signal<void(const boost::filesystem::path&, const int)> signalPlayingItemIndex;
     boost::signals2::signal<void(const std::string&)> signalFailed;
     boost::signals2::signal<boost::optional<boost::filesystem::path> (const std::string&, const EFileDialogMode)> signalAskForFile;
+
+private:
+    std::map<std::string, IPluginPresenter*> _pluginPresenter;
 };
 
 }
