@@ -82,7 +82,7 @@ protected:
     }
 
 protected Q_SLOTS:
-    QString slotOpenFile( const QString & title, const QString & extensions );
+    QString slotOpenFile( const QString & title, const QString & extensions, const logic::EFileDialogMode mode );
     void slotDisplayError( const QString & msg );
     void slotViewHitButton()
     {

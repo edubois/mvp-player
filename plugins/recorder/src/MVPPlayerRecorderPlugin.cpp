@@ -29,11 +29,20 @@ void MVPPlayerRecorderPlugin::recordClicked( const bool activated )
 {
     if ( activated )
     {
-        // Queue custom record event
-        using EventT = logic::EvCustomState;
-        EventT *event = new EventT( kRecordAction );
-        _presenter->signalEvent( *event );
-        _presenter->processEvent( *event );
+        // Queue custom event to enter the right plugin recording state
+        {
+            using EventT = logic::EvCustomState;
+            EventT *event = new EventT( kRecordAction );
+            _presenter->signalEvent( *event );
+            _presenter->processEvent( *event );
+        }
+        // Queue record event
+        {
+            using EventT = logic::plugin::EvRecord;
+            EventT *event = new EventT();
+            _presenter->signalEvent( *event );
+            _presenter->processEvent( *event );
+        }
     }
     else
     {
@@ -47,7 +56,6 @@ void MVPPlayerRecorderPlugin::recordClicked( const bool activated )
  */
 boost::statechart::result MVPPlayerRecorderPlugin::recordTransition( const std::string & action, logic::Stopped & state )
 {
-    std::cout << "recordTransition: " <<action << std::endl;
     if ( action == kRecordAction )
     {
         return state.transit<logic::plugin::Recording>();
