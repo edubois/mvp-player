@@ -22,6 +22,7 @@ namespace plugin
 struct RecorderPluginPresenter : IPluginPresenter
 {
     boost::signals2::signal<void( const boost::filesystem::path & filename )> signalRecord;
+    boost::signals2::signal<void()> signalStopRecord;
 };
 
 /**
@@ -42,11 +43,7 @@ struct Recording : sc::simple_state< Recording, Active >
     /**
      * @brief reaction on stop track event
      */
-    sc::result react( const EvStop & ev )
-    {
-        context< PlayerStateMachine >().presenter.stopped();
-        return transit< Stopped >();
-    }
+    sc::result react( const EvStop & ev );
 
 };
 

@@ -49,7 +49,12 @@ public:
      * @param filename output filename
      */
     void record( const boost::filesystem::path & filename );
-    
+
+    /**
+     * @brief Triggered when we want to play a track after a volume high triggering
+     */
+    void playTrack();
+
 private:
     logic::plugin::RecorderPluginPresenter _plugPresenter;
 };

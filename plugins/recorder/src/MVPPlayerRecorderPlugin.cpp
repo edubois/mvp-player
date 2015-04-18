@@ -23,6 +23,8 @@ void MVPPlayerRecorderPlugin::setup( MVPPlayerEngine & model, gui::IMVPPlayerDia
 
     presenter.registerPluginPresenter( kMVPPlayerPluginName, _plugPresenter );
     _plugPresenter.signalRecord.connect( boost::bind( &MVPPlayerRecorderPlugin::record, this, _1 ) );
+    _plugPresenter.signalStopRecord.connect( boost::bind( &SoundRecorder::stopRecording, &SoundRecorder::getInstance() ) );
+    _plugPresenter.signalStopRecord.connect( boost::bind( &logic::MVPPlayerPresenter::processCommandActive, &presenter, std::string( "Record" ), false ) );
 }
 
 /**
@@ -32,6 +34,8 @@ void MVPPlayerRecorderPlugin::recordClicked( const bool activated )
 {
     if ( activated )
     {
+        // Stop current action
+        _presenter->processStop();
         // Queue custom event to enter the right plugin recording state
         {
             using EventT = logic::EvCustomState;
@@ -76,7 +80,17 @@ boost::statechart::result MVPPlayerRecorderPlugin::recordTransition( const std::
 void MVPPlayerRecorderPlugin::record( const boost::filesystem::path & filename )
 {
     // Recording goes here:
-    std::cout << "Record into: " << filename << std::endl;
+    SoundRecorder::getInstance().stopRecording();
+    SoundRecorder::getInstance().setFilename( filename );
+    SoundRecorder::getInstance().signalVolumeHigh.connect( boost::bind( &MVPPlayerRecorderPlugin::playTrack, this ) );
+    SoundRecorder::getInstance().startRecording();
+}
+
+void MVPPlayerRecorderPlugin::playTrack()
+{
+    // Queue stop event
+    _presenter->processStop();
+    _presenter->processPlay( boost::none );
 }
 
 

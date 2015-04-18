@@ -54,7 +54,7 @@ public:
             return false;
         }
     }
-    
+
 private:
     void initialize();
     void createDSP();
