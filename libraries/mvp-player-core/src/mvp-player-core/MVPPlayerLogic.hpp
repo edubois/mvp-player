@@ -47,8 +47,11 @@ struct PlayerStateMachine : sc::asynchronous_state_machine< PlayerStateMachine, 
     , presenter( presenter )
     {}
 
-    MVPPlayerPresenter & presenter;                        ///< The state machine owner
+    int currentPlaylistIndex = -1;
+    std::size_t nItemsPlaylist = 0;
+    MVPPlayerPresenter & presenter;                         ///< The state machine owner
     std::chrono::system_clock::time_point lastPlayTime;     ///< Last clock since we hit play
+    boost::optional<boost::filesystem::path> lastTrackFilename;              ///< Last played track
 };
 
 /**
@@ -81,7 +84,8 @@ struct Playing : sc::simple_state< Playing, Active >
       sc::custom_reaction< EvPlayingItemIndex >,
       sc::custom_reaction< EvPlayItemAtIndex >,
       sc::custom_reaction< EvEndOfTrack >,
-      sc::custom_reaction< EvCustomState >
+      sc::custom_reaction< EvCustomState >,
+      sc::custom_reaction< EvCommandActive >
     > reactions;
 
     /**
@@ -91,6 +95,15 @@ struct Playing : sc::simple_state< Playing, Active >
     {
         context< PlayerStateMachine >().presenter.stopped();
         return transit< Stopped >();
+    }
+
+    /**
+     * @brief reaction on 'command active' event
+     */
+    sc::result react( const EvCommandActive & ev )
+    {
+        context< PlayerStateMachine >().presenter.commandActive( ev.commandName(), ev.active() );
+        return transit< Playing >();
     }
 
     /**
@@ -107,7 +120,7 @@ struct Playing : sc::simple_state< Playing, Active >
      */
     sc::result react( const EvCustomState & ev )
     {
-        auto result = context< PlayerStateMachine >().presenter.askPlayingStateExternalTransition( ev.action(), *this );
+        auto result = context< PlayerStateMachine >().presenter.askPlayingStateExternalTransition( ev.action(), boost::ref( *this ) );
         // First boost::option level is happening when no slot is connected to the signal
         if ( result != boost::none )
         {
@@ -135,6 +148,8 @@ struct Playing : sc::simple_state< Playing, Active >
     sc::result react( const EvModelClearedPlaylist & ev )
     {
         context< PlayerStateMachine >().presenter.modelClearedPlaylist();
+        context< PlayerStateMachine >().nItemsPlaylist = 0;
+        context< PlayerStateMachine >().currentPlaylistIndex = -1;
         return transit< Stopped >();
     }
 
@@ -144,6 +159,7 @@ struct Playing : sc::simple_state< Playing, Active >
     sc::result react( const EvStartPlaylist & )
     {
         context< PlayerStateMachine >().presenter.startPlaylist();
+        context< PlayerStateMachine >().currentPlaylistIndex = 0;
         return transit< Playing >();
     }
 
@@ -152,7 +168,8 @@ struct Playing : sc::simple_state< Playing, Active >
      */
     sc::result react( const EvOpenedPlaylist & ev )
     {
-        _nItemsPlaylist = ev.playlistItems().size();
+        context< PlayerStateMachine >().nItemsPlaylist = ev.playlistItems().size();
+        context< PlayerStateMachine >().currentPlaylistIndex = 0;
         context< PlayerStateMachine >().presenter.openedPlaylist( ev.playlistItems() );
         return transit< Playing >();
     }
@@ -162,7 +179,7 @@ struct Playing : sc::simple_state< Playing, Active >
      */
     sc::result react( const EvPlayingItemIndex & ev )
     {
-        _currentPlaylistIndex = ev.playlistIndex();
+        context< PlayerStateMachine >().currentPlaylistIndex = ev.playlistIndex();
         context< PlayerStateMachine >().lastPlayTime = std::chrono::system_clock::now();
         context< PlayerStateMachine >().presenter.playingItemIndex( ev.filename(), ev.playlistIndex() );
         return transit< Playing >();
@@ -194,7 +211,8 @@ struct Playing : sc::simple_state< Playing, Active >
     sc::result react( const EvPreviousTrack & ev )
     {
         std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-        if ( std::chrono::duration_cast<std::chrono::seconds>( now - context< PlayerStateMachine >().lastPlayTime ).count() >= kDecideToSendPreviousThreshold )
+        if ( context< PlayerStateMachine >().nItemsPlaylist == 1 || 
+             std::chrono::duration_cast<std::chrono::seconds>( now - context< PlayerStateMachine >().lastPlayTime ).count() >= kDecideToSendPreviousThreshold )
         {
             context< PlayerStateMachine >().presenter.processRestart();
             return discard_event();
@@ -211,7 +229,14 @@ struct Playing : sc::simple_state< Playing, Active >
      */
     sc::result react( const EvNextTrack & ev )
     {
-        context< PlayerStateMachine >().presenter.nextTrack();
+        if ( context< PlayerStateMachine >().currentPlaylistIndex == context< PlayerStateMachine >().nItemsPlaylist - 1 )
+        {
+            context< PlayerStateMachine >().presenter.processStop();
+        }
+        else
+        {
+            context< PlayerStateMachine >().presenter.nextTrack();
+        }
         return transit< Playing >();
     }
 
@@ -234,6 +259,11 @@ struct Playing : sc::simple_state< Playing, Active >
      */
     sc::result react( const EvAddedTrack & ev )
     {
+        if ( context< PlayerStateMachine >().currentPlaylistIndex == -1 )
+        {
+            context< PlayerStateMachine >().currentPlaylistIndex = 0;
+        }
+        ++context< PlayerStateMachine >().nItemsPlaylist;
         context< PlayerStateMachine >().presenter.addedTrack( ev.filename() );
         return transit< Playing >();
     }
@@ -244,6 +274,7 @@ struct Playing : sc::simple_state< Playing, Active >
     sc::result react( const EvPlayed & ev )
     {
         context< PlayerStateMachine >().presenter.played( ev.filename() );
+        context< PlayerStateMachine >().lastTrackFilename = ev.filename();
         return transit< Playing >();
     }
 
@@ -255,11 +286,11 @@ struct Playing : sc::simple_state< Playing, Active >
         // Check if we want to resume the track
         if ( !ev.hasFilename() )
         {
-            if ( _nItemsPlaylist )
+            if ( context< PlayerStateMachine >().nItemsPlaylist )
             {
-                if ( _currentPlaylistIndex >= 0 )
+                if ( context< PlayerStateMachine >().currentPlaylistIndex >= 0 )
                 {
-                    context< PlayerStateMachine >().presenter.playItemAtIndex( _currentPlaylistIndex );
+                    context< PlayerStateMachine >().presenter.playItemAtIndex( context< PlayerStateMachine >().currentPlaylistIndex );
                 }
                 else
                 {
@@ -281,9 +312,9 @@ struct Playing : sc::simple_state< Playing, Active >
                 context< PlayerStateMachine >().lastPlayTime = std::chrono::system_clock::now();
                 context< PlayerStateMachine >().presenter.playTrack( filename );
 
-                if ( _nItemsPlaylist == 0 )
+                if ( context< PlayerStateMachine >().nItemsPlaylist == 0 )
                 {
-                    _currentPlaylistIndex = -1;
+                    context< PlayerStateMachine >().currentPlaylistIndex = -1;
                 }
                 return transit< Playing >();
             }
@@ -295,11 +326,6 @@ struct Playing : sc::simple_state< Playing, Active >
             }
         }
     }
-    
-    
-private:
-    int _currentPlaylistIndex = -1;
-    std::size_t _nItemsPlaylist = 0;
 };
 
 /**
@@ -320,7 +346,8 @@ struct Stopped : sc::simple_state< Stopped, Active >
       sc::custom_reaction< EvNextTrack >,
       sc::custom_reaction< EvPlayItemAtIndex >,
       sc::custom_reaction< EvEndOfTrack >,
-      sc::custom_reaction< EvCustomState >
+      sc::custom_reaction< EvCustomState >,
+      sc::custom_reaction< EvCommandActive >
     > reactions;
 
     /**
@@ -337,6 +364,15 @@ struct Stopped : sc::simple_state< Stopped, Active >
         {
             return discard_event();
         }
+    }
+
+    /**
+     * @brief reaction on 'command active' event
+     */
+    sc::result react( const EvCommandActive & ev )
+    {
+        context< PlayerStateMachine >().presenter.commandActive( ev.commandName(), ev.active() );
+        return transit< Playing >();
     }
 
     /**
@@ -369,6 +405,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
     sc::result react( const EvAddedTrack & ev )
     {
         context< PlayerStateMachine >().presenter.addedTrack( ev.filename() );
+        ++context< PlayerStateMachine >().nItemsPlaylist;
         return transit< Stopped >();
     }
 
@@ -378,6 +415,8 @@ struct Stopped : sc::simple_state< Stopped, Active >
     sc::result react( const EvClearPlaylist & ev )
     {
         context< PlayerStateMachine >().presenter.clearPlaylist();
+        context< PlayerStateMachine >().nItemsPlaylist = 0;
+        context< PlayerStateMachine >().currentPlaylistIndex = -1;
         return transit< Stopped >();
     }
 
@@ -405,7 +444,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
     sc::result react( const EvPreviousTrack & ev )
     {
         context< PlayerStateMachine >().presenter.previousTrack();
-        return transit< Playing >();
+        return transit< Stopped >();
     }
 
     /**
@@ -413,8 +452,11 @@ struct Stopped : sc::simple_state< Stopped, Active >
      */
     sc::result react( const EvNextTrack & ev )
     {
-        context< PlayerStateMachine >().presenter.nextTrack();
-        return transit< Playing >();
+        if ( context< PlayerStateMachine >().currentPlaylistIndex != context< PlayerStateMachine >().nItemsPlaylist - 1 )
+        {
+            context< PlayerStateMachine >().presenter.nextTrack();
+        }
+        return transit< Stopped >();
     }
 
     /**
@@ -422,6 +464,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
      */
     sc::result react( const EvPlayItemAtIndex & ev )
     {
+        context< PlayerStateMachine >().currentPlaylistIndex = ev.playlistIndex();
         context< PlayerStateMachine >().presenter.playItemAtIndex( ev.playlistIndex() );
         return transit< Playing >();
     }
@@ -438,12 +481,19 @@ struct Stopped : sc::simple_state< Stopped, Active >
             context< PlayerStateMachine >().presenter.playTrack( ev.filename().get() );
             return transit< Playing >();
         }
+        else if ( context< PlayerStateMachine >().lastTrackFilename != boost::none )
+        {
+            context< PlayerStateMachine >().presenter.processPlay( *context< PlayerStateMachine >().lastTrackFilename );
+            return transit< Playing >();
+        }
         else
         {
             boost::optional<boost::filesystem::path> answer = context< PlayerStateMachine >().presenter.askForFile( _tr( "Select a music filename!" ), eFileDialogModeOpen );
             if ( answer && !answer.get().empty() )
             {
-                context< PlayerStateMachine >().presenter.processPlay( answer.get() );
+                context< PlayerStateMachine >().presenter.processClearPlaylist();
+                context< PlayerStateMachine >().presenter.processAddTrack( *answer );
+                context< PlayerStateMachine >().presenter.processPlay( *answer );
                 return transit< Playing >();
             }
             else if ( answer )
@@ -473,6 +523,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
     sc::result react( const EvPlayed & ev )
     {
         context< PlayerStateMachine >().presenter.played( ev.filename() );
+        context< PlayerStateMachine >().lastTrackFilename = ev.filename();
         return transit< Playing >();
     }
 };

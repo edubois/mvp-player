@@ -54,6 +54,15 @@ void MVPPlayerDialog::slotDisplayError( const QString & msg )
     QMessageBox::critical( QApplication::activeWindow(), QObject::tr( "Error!" ), msg, QMessageBox::Ok | QMessageBox::Default);
 }
 
+void MVPPlayerDialog::setButtonChecked( const std::string & buttonName, const bool checked )
+{
+    auto it = _playerButtonsWidgets.find( buttonName );
+    if ( it != _playerButtonsWidgets.end() )
+    {
+        it->second->setChecked( false );
+    }
+}
+
 }
 }
 }

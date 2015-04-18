@@ -102,6 +102,9 @@ public:
     inline void waitUntilProcessed( const int n ) const
     { _scheduler( n ); }
 
+    inline void commandActive( const std::string & commandName, const bool active )
+    { signalCommandActive( commandName, active ); }
+    
     /**
      * @brief play track
      * @param filename track filename
@@ -321,6 +324,14 @@ public:
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
+    inline void processCommandActive( const std::string & commandName, const bool active )
+    {
+        using EventT = EvCommandActive;
+        EventT *event = new EventT( commandName, active );
+        signalEvent( *event );
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
+
     inline void registerPluginPresenter( const std::string & pluginName, IPluginPresenter & pres )
     {
         _pluginPresenter.insert( std::make_pair( pluginName, &pres ) );
@@ -360,6 +371,7 @@ public:
     boost::signals2::signal<void(const boost::filesystem::path&, const int)> signalPlayingItemIndex;
     boost::signals2::signal<void(const std::string&)> signalFailed;
     boost::signals2::signal<boost::optional<boost::filesystem::path> (const std::string&, const EFileDialogMode)> signalAskForFile;
+    boost::signals2::signal<void( const std::string & commandName, const bool active )> signalCommandActive; ///< Signals that a command has been activated or desactivated
 
 private:
     std::map<std::string, IPluginPresenter*> _pluginPresenter;

@@ -44,6 +44,8 @@ void connectViewPresenter( mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logi
     p.signalStopTrack.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setCurrentTrack, &v, boost::filesystem::path() ) );
     // Connect stop event to change play button to |>
     p.signalStopTrack.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setIconPlay, &v ) );
+    // Connect 'Set button checked' event to the view
+    p.signalCommandActive.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setButtonChecked, &v, _1, _2 ) );
     // When the model plays another playlist track, inform the view
     p.signalPlayingItemIndex.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setPlaylistItemIndex, &v, _2 ) );
     // When the presenter notify that it opened a playlist, inform the view

@@ -53,6 +53,7 @@ protected:
             // Connect the right signals according to buttons' names
             const std::string buttonName = desc.property<std::string>( "name" );
             button->setObjectName( buttonName.c_str() );
+            _playerButtonsWidgets[ buttonName ] = button;
 
             if ( buttonName == "Play" )
             {
@@ -80,6 +81,8 @@ protected:
         showMaximized();
     #endif
     }
+    
+    void setButtonChecked( const std::string & buttonName, const bool checked );
 
 protected Q_SLOTS:
     QString slotOpenFile( const QString & title, const QString & extensions, const logic::EFileDialogMode mode );
@@ -102,6 +105,7 @@ protected:
     QToolButton *_btnPlayPause;
     QToolButton *_btnPrevious;
     QToolButton *_btnNext;
+    std::map<std::string, QToolButton*> _playerButtonsWidgets;
 };
 
 }

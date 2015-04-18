@@ -603,6 +603,54 @@ public:
 };
 
 /**
+ * @brief event stop
+ */
+struct EvCommandActive : IEvent, sc::event< EvCommandActive >
+{
+private:
+    typedef EvCommandActive This;
+public:
+    
+    EvCommandActive( const std::string & commandName = std::string(), const bool active = true )
+    : _commandName( commandName )
+    , _active( active )
+    {
+    }
+
+    inline const std::string & commandName() const
+    { return _commandName; }
+
+    inline bool active() const
+    { return _active; }
+
+    // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
+    static void operator delete( void *p, const std::size_t n )
+    { ::operator delete(p); }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+        ar & _commandName;
+        ar & _active;
+    }
+
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
+private:
+    std::string _commandName;   ///< The command name
+    bool _active;        ///< Active or not
+};
+
+/**
  * @brief event custom state
  */
 struct EvCustomState : IEvent, sc::event< EvCustomState >
@@ -665,6 +713,7 @@ void registerClassInArchive( Archive & ar )
     ar.template register_type< EvPlayItemAtIndex >();
     ar.template register_type< EvReset >();
     ar.template register_type< EvCustomState >();
+    ar.template register_type< EvCommandActive >();
 }
 
 }
@@ -687,5 +736,6 @@ BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvPlayingItemIndex );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvPlayItemAtIndex );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvReset );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvCustomState );
+BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvCommandActive );
 
 #endif
