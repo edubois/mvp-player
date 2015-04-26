@@ -36,6 +36,8 @@ void connectViewPresenter( mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logi
     p.signalAddedTrack.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::addTrack, &v, _1 ) );
     // When the view want to play a playlist item, react by sending the event to the state machine
     v.signalViewHitPlaylistItem.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processPlayItemAtIndex, &p, _1 ) );
+    // When the view want to change track position, react by sending the event to the state machine
+    v.signalViewHitTrackPosition.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processSetTrackPosition, &p, _1 ) );
     // Connect stop event to change play button to [*]
     p.signalPlayedTrack.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setIconStop, &v ) );
     // Connect played event to display track filename function
@@ -50,6 +52,10 @@ void connectViewPresenter( mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logi
     p.signalPlayingItemIndex.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setPlaylistItemIndex, &v, _2 ) );
     // When the presenter notify that it opened a playlist, inform the view
     p.signalOpenedPlaylist.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::openedPlaylist, &v, _1 ) );
+    // When the presenter notify that the track length changed, inform the view
+    p.signalTrackLengthChanged.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setTrackLength, &v, _1 ) );
+    // When the presenter notify that the track position changed, inform the view
+    p.signalTrackPositionChanged.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setTrackPosition, &v, _1, _2 ) );
     //@}
 }
 
@@ -83,8 +89,14 @@ void connectPresenterModel( mvpplayer::logic::MVPPlayerPresenter & p, mvpplayer:
     p.signalPreviousTrack.connect( boost::bind( &mvpplayer::MVPPlayerEngine::playPrevious, &m ) );
     // When the logic asks for 'restart track' play restart track
     p.signalRestartTrack.connect( boost::bind( &mvpplayer::MVPPlayerEngine::restart, &m ) );
+    // When the logic asks for 'restart track' play restart track
+    p.signalSetTrackPosition.connect( boost::bind( &mvpplayer::MVPPlayerEngine::setTrackPosition, &m, _1, mvpplayer::eSeekPositionPercent ) );
     // When the model plays another playlist track, inform the view
     m.signalPlayingItemIndex.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processPlayingItemIndex, &p, _1, _2 ) );
+    // When the model updates track's length, inform the view
+    m.signalTrackLength.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processTrackLengthChanged, &p, _1 ) );
+    // When the model updates track's position, inform the view
+    m.signalPositionChanged.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processTrackPositionChanged, &p, _1, _2 ) );
     // Subscribe to end of track notifications
     m.signalEndOfTrack.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processEndOfTrack, &p ) );
     // When the model notify that it opened a playlist, inform the presenter

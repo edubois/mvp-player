@@ -574,6 +574,142 @@ private:
 };
 
 /**
+ * @brief event triggered when asking to change the track position
+ */
+struct EvSetTrackPosition : IEvent, sc::event< EvSetTrackPosition >
+{
+private:
+    typedef EvSetTrackPosition This;
+public:
+    EvSetTrackPosition()
+    : _positionInPercent( -1 )
+    {}
+
+    EvSetTrackPosition( const int position )
+    : _positionInPercent( position )
+    {}
+
+    inline const int position() const
+    { return _positionInPercent; }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+        ar & _positionInPercent;
+    }
+
+    // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
+    static void operator delete( void *p, const std::size_t n )
+    { ::operator delete(p); }
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
+private:
+    int _positionInPercent;                     ///< Position in percent (-1; 0-100)
+};
+
+/**
+ * @brief event triggered when track position has changed
+ */
+struct EvTrackPositionChanged : IEvent, sc::event< EvTrackPositionChanged >
+{
+private:
+    typedef EvTrackPositionChanged This;
+public:
+    EvTrackPositionChanged()
+    : _positionInMS( 0 )
+    , _trackLengthInMS( 0 )
+    {}
+
+    EvTrackPositionChanged( const std::size_t position, const std::size_t length )
+    : _positionInMS( position )
+    , _trackLengthInMS( length )
+    {}
+
+    inline const int position() const
+    { return _positionInMS; }
+
+    inline const int length() const
+    { return _trackLengthInMS; }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+        ar & _positionInMS;
+        ar & _trackLengthInMS;
+    }
+
+    // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
+    static void operator delete( void *p, const std::size_t n )
+    { ::operator delete(p); }
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
+private:
+    int _positionInMS;      ///< Position in milliseconds
+    int _trackLengthInMS;   ///< Length in milliseconds
+};
+
+/**
+ * @brief event triggered when track length has changed
+ */
+struct EvTrackLengthChanged : IEvent, sc::event< EvTrackLengthChanged >
+{
+private:
+    typedef EvTrackLengthChanged This;
+public:
+    EvTrackLengthChanged()
+    : _lengthInMS( 0 )
+    {}
+
+    EvTrackLengthChanged( const std::size_t lengthInMS )
+    : _lengthInMS( lengthInMS )
+    {}
+
+    inline const int length() const
+    { return _lengthInMS; }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+        ar & _lengthInMS;
+    }
+
+    // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
+    static void operator delete( void *p, const std::size_t n )
+    { ::operator delete(p); }
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
+private:
+    std::size_t _lengthInMS;                     ///< Length in milliseconds
+};
+
+/**
  * @brief event reset
  */
 struct EvReset : IEvent, sc::event< EvReset >
@@ -714,6 +850,9 @@ void registerClassInArchive( Archive & ar )
     ar.template register_type< EvReset >();
     ar.template register_type< EvCustomState >();
     ar.template register_type< EvCommandActive >();
+    ar.template register_type< EvTrackLengthChanged >();
+    ar.template register_type< EvSetTrackPosition >();
+    ar.template register_type< EvTrackPositionChanged >();
 }
 
 }
@@ -737,5 +876,8 @@ BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvPlayItemAtIndex );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvReset );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvCustomState );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvCommandActive );
+BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvTrackLengthChanged );
+BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvSetTrackPosition );
+BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvTrackPositionChanged );
 
 #endif

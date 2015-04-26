@@ -1,8 +1,7 @@
 #include "MVPPlayerLocalDialog.hpp"
+#include <mvp-player-core/trackTools.hpp>
 
 #include <QtWidgets/QDesktopWidget>
-
-#include <iostream>
 
 namespace mvpplayer
 {
@@ -21,6 +20,7 @@ MVPPlayerLocalDialog::MVPPlayerLocalDialog( QWidget *parent )
     connect( widget.btnServer, SIGNAL( toggled(bool) ), this, SLOT( startStopServer( const bool ) ) );
     connect( widget.playlist, SIGNAL( currentRowChanged(int) ), this, SLOT( playPlaylistItemAtIndex(int) ) );
     connect( widget.btnSettings, SIGNAL( released() ), this, SLOT( editSettings() ) );
+    connect( widget.sliderPosition, SIGNAL( valueChanged( int ) ), this, SLOT( changeTrackPosition( int ) ) );
 }
 
 MVPPlayerLocalDialog::~MVPPlayerLocalDialog()
@@ -171,6 +171,23 @@ void MVPPlayerLocalDialog::slotAddTrack( const QString & filename )
     widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
     widget.playlist->addItem( filename );
     widget.playlist->blockSignals( false );
+}
+
+void MVPPlayerLocalDialog::changeTrackPosition( const int positionInPercent )
+{
+    signalViewHitTrackPosition( positionInPercent );
+}
+
+void MVPPlayerLocalDialog::slotSetTrackLength( const std::size_t lengthInMS )
+{
+    widget.lblTrackLength->setText( QString::fromStdString( trackLengthToString( lengthInMS ) ) );
+}
+
+void MVPPlayerLocalDialog::slotSetTrackPosition( const int positionInMS, const int trackLength )
+{
+    widget.sliderPosition->blockSignals( true ); // Don't forget to put this to avoid dead locks
+    widget.sliderPosition->setValue( positionInMS / trackLength );
+    widget.sliderPosition->blockSignals( false );
 }
 
 }

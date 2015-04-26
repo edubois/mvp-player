@@ -33,37 +33,56 @@ public:
     /**
      * @brief is the player playing sound
      */
-    inline bool isPlaying() const
+    inline bool isPlaying() const override
     { return on; }
 
     /**
      * @brief sound volume control for the current played track
      * @param v volume value
      */
-    void setVolume( const float v );
+    void setVolume( const float v ) override;
     
     /**
      * @brief load a given file
      * @param filename given file
      */
-    void load( const std::string & filename );
+    void load( const std::string & filename ) override;
 
     /**
      * @brief frees the sound object
      */
-    void unload();
+    void unload() override;
 
     /**
      * @brief plays a sound
      * @param pause pause playing
      * @return false on success, true if error
      */
-    bool play (const bool pause = false);
+    bool play (const bool pause = false) override;
+
+    /**
+     * @brief set current track position
+     * @param position position in percent (0-100) or ms
+     * @param seekType seek position in percent or milliseconds
+     */
+    void setPosition( const std::size_t positionInPercent, const ESeekPosition seekType = eSeekPositionPercent ) override;
+
+    /**
+     * @brief get the current track's position
+     * @return the current position in milliseconds
+     */
+    std::size_t getPosition() const override;
+
+    /**
+     * @brief get the current track's length
+     * @return the current length in milliseconds
+     */
+    std::size_t getLength() const override;
 
     /**
      * @brief restart track
      */
-    bool restart();
+    bool restart() override;
 
     /**
      * @brief checks whether the sound is on or off
@@ -74,23 +93,23 @@ public:
      * @brief pause or unpause the current track
      * @param pause boolean setting the pause
      */
-    void setPause( const bool pause );
+    void setPause( const bool pause ) override;
 
     /**
      * @brief switch sound off/on
      * @param sound sound on/off
      */
-    void setSound( const bool sound );
+    void setSound( const bool sound ) override;
 
     /**
      * @brief toggle sound on or off
      */
-    void toggleSound();
+    void toggleSound() override;
 
     /**
      * @brief toggle pause on or off
      */
-    void togglePause();
+    void togglePause() override;
 
     inline boost::mutex & mutexPlayer()
     { return _mutexPlayer; }

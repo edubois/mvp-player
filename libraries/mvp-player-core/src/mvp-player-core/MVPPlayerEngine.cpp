@@ -12,6 +12,8 @@ MVPPlayerEngine::MVPPlayerEngine( ISoundPlayer *soundPlayer )
 {
     // Subscribe to sound player's end of track notifications
     _soundPlayer->signalEndOfTrack.connect( boost::bind( &MVPPlayerEngine::notifyEndOfTrack, this ) );
+    _soundPlayer->signalTrackLength.connect( boost::bind( &MVPPlayerEngine::notifyTrackLength, this, _1 ) );
+    _soundPlayer->signalPositionChanged.connect( [this]( const std::size_t p, const std::size_t l ){ signalPositionChanged( p, l ); } );
     _currentPosition = _playlist.begin();
 }
 
@@ -88,6 +90,15 @@ void MVPPlayerEngine::playPlaylistItem( const int index )
     playCurrent();
 }
 
+/**
+ * @brief set current track position
+ * @param positionInPercent position in percent (0-100)
+ * @param seekType seek position in percent or milliseconds
+ */
+void MVPPlayerEngine::setTrackPosition( const std::size_t positionInPercent, const ESeekPosition seekType )
+{
+    _soundPlayer->setPosition( positionInPercent, seekType );
+}
 
 bool MVPPlayerEngine::restart()
 {

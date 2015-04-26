@@ -166,6 +166,15 @@ public:
     inline void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
     { signalOpenedPlaylist( playlistItems ); }
 
+    inline void setTrackPosition( const std::size_t positionInPercent )
+    { signalSetTrackPosition( positionInPercent ); }
+
+    inline void trackPositionChanged( const std::size_t positionInMS, const std::size_t trackLength )
+    { signalTrackPositionChanged( positionInMS, trackLength ); }
+
+    inline void trackLengthChanged( const std::size_t lengthInMS )
+    { signalTrackLengthChanged( lengthInMS ); }
+
     boost::optional<boost::filesystem::path> askForFile( const std::string & question, const EFileDialogMode & mode )
     {
         auto sigAnswer = signalAskForFile( question, mode );
@@ -332,6 +341,31 @@ public:
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
+    inline void processSetTrackPosition( const int positionInPercent )
+    {
+        using EventT = EvSetTrackPosition;
+        EventT *event = new EventT( positionInPercent );
+        signalEvent( *event );
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
+
+    inline void processTrackLengthChanged( const std::size_t lengthInMS )
+    {
+        using EventT = EvTrackLengthChanged;
+        EventT *event = new EventT( lengthInMS );
+        signalEvent( *event );
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
+
+
+    inline void processTrackPositionChanged( const std::size_t positionInMS, const std::size_t lengthInMS )
+    {
+        using EventT = EvTrackPositionChanged;
+        EventT *event = new EventT( positionInMS, lengthInMS );
+        signalEvent( *event );
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
+
     inline void registerPluginPresenter( const std::string & pluginName, IPluginPresenter & pres )
     {
         _pluginPresenter.insert( std::make_pair( pluginName, &pres ) );
@@ -367,6 +401,9 @@ public:
     boost::signals2::signal<void()> signalModelClearedPlaylist;
     boost::signals2::signal<void()> signalStartPlaylist;
     boost::signals2::signal<void(const int)> signalPlayItemAtIndex;
+    boost::signals2::signal<void(const std::size_t lengthInMS)> signalTrackLengthChanged;
+    boost::signals2::signal<void(const std::size_t posInPercent)> signalSetTrackPosition;
+    boost::signals2::signal<void(const std::size_t posInMS, const std::size_t trackLength)> signalTrackPositionChanged;
     boost::signals2::signal<void(const std::vector<m3uParser::PlaylistItem> &)> signalOpenedPlaylist;
     boost::signals2::signal<void(const boost::filesystem::path&, const int)> signalPlayingItemIndex;
     boost::signals2::signal<void(const std::string&)> signalFailed;

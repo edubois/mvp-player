@@ -1,4 +1,5 @@
 #include "MVPPlayerRemoteDialog.hpp"
+#include <mvp-player-core/trackTools.hpp>
 
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
@@ -174,6 +175,23 @@ void MVPPlayerRemoteDialog::slotAddTrack( const QString & filename )
     widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
     widget.playlist->addItem( filename );
     widget.playlist->blockSignals( false );
+}
+
+void MVPPlayerRemoteDialog::changeTrackPosition( const int positionInPercent )
+{
+    signalViewHitTrackPosition( positionInPercent );
+}
+
+void MVPPlayerRemoteDialog::slotSetTrackLength( const std::size_t lengthInMS )
+{
+    widget.lblTrackLength->setText( QString::fromStdString( trackLengthToString( lengthInMS ) ) );
+}
+
+void MVPPlayerRemoteDialog::slotSetTrackPosition( const int positionInMS, const int trackLength )
+{
+    widget.sliderPosition->blockSignals( true ); // Don't forget to put this to avoid dead locks
+    widget.sliderPosition->setValue( positionInMS / trackLength );
+    widget.sliderPosition->blockSignals( false );
 }
 
 }

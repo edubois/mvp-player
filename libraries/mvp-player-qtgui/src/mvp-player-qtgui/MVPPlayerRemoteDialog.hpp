@@ -36,26 +36,31 @@ public:
      * In the following sections, we use invokeMethod because of asynchronous
      * calls that might come from other threads.
      */
-    inline void setIconStop()
+    inline void setIconStop() override
     { QMetaObject::invokeMethod( this, "slotSetIconStop", Qt::BlockingQueuedConnection ); }
 
-    inline void setIconPlay()
+    inline void setIconPlay() override
     { QMetaObject::invokeMethod( this, "slotSetIconPlay", Qt::BlockingQueuedConnection ); }
 
-    inline void setCurrentTrack( const boost::filesystem::path & filename )
+    inline void setCurrentTrack( const boost::filesystem::path & filename ) override
     { QMetaObject::invokeMethod( widget.lblCurrentTrack, "setText", Qt::BlockingQueuedConnection, Q_ARG( QString, QString::fromStdString( filename.filename().string() ) ) ); }
 
-    inline void setPlaylistItemIndex( const int row )
+    inline void setPlaylistItemIndex( const int row ) override
     { QMetaObject::invokeMethod( this, "slotSetPlaylistItemIndex", Qt::BlockingQueuedConnection, Q_ARG( int, row ) ); }
 
-    void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems );
+    void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems ) override;
 
-    inline void clearPlaylist()
+    inline void clearPlaylist() override
     { QMetaObject::invokeMethod( this, "slotClearPlaylist", Qt::BlockingQueuedConnection ); }
 
     inline void addTrack( const boost::filesystem::path & filename )
     { QMetaObject::invokeMethod( this, "slotAddTrack", Qt::BlockingQueuedConnection, Q_ARG( QString, QString::fromStdString( filename.filename().string() ) ) ); }
 
+    inline void setTrackPosition( const int positionInMS, const int trackLength ) override
+    { QMetaObject::invokeMethod( this, "slotSetTrackPosition", Qt::BlockingQueuedConnection, Q_ARG( int, positionInMS ), Q_ARG( int, trackLength ) ); }
+
+    inline void setTrackLength( const std::size_t lengthInMS ) override
+    { QMetaObject::invokeMethod( this, "slotSetTrackLength", Qt::BlockingQueuedConnection, Q_ARG( std::size_t, lengthInMS ) ); }
 
 private:
     void dropEvent( QDropEvent *de );
@@ -66,6 +71,7 @@ private:
 private Q_SLOTS:
     void connectDisconnectClient( const bool start = true );
     void playPlaylistItemAtIndex( const int playlistIndex );
+    void changeTrackPosition( const int positionInPercent );
     void slotViewHitPlayStopBtn();
     void slotViewHitMute( const bool mute );
     void slotSetPlaylistItemIndex( const int row );
@@ -74,6 +80,8 @@ private Q_SLOTS:
     void slotOpenedPlaylist( const QStringList & filenames );
     void slotClearPlaylist();
     void slotAddTrack( const QString & filename );
+    void slotSetTrackPosition( const int positionInMS, const int trackLength );
+    void slotSetTrackLength( const std::size_t lengthInMS );
 
 private:
     Ui::MVPPlayerRemoteDialog widget;

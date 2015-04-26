@@ -20,6 +20,7 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QListWidget>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QVBoxLayout>
@@ -41,6 +42,9 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QLabel *label;
     QLabel *lblCurrentTrack;
+    QLabel *lblTrackLength;
+    QHBoxLayout *horizontalLayout_3;
+    QSlider *sliderPosition;
     QLabel *label_2;
     QListWidget *playlist;
 
@@ -48,7 +52,7 @@ public:
     {
         if (MVPPlayerRemoteDialog->objectName().isEmpty())
             MVPPlayerRemoteDialog->setObjectName(QStringLiteral("MVPPlayerRemoteDialog"));
-        MVPPlayerRemoteDialog->resize(556, 300);
+        MVPPlayerRemoteDialog->resize(556, 335);
         verticalLayout_3 = new QVBoxLayout(MVPPlayerRemoteDialog);
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
         verticalLayout_2 = new QVBoxLayout();
@@ -102,11 +106,38 @@ public:
 
         lblCurrentTrack = new QLabel(MVPPlayerRemoteDialog);
         lblCurrentTrack->setObjectName(QStringLiteral("lblCurrentTrack"));
+        QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(lblCurrentTrack->sizePolicy().hasHeightForWidth());
+        lblCurrentTrack->setSizePolicy(sizePolicy);
 
         horizontalLayout_2->addWidget(lblCurrentTrack);
 
+        lblTrackLength = new QLabel(MVPPlayerRemoteDialog);
+        lblTrackLength->setObjectName(QStringLiteral("lblTrackLength"));
+        lblTrackLength->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_2->addWidget(lblTrackLength);
+
 
         verticalLayout->addLayout(horizontalLayout_2);
+
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        sliderPosition = new QSlider(MVPPlayerRemoteDialog);
+        sliderPosition->setObjectName(QStringLiteral("sliderPosition"));
+        sliderPosition->setMaximum(100);
+        sliderPosition->setOrientation(Qt::Horizontal);
+        sliderPosition->setInvertedAppearance(false);
+        sliderPosition->setInvertedControls(false);
+        sliderPosition->setTickPosition(QSlider::TicksBelow);
+        sliderPosition->setTickInterval(1);
+
+        horizontalLayout_3->addWidget(sliderPosition);
+
+
+        verticalLayout->addLayout(horizontalLayout_3);
 
         label_2 = new QLabel(MVPPlayerRemoteDialog);
         label_2->setObjectName(QStringLiteral("label_2"));
@@ -126,7 +157,8 @@ public:
         verticalLayout_3->addLayout(verticalLayout_2);
 
         QWidget::setTabOrder(btnServer, cbMute);
-        QWidget::setTabOrder(cbMute, playlist);
+        QWidget::setTabOrder(cbMute, sliderPosition);
+        QWidget::setTabOrder(sliderPosition, playlist);
 
         retranslateUi(MVPPlayerRemoteDialog);
 
@@ -140,6 +172,7 @@ public:
         cbMute->setText(QApplication::translate("MVPPlayerRemoteDialog", "Mute", 0));
         label->setText(QApplication::translate("MVPPlayerRemoteDialog", "Current track:", 0));
         lblCurrentTrack->setText(QString());
+        lblTrackLength->setText(QString());
         label_2->setText(QApplication::translate("MVPPlayerRemoteDialog", "Playlist:", 0));
     } // retranslateUi
 

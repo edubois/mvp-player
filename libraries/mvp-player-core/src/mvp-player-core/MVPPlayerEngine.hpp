@@ -42,6 +42,13 @@ public:
     void openPlaylist( const boost::filesystem::path & playlistFilename );
 
     /**
+     * @brief set current track position
+     * @param position position in percent (0-100) or ms
+     * @param seekType seek position in percent or milliseconds
+     */
+    void setTrackPosition( const std::size_t position, const ESeekPosition seekType = eSeekPositionPercent );
+
+    /**
      * @brief restart current track
      * @return false if success, true otherwise
      */
@@ -96,14 +103,26 @@ public:
     inline const boost::filesystem::path & currentPlayedTrack() const
     { return _currentPlayedTrack; }
 
+    /**
+     * @brief notifies that we ended track playing
+     */
     inline void notifyEndOfTrack() const
     { signalEndOfTrack(); }
+
+    /**
+     * @brief notifies the track's length
+     * @param length track length (in milliseconds)
+     */
+    inline void notifyTrackLength( const std::size_t length ) const
+    { signalTrackLength( length ); }
 
 // Signals
 public:
     boost::signals2::signal<void(const std::vector<m3uParser::PlaylistItem>&)> signalOpenedPlaylist;///< Signals that we opened a playlist
     boost::signals2::signal<void(const boost::filesystem::path&)> signalTrackAddedToPlaylist;       ///< Signals that a track has been added to the playlist
     boost::signals2::signal<void(const boost::filesystem::path&)> signalPlayedTrack;                ///< Signals that a track has been played
+    boost::signals2::signal<void(const std::size_t len)> signalTrackLength;                         ///< Signals that the track has a certain length
+    boost::signals2::signal<void(const std::size_t pos, const std::size_t len)> signalPositionChanged;                     ///< Signals that the track position has changed
     boost::signals2::signal<void()> signalEndOfTrack;                                               ///< Signals that the track has ended
     boost::signals2::signal<void()> signalClearedPlaylist;                                          ///< Signals that we cleared the playlist
     boost::signals2::signal<void(const boost::filesystem::path&, const int)> signalPlayingItemIndex;///< Signals that we are playing the 'index' track of the playlist

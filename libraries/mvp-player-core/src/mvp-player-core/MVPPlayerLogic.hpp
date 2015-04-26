@@ -72,11 +72,14 @@ struct Playing : sc::simple_state< Playing, Active >
       sc::custom_reaction< EvStop >,
       sc::custom_reaction< EvPlay >,
       sc::custom_reaction< EvPlayed >,
+      sc::custom_reaction< EvTrackLengthChanged >,
       sc::custom_reaction< EvPreviousTrack >,
       sc::custom_reaction< EvNextTrack >,
       sc::custom_reaction< EvRestartTrack >,
       sc::custom_reaction< EvStartPlaylist >,
       sc::custom_reaction< EvOpenedPlaylist >,
+      sc::custom_reaction< EvSetTrackPosition >,
+      sc::custom_reaction< EvTrackPositionChanged >,
       sc::custom_reaction< EvAddTrack >,
       sc::custom_reaction< EvAddedTrack >,
       sc::custom_reaction< EvClearPlaylist >,
@@ -112,6 +115,33 @@ struct Playing : sc::simple_state< Playing, Active >
     sc::result react( const EvEndOfTrack & ev )
     {
         context< PlayerStateMachine >().presenter.processNext();
+        return transit< Playing >();
+    }
+
+    /**
+     * @brief reaction on track position set
+     */
+    sc::result react( const EvSetTrackPosition & ev )
+    {
+        context< PlayerStateMachine >().presenter.setTrackPosition( ev.position() );
+        return transit< Playing >();
+    }
+
+    /**
+     * @brief reaction on track length event
+     */
+    sc::result react( const EvTrackLengthChanged & ev )
+    {
+        context< PlayerStateMachine >().presenter.trackLengthChanged( ev.length() );
+        return transit< Playing >();
+    }
+
+    /**
+     * @brief reaction on track position update
+     */
+    sc::result react( const EvTrackPositionChanged & ev )
+    {
+        context< PlayerStateMachine >().presenter.trackPositionChanged( ev.position(), ev.length() );
         return transit< Playing >();
     }
 
@@ -336,6 +366,9 @@ struct Stopped : sc::simple_state< Stopped, Active >
     typedef boost::mpl::list<
       sc::custom_reaction< EvPlay >,
       sc::custom_reaction< EvPlayed >,
+      sc::custom_reaction< EvTrackLengthChanged >,
+      sc::custom_reaction< EvTrackPositionChanged >,
+      sc::custom_reaction< EvSetTrackPosition >,
       sc::custom_reaction< EvClearPlaylist >,
       sc::custom_reaction< EvModelClearedPlaylist >,
       sc::custom_reaction< EvAddTrack >,
@@ -406,6 +439,33 @@ struct Stopped : sc::simple_state< Stopped, Active >
     {
         context< PlayerStateMachine >().presenter.addedTrack( ev.filename() );
         ++context< PlayerStateMachine >().nItemsPlaylist;
+        return transit< Stopped >();
+    }
+
+    /**
+     * @brief reaction on track position update
+     */
+    sc::result react( const EvSetTrackPosition & ev )
+    {
+        context< PlayerStateMachine >().presenter.setTrackPosition( ev.position() );
+        return transit< Stopped >();
+    }
+
+    /**
+     * @brief reaction on track position update
+     */
+    sc::result react( const EvTrackPositionChanged & ev )
+    {
+        context< PlayerStateMachine >().presenter.trackPositionChanged( ev.position(), ev.length() );
+        return transit< Stopped >();
+    }
+
+    /**
+     * @brief reaction on track length event
+     */
+    sc::result react( const EvTrackLengthChanged & ev )
+    {
+        context< PlayerStateMachine >().presenter.trackLengthChanged( ev.length() );
         return transit< Stopped >();
     }
 

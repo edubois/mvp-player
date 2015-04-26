@@ -96,9 +96,6 @@ public:
     std::string trackFilename;
     bool isPlaying;
     bool mute;
-
-    boost::signals2::signal<void()> signalEndOfTrack;                        ///< Signalize end of track
-    boost::signals2::signal<void( const long, const long)> signalTrackPos;   ///< Signalize track position
 };
 
 }
