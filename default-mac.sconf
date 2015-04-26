@@ -24,7 +24,7 @@ ccache = False
 ccachedir = join(extern,'mvp_player_cache')
 
 incdir_qt5 = join(extern, 'qt5/5.4/clang_64/include')
-fwkdir_qt5 = '/Users/admin/_DEV/3rdParties/qt5/5.4/clang_64/lib'
+fwkdir_qt5 = '/Users/djarwood/_DEV/3rdParties/qt5/5.4/clang_64/lib'
 incdir_boost = join(extern,'boost-mac-c++11')
 libdir_boost = join(extern,'boost-mac-c++11/stage/lib')
 incdir_ncurses = join(extern,'ncurses/include')
