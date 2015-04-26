@@ -1,12 +1,13 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
     <array name="qt_sources">
-        <item>https://download.qt-project.org/ministro/android/qt5/qt-5.3</item>
+        <item>https://download.qt-project.org/ministro/android/qt5/qt-5.4</item>
     </array>
 
     <array name="bundled_libs">
         <item>fmod</item>
         <item>fmodL</item>
+	<item>MVPPlayerRecorderPlugin</item>
     </array>
 
      <array name="qt_libs">
@@ -21,6 +22,10 @@
 	<item>Qt5PrintSupport</item>
 	<item>Qt5Network</item>
 	<item>Qt5Multimedia</item>
+        <item>mvp_player_pluger</item>
+        <item>mvp_player_gui</item>
+        <item>mvp_player_core</item>
+        <item>mvp_player_qtgui</item>
      </array>
 
     <array name="bundled_in_lib">
@@ -43,6 +48,10 @@
     </array>
 
     <array name="bundled_in_assets">
+	<item>ui/buttons/0_previous.ui:files/ui/buttons/0_previous.ui</item>
+	<item>ui/buttons/1_play.ui:files/ui/buttons/1_play.ui</item>
+	<item>ui/buttons/2_next.ui:files/ui/buttons/2_next.ui</item>
+	<item>ui/buttons/3_record.ui:files/ui/buttons/3_record.ui</item>
     </array>
 
 </resources>

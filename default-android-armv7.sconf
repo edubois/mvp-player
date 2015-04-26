@@ -17,15 +17,15 @@ aliases = [('mvp_player_qt')]
 default = 'mvp_player_qt'
 
 CPPDEFINES.extend(['FORCE_REMOTE_BY_DEFAULT', '_GLIBCXX_USE_WCHAR_T', '_GLIBCXX__PTHREADS', '_REENTRANT', 'ANDROID', '__ANDROID__', 'BOOST_SIGNALS_NO_DEPRECATION_WARNING', 'BOOST_SPIRIT_USE_PHOENIX_V3'])
-CPPPATH.extend(['/Users/admin/_DEV/3rdParties/android-ndk/sources/cxx-stl/gnu-libstdc++/4.8/include',
-               '/Users/admin/_DEV/3rdParties/android-ndk/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a/include/',
-               '/Users/admin/_DEV/3rdParties/android-ndk/platforms/android-19/arch-arm/usr/include'
+CPPPATH.extend(['/Users/djarwood/_DEV/3rdParties/android-ndk/sources/cxx-stl/gnu-libstdc++/4.9/include',
+               '/Users/djarwood/_DEV/3rdParties/android-ndk/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi-v7a/include/',
+               '/Users/djarwood/_DEV/3rdParties/android-ndk/platforms/android-19/arch-arm/usr/include'
              ])
 LIBS.extend( ['gnustl_shared', 'log', 'z', 'm', 'dl', 'c', 'gcc'] )
-LIBPATH.extend( ['/Users/admin/_DEV/3rdParties/android-ndk/platforms/android-19/arch-arm/usr/lib/',
-                 '/Users/admin/_DEV/3rdParties/android-ndk/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a/'] )
+LIBPATH.extend( ['/Users/djarwood/_DEV/3rdParties/android-ndk/platforms/android-19/arch-arm/usr/lib/',
+                 '/Users/djarwood/_DEV/3rdParties/android-ndk/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi-v7a/'] )
 LINKFLAGS.extend( ['-fPIC', '-shared', '--sysroot=/Users/admin/_DEV/3rdParties/android-sdk/sdk/platforms/android-19/arch-arm/'] )
-CXXFLAGS.extend( ['-fPIC', '-fno-use-cxa-atexit', '-std=c++11', '-mthumb', '-Wno-psabi', '-march=armv7-a', '-mfloat-abi=softfp', '-ffunction-sections', '-funwind-tables', '-fomit-frame-pointer', '-fstrict-aliasing', '-funswitch-loops'] )
+CXXFLAGS.extend( ['-fPIC', '-fno-use-cxa-atexit', '-std=gnu++11', '-mthumb', '-Wno-psabi', '-march=armv7-a', '-mfloat-abi=softfp', '-ffunction-sections', '-funwind-tables', '-fomit-frame-pointer', '-fstrict-aliasing', '-funswitch-loops'] )
 ccache = False
 ccachedir = join(extern,'mvpPlayerCache')
 
@@ -33,19 +33,19 @@ incdir_qt5 = join(extern, 'qt5/5.4/android_armv7/include')
 libdir_qt5 = join(extern, 'qt5/5.4/android_armv7/lib')
 lib_qt5 = [ 'Qt5Network', 'Qt5Multimedia', 'Qt5Core', 'Qt5Gui', 'Qt5PrintSupport', 'Qt5Widgets', 'Qt5OpenGL', 'Qt5Sql', 'Qt5Script' ]
 
-lib_boost_thread = 'boost_thread-gcc-mt-1_55'
-lib_boost_signals = 'boost_signals-gcc-mt-1_55'
-lib_boost_system = 'boost_system-gcc-mt-1_55'
-lib_boost_filesystem = 'boost_filesystem-gcc-mt-1_55'
-lib_boost_serialization = 'boost_serialization-gcc-mt-1_55'
-lib_boost_regex = 'boost_regex-gcc-mt-1_55'
-lib_boost_date_time = 'boost_date_time-gcc-mt-1_55'
-lib_boost_program_options = 'boost_program_options-gcc-mt-1_55'
-lib_boost_chrono = 'libboost_chrono-gcc-mt-1_55.a'
-lib_boost_log = 'libboost_log-gcc-mt-1_55.a'
-lib_boost_math = 'boost_math_c99-gcc-mt-1_55'
+lib_boost_thread = 'boost_thread-gcc-mt-1_58'
+lib_boost_signals = 'boost_signals-gcc-mt-1_58'
+lib_boost_system = 'boost_system-gcc-mt-1_58'
+lib_boost_filesystem = 'boost_filesystem-gcc-mt-1_58'
+lib_boost_serialization = 'boost_serialization-gcc-mt-1_58'
+lib_boost_regex = 'boost_regex-gcc-mt-1_58'
+lib_boost_date_time = 'boost_date_time-gcc-mt-1_58'
+lib_boost_program_options = 'boost_program_options-gcc-mt-1_58'
+lib_boost_chrono = 'libboost_chrono-gcc-mt-1_58.a'
+lib_boost_log = 'libboost_log-gcc-mt-1_58.a'
+lib_boost_math = 'boost_math_c99-gcc-mt-1_58'
 
-incdir_boost = join(extern,'Boost-for-Android-armv7/build/include/boost-1_56')
+incdir_boost = join(extern,'Boost-for-Android-armv7/build/include/boost-1_58')
 libdir_boost = join(extern,'Boost-for-Android-armv7/build/lib')
 incdir_fmod = join(extern,'fmodstudioapi10510android/api/lowlevel/inc')
 libdir_fmod = join(extern,'fmodstudioapi10510android/api/lowlevel/lib/armeabi-v7a/')
