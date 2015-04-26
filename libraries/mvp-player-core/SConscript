@@ -13,4 +13,3 @@ project.SharedLibrary( 'mvp_player_core',
                                      libs.fmod,
                                     ],
                       )
-

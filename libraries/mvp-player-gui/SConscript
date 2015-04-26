@@ -4,10 +4,10 @@ Import( 'libs' )
 sourcesDir = 'src'
 
 project.SharedLibrary( 'mvp_player_gui',
-                       sources   = project.scanFiles( ['src'] ),
-                       includes  = ['src'],
-                       libraries = [
-                                     libs.boost,
-                                     libs.mvp_player_core,
-                                    ],
-                      )
+                   sources   = project.scanFiles( ['src'] ),
+                   includes  = ['src'],
+                   libraries = [
+                                 libs.boost,
+                                 libs.mvp_player_core,
+                                ],
+                  )

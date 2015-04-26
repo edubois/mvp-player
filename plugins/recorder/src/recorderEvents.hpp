@@ -45,9 +45,17 @@ public:
     }
 };
 
+template<class Archive>
+void registerRecorderClassInArchive( Archive & ar )
+{
+    ar.template register_type< EvRecord >();
+}
+
 }
 
 }
 }
+
+BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::plugin::EvRecord );
 
 #endif

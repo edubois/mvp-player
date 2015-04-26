@@ -49,6 +49,7 @@ public:
     boost::signals2::signal<void( const int )> signalViewHitPlaylistItem; ///< Signals that user hit play on a playlist item
     boost::signals2::signal<void()> signalViewClearPlaylist;  ///< Signal clear playlist
     boost::signals2::signal<void()> signalViewStartPlaylist;  ///< Signal start playlist
+    boost::signals2::signal<void()> signalViewHitEditSettings;  ///< Signal edit settings
     boost::signals2::signal<void( const std::string& )> signalViewAddTrack; ///< Signals that user wants to add a track
 
 protected:

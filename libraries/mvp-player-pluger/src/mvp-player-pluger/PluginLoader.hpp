@@ -16,6 +16,8 @@ namespace mvpplayer
 namespace plugins
 {
 
+static const std::string kMVPPlayerPluginEnvKey( "MVPPLAYER_PLUGIN_PATH" );
+    
 class PluginLoader : public Singleton<PluginLoader>
 {
 public:

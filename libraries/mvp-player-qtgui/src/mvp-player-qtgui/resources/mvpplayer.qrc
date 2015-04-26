@@ -1,13 +1,18 @@
 <RCC>
   <qresource prefix="mvpplayer">
     <file>action/open.png</file>
+    <file>action/fileopen.png</file>
     <file>action/play.png</file>
     <file>action/pause.png</file>
     <file>action/stop.png</file>
     <file>action/forward.png</file>
     <file>action/backward.png</file>
     <file>action/record.png</file>
+    <file>action/reload-plugins.png</file>
     <file>toolbar/connection.png</file>
+    <file>toolbar/player-settings.png</file>
+    <file>toolbar/plugins-settings.png</file>
+    <file>toolbar/network-settings.png</file>
     <file>toolbar/applications-settings.png</file>
     <file>app/icon.png</file>
     <file>app/splashscreen.png</file>

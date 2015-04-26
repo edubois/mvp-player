@@ -1,4 +1,5 @@
 #include "PluginLoader.hpp"
+#include <mvp-player-core/Settings.hpp>
 
 #include <boost-adds/environment.hpp>
 
@@ -34,12 +35,15 @@ void PluginLoader::loadPlugins( const boost::filesystem::path & pluginsPath, mvp
         if ( plugin )
         {
             std::cout << "Loaded: " << plugin->metaObject()->className() << std::endl; 
-            IMVPPlugin * tgPlug = qobject_cast<IMVPPlugin*>( plugin );
+            IMVPPlugin * tgPlug = dynamic_cast<IMVPPlugin*>( plugin );
             if ( tgPlug )
             {
                 std::cout << "Plugin is: " << tgPlug->pluginName() << std::endl;
-                _plugins[ tgPlug->pluginName() ] = tgPlug;
-                tgPlug->setup( model, view, presenter );
+                if ( _plugins.find( tgPlug->pluginName() ) == _plugins.end() )
+                {
+                    _plugins[ tgPlug->pluginName() ] = tgPlug;
+                    tgPlug->setup( model, view, presenter );
+                }
             }
             else
             {
@@ -64,9 +68,17 @@ void PluginLoader::loadPlugins( mvpplayer::MVPPlayerEngine & model, mvpplayer::g
 #else
     staticPath /= "plugins";
 #endif
-    // Get plugin path from environment variable or ./plugins
-    boost::optional<std::string> envStr = boost::get_env( "MVPPLAYER_PLUGIN_PATH" );
-    std::string chosenPath = envStr.get_value_or( staticPath.string() );
+    // Get plugin path from settings, environment variable or ./plugins
+    boost::optional<std::string> envStr = boost::get_env( kMVPPlayerPluginEnvKey );
+    std::string chosenPath;
+    if ( Settings::getInstance().has( "plugins", "pluginsPath" ) )
+    {
+        chosenPath = Settings::getInstance().get<std::string>( "plugins", "pluginsPath" );
+    }
+    else
+    {
+        chosenPath = envStr.get_value_or( staticPath.string() );
+    }
     loadPlugins( chosenPath, model, view, presenter );
 }
 

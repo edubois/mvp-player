@@ -1,5 +1,4 @@
 #include "MVPPlayerLocalDialog.hpp"
-#include "MVPPlayerSettingsDialog.hpp"
 
 #include <QtWidgets/QDesktopWidget>
 
@@ -18,10 +17,10 @@ MVPPlayerLocalDialog::MVPPlayerLocalDialog( QWidget *parent )
     widget.setupUi(this);
     
     initDialog( widget );
-    connect( _btnPlayPause, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
-    connect( widget.btnServer, SIGNAL( clicked(bool) ), this, SLOT( startStopServer( const bool ) ) );
+    connect( _btnPlayPause, SIGNAL( toggled(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
+    connect( widget.btnServer, SIGNAL( toggled(bool) ), this, SLOT( startStopServer( const bool ) ) );
     connect( widget.playlist, SIGNAL( currentRowChanged(int) ), this, SLOT( playPlaylistItemAtIndex(int) ) );
-    connect( widget.btnSettings, SIGNAL( clicked(bool) ), this, SLOT( editSettings() ) );
+    connect( widget.btnSettings, SIGNAL( released() ), this, SLOT( editSettings() ) );
 }
 
 MVPPlayerLocalDialog::~MVPPlayerLocalDialog()
@@ -95,11 +94,7 @@ void MVPPlayerLocalDialog::dropEvent( QDropEvent *de )
 
 void MVPPlayerLocalDialog::editSettings()
 {
-    MVPPlayerSettingsDialog settingsDialog( this );
-    if ( settingsDialog.exec() )
-    {
-        
-    }
+    signalViewHitEditSettings();
 }
 
 void MVPPlayerLocalDialog::dragEnterEvent( QDragEnterEvent *event )

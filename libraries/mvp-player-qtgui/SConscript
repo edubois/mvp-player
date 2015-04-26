@@ -9,9 +9,11 @@ project.SharedLibrary( 'mvp_player_qtgui',
                        includes  = ['src'],
                        libraries = [
                                      libs.boost,
-                                     libs.qt5( modules=[ 'QtCore', 'QtGui', 'QtWidgets', 'QtMultimedia' ], uiFiles=mvpPlayerSourcesUi ),
+                                     libs.boostAdds,
+                                     libs.qt5( modules=[ 'QtCore', 'QtGui', 'QtWidgets' ], uiFiles=mvpPlayerSourcesUi ),
                                      libs.mvp_player_gui,
                                      libs.mvp_player_core,
                                      libs.mvp_player_net,
+                                     libs.mvp_player_pluger,
                                     ],
                       )

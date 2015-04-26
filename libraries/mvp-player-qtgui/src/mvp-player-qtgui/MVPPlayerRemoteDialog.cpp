@@ -20,7 +20,7 @@ MVPPlayerRemoteDialog::MVPPlayerRemoteDialog( QWidget *parent )
 
     initDialog( widget );
 
-    connect( _btnNext, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitNextBtn() ) );
+    connect( _btnPlayPause, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
     connect( widget.cbMute, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitMute(const bool) ) );
     connect( widget.btnServer, SIGNAL( clicked(bool) ), this, SLOT( connectDisconnectClient( const bool ) ) );
     connect( widget.playlist, SIGNAL( currentRowChanged(int) ), this, SLOT( playPlaylistItemAtIndex(int) ) );

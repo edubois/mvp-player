@@ -434,7 +434,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
      */
     sc::result react( const EvStartPlaylist & ev )
     {
-        context< PlayerStateMachine >().presenter.startPlaylist();
+        context< PlayerStateMachine >().presenter.processStartPlaylist();
         return transit< Playing >();
     }
 
@@ -493,7 +493,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
             {
                 context< PlayerStateMachine >().presenter.processClearPlaylist();
                 context< PlayerStateMachine >().presenter.processAddTrack( *answer );
-                context< PlayerStateMachine >().presenter.processPlay( *answer );
+                context< PlayerStateMachine >().presenter.processStartPlaylist();
                 return transit< Playing >();
             }
             else if ( answer )
@@ -557,6 +557,7 @@ struct Paused : sc::simple_state< Paused, Active >
     sc::result react( const EvStartPlaylist & )
     {
         context< PlayerStateMachine >().presenter.startPlaylist();
+        context< PlayerStateMachine >().presenter.playItemAtIndex( 0 );
         return transit< Playing >();
     }
 

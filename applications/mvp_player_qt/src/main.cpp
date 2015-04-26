@@ -1,13 +1,17 @@
 #include <mvp-player-core/MVPPlayerEngine.hpp>
 #include <mvp-player-core/MVPPlayerLogic.hpp>
 #include <mvp-player-core/SoundPlayer.hpp>
+#include <mvp-player-core/Settings.hpp>
 #include <mvp-player-gui/playerBehavior.hpp>
 #include <mvp-player-qtgui/MVPPlayerLocalDialog.hpp>
+#include <mvp-player-qtgui/MVPPlayerSettingsDialog.hpp>
 #include <mvp-player-qtgui/MVPPlayerRemoteDialog.hpp>
 #include <mvp-player-qtgui/resources.hpp>
 #include <mvp-player-net/client/Client.hpp>
 #include <mvp-player-net/server/Server.hpp>
 #include <mvp-player-pluger/PluginLoader.hpp>
+
+#include <boost-adds/environment.hpp>
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMessageBox>
@@ -15,6 +19,7 @@
 #include <QtWidgets/QInputDialog>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QSystemTrayIcon>
+#include <QtWidgets/QStyleFactory>
 #include <QtCore/QCoreApplication>
 
 // Change your GUI here (qt)
@@ -29,6 +34,16 @@ int instanciateApp( int argc, char **argv )
     std::cerr << "Unimplented GUI" << std::endl;
 }
 
+void editSettings( QDialog *caller, mvpplayer::MVPPlayerEngine & m, mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logic::MVPPlayerPresenter & p )
+{
+    mvpplayer::gui::qt::MVPPlayerSettingsDialog settingsDialog( m, v, p, caller );
+    const int res = settingsDialog.exec();
+    if ( !res )
+    {
+        mvpplayer::Settings::getInstance().write( QDir::homePath().toStdString() + "/" + mvpplayer::kDefaultSettingsFilename );
+    }
+}
+
 /**
  * Specialization for QT remote gui (client)
  */
@@ -38,6 +53,8 @@ int instanciateApp<gui::MVPPlayerRemoteDialog>( int argc, char **argv )
     using Dialog = gui::MVPPlayerRemoteDialog;
 
     QApplication app( argc, argv );
+    QStyle * android = QStyleFactory::create("Android");
+    app.setStyle( android );
 
     initResources();
 
@@ -64,6 +81,10 @@ int instanciateApp<gui::MVPPlayerRemoteDialog>( int argc, char **argv )
 
     // Setup Model View Presenter behavior (binds the whole thing)
     mvpplayer::gui::setupMainBehavior( playerEngine, dlg, presenter );
+
+    // Settings editor binding
+    dlg.signalViewHitEditSettings.connect( boost::bind( &editSettings, &dlg, boost::ref( playerEngine ), boost::ref( dlg ), boost::ref( presenter ) ) );
+
     // Load plugins
     mvpplayer::plugins::PluginLoader::getInstance().loadPlugins( playerEngine, dlg, presenter );
 
@@ -135,6 +156,9 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerLocalDialog>( int argc, char **a
 
     // Setup Model View Presenter behavior (binds the whole thing)
     mvpplayer::gui::setupMainBehavior( playerEngine, dlg, presenter );
+    // Settings editor binding
+    dlg.signalViewHitEditSettings.connect( boost::bind( &editSettings, &dlg, boost::ref( playerEngine ), boost::ref( dlg ), boost::ref( presenter ) ) );
+
     // Load plugins
     mvpplayer::plugins::PluginLoader::getInstance().loadPlugins( playerEngine, dlg, presenter );
 
@@ -168,6 +192,15 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerLocalDialog>( int argc, char **a
  */
 int main( int argc, char **argv )
 {
+    {
+        using namespace mvpplayer;
+        Settings::getInstance().read( QDir::homePath().toStdString() + "/" + kDefaultSettingsFilename );
+        boost::optional<std::string> envStr = boost::get_env( plugins::kMVPPlayerPluginEnvKey );
+        if ( envStr != boost::none && Settings::getInstance().has( "plugins", "pluginsPath" ) == false )
+        {
+            Settings::getInstance().set( "plugins", "pluginsPath", *envStr );
+        }
+    }
 #ifdef FORCE_REMOTE_BY_DEFAULT
         return instanciateApp<gui::MVPPlayerRemoteDialog>( argc, argv );
 #else
