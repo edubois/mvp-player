@@ -14,6 +14,7 @@ MVPPlayerLocalDialog::MVPPlayerLocalDialog( QWidget *parent )
 : Parent( parent )
 {
     widget.setupUi(this);
+    widget.sliderPosition->setEnabled( false );
     
     initDialog( widget );
     connect( _btnPlayPause, SIGNAL( toggled(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
@@ -126,11 +127,13 @@ void MVPPlayerLocalDialog::startStopServer( const bool start )
 
 void MVPPlayerLocalDialog::slotSetIconStop()
 {
+    widget.sliderPosition->setEnabled( true );
     _btnPlayPause->setChecked( true );
 }
 
 void MVPPlayerLocalDialog::slotSetIconPlay()
 {
+    widget.sliderPosition->setEnabled( false );
     _btnPlayPause->setChecked( false );
 }
 

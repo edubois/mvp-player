@@ -130,11 +130,13 @@ void MVPPlayerRemoteDialog::slotViewHitMute( const bool checked )
 
 void MVPPlayerRemoteDialog::slotSetIconStop()
 {
+    widget.sliderPosition->setEnabled( true );
     _btnPlayPause->setChecked( true );
 }
 
 void MVPPlayerRemoteDialog::slotSetIconPlay()
 {
+    widget.sliderPosition->setEnabled( false );
     _btnPlayPause->setChecked( false );
 }
 
