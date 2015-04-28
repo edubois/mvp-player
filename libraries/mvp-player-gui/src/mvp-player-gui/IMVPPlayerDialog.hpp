@@ -17,7 +17,7 @@ namespace gui
 /**
  * @brief mvp-player dialog
  */
-class IMVPPlayerDialog
+class IMVPPlayerDialog : public boost::signals2::trackable
 {
 public:
     IMVPPlayerDialog()
@@ -45,7 +45,7 @@ public:
 
     virtual void setButtonChecked( const std::string & buttonName, const bool checked ) = 0;
 
-    virtual void setTrackPosition( const int positionInMS, const int trackLength ) = 0;
+    virtual void setTrackPosition( const std::size_t positionInMS, const std::size_t trackLength ) = 0;
 
 public:
     boost::signals2::signal<void( const std::function<void()> )> signalSequencial; ///< Signals that we want a sequencial run of the given lambda function

@@ -155,10 +155,11 @@ struct Playing : sc::simple_state< Playing, Active >
         if ( result != boost::none )
         {
             // Second boost::option level is happening when the action has been rejected
-            return *result;
+            return sc::detail::result_utility::make_result( *result );
         }
         else
         {
+            // action has been rejected
             return discard_event();
         }
     }
@@ -388,10 +389,10 @@ struct Stopped : sc::simple_state< Stopped, Active >
      */
     sc::result react( const EvCustomState & ev )
     {
-        auto result = context< PlayerStateMachine >().presenter.askStoppedStateExternalTransition( ev.action(), boost::ref( *this ) );
+        auto result = context< PlayerStateMachine >().presenter.askStoppedStateExternalTransition( boost::ref( ev.action() ), boost::ref( *this ) );
         if ( result != boost::none )
         {
-            return *result;
+            return sc::detail::result_utility::make_result( *result );
         }
         else
         {
@@ -605,10 +606,19 @@ struct Paused : sc::simple_state< Paused, Active >
     /**
      * @brief reaction on stop track event
      */
-    sc::result react( const EvStop & ev )
+    sc::result react( const EvPlay & )
     {
-        context< PlayerStateMachine >().presenter.stopped();
-        return transit< Stopped >();
+        transit< Playing >();
+        return forward_event();
+    }
+
+    /**
+     * @brief reaction on stop track event
+     */
+    sc::result react( const EvStop & )
+    {
+        transit< Stopped >();
+        return forward_event();
     }
 
     /**
@@ -616,27 +626,35 @@ struct Paused : sc::simple_state< Paused, Active >
      */
     sc::result react( const EvStartPlaylist & )
     {
-        context< PlayerStateMachine >().presenter.startPlaylist();
-        context< PlayerStateMachine >().presenter.playItemAtIndex( 0 );
-        return transit< Playing >();
+        transit< Playing >();
+        return forward_event();
     }
 
     /**
      * @brief reaction on previous track event
      */
-    sc::result react( const EvPreviousTrack & ev )
+    sc::result react( const EvPreviousTrack & )
     {
-        context< PlayerStateMachine >().presenter.previousTrack();
-        return transit< Playing >();
+        transit< Playing >();
+        return forward_event();
     }
 
     /**
      * @brief reaction on previous track event
      */
-    sc::result react( const EvNextTrack & ev )
+    sc::result react( const EvNextTrack & )
     {
-        context< PlayerStateMachine >().presenter.nextTrack();
-        return transit< Playing >();
+        transit< Playing >();
+        return forward_event();
+    }
+
+    /**
+     * @brief reaction on play item at index event
+     */
+    sc::result react( const EvPlayItemAtIndex & )
+    {
+        transit< Playing >();
+        return forward_event();
     }
 
 };

@@ -61,15 +61,16 @@ void MVPPlayerRecorderPlugin::recordClicked( const bool activated )
 /**
  * @brief Needed to enter into the Recording state
  */
-boost::statechart::result MVPPlayerRecorderPlugin::recordTransition( const std::string & action, logic::Stopped & state )
+boost::statechart::detail::reaction_result MVPPlayerRecorderPlugin::recordTransition( const std::string & action, logic::Stopped & state )
 {
     if ( action == kRecordAction )
     {
-        return state.transit<logic::plugin::Recording>();
+        state.transit<logic::plugin::Recording>();
+        return boost::statechart::detail::consumed;
     }
     else
     {
-        return boost::statechart::result( boost::statechart::detail::no_reaction );
+        return boost::statechart::detail::no_reaction;
     }
 }
 

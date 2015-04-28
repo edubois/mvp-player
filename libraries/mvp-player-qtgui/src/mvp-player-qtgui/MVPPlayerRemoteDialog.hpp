@@ -56,7 +56,7 @@ public:
     inline void addTrack( const boost::filesystem::path & filename )
     { QMetaObject::invokeMethod( this, "slotAddTrack", Qt::BlockingQueuedConnection, Q_ARG( QString, QString::fromStdString( filename.filename().string() ) ) ); }
 
-    inline void setTrackPosition( const int positionInMS, const int trackLength ) override
+    inline void setTrackPosition( const std::size_t positionInMS, const std::size_t trackLength ) override
     { QMetaObject::invokeMethod( this, "slotSetTrackPosition", Qt::BlockingQueuedConnection, Q_ARG( int, positionInMS ), Q_ARG( int, trackLength ) ); }
 
     inline void setTrackLength( const std::size_t lengthInMS ) override

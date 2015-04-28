@@ -18,7 +18,7 @@ void ERRCHECK( const FMOD_RESULT result )
     }
 }
 }
-    
+
 FMOD_SOUND_FORMAT getTheRightRawFormat( const std::size_t bitDepth )
 {
     switch( bitDepth )

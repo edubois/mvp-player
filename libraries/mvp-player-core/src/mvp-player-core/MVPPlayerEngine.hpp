@@ -5,6 +5,7 @@
 #include "m3uParser.hpp"
 
 #include <boost/signals2.hpp>
+#include <boost/signals2/trackable.hpp>
 #include <boost/foreach.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/thread/mutex.hpp>
@@ -18,7 +19,7 @@
 namespace mvpplayer
 {
 
-class MVPPlayerEngine
+class MVPPlayerEngine : public boost::signals2::trackable
 {
 public:
     MVPPlayerEngine( ISoundPlayer *soundPlayer );

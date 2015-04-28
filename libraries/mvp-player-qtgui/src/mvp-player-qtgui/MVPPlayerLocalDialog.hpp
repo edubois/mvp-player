@@ -48,7 +48,7 @@ public:
     inline void setPlaylistItemIndex( const int row ) override
     { QMetaObject::invokeMethod( this, "slotSetPlaylistItemIndex", Qt::BlockingQueuedConnection, Q_ARG( int, row ) ); }
 
-    inline void setTrackPosition( const int positionInMS, const int trackLength ) override
+    inline void setTrackPosition( const std::size_t positionInMS, const std::size_t trackLength ) override
     { QMetaObject::invokeMethod( this, "slotSetTrackPosition", Qt::BlockingQueuedConnection, Q_ARG( int, positionInMS ), Q_ARG( int, trackLength ) ); }
 
     inline void setTrackLength( const std::size_t lengthInMS ) override
@@ -73,7 +73,6 @@ private Q_SLOTS:
     void editSettings();
     void startStopServer( const bool start = true );
     void playPlaylistItemAtIndex( const int playlistIndex );
-    void changeTrackPosition( const int positionInPercent );
     void slotViewHitPlayStopBtn();
     void slotSetPlaylistItemIndex( const int row );
     void slotSetIconStop();

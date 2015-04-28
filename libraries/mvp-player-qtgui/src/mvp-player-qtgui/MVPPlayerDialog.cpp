@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
+#include <QtGui/QKeyEvent>
 
 namespace mvpplayer
 {
@@ -61,6 +62,30 @@ void MVPPlayerDialog::setButtonChecked( const std::string & buttonName, const bo
     {
         it->second->setChecked( false );
     }
+}
+
+void MVPPlayerDialog::keyPressEvent( QKeyEvent* event )
+{
+    QMessageBox::information( QApplication::activeWindow(), "test", QString::number( event->key() ) );
+}
+
+void MVPPlayerDialog::slotViewHitButton()
+{
+    QToolButton *button = qobject_cast<QToolButton*>( sender() );
+    assert( button );
+    if ( button->isCheckable() )
+    {
+        signalViewHitButton( button->objectName().toStdString(), button->isChecked() );
+    }
+    else
+    {
+        signalViewHitButton( button->objectName().toStdString(), true );
+    }
+}
+
+void MVPPlayerDialog::changeTrackPosition( const int positionInPercent )
+{
+    signalViewHitTrackPosition( positionInPercent );
 }
 
 }

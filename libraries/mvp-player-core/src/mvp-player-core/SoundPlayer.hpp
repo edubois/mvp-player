@@ -19,16 +19,26 @@ public:
     SoundPlayer()
     : on( false )
     , possible( true )
-    , fmodsystem( nullptr )
-    , sound( nullptr )
-    , channel( nullptr )
+    , _fmodsystem( nullptr )
+    , _sound( nullptr )
+    , _channel( nullptr )
+    , _dsp( nullptr )
     {
         initialize();
     }
-    virtual ~SoundPlayer() {}
+    virtual ~SoundPlayer();
 
 public:
-    void initialize(); //initialises sound
+
+    /**
+     * @brief initialize all
+     */
+    void initialize();
+
+    /**
+     * @brief free all
+     */
+    void terminate();
 
     /**
      * @brief is the player playing sound
@@ -114,24 +124,31 @@ public:
     inline boost::mutex & mutexPlayer()
     { return _mutexPlayer; }
 
-private:
-    void updater();
+    inline FMOD::Channel* channel()
+    { return _channel; }
 
 private:
-    bool on; //is sound on?
-    bool possible; //is it possible to play sound?
-    std::string currentSound; //currently played sound
+    void updater();
+    void createPositionDSP();
+
+private:
+    bool on;                    ///< is sound on?
+    bool possible;              ///< is it possible to play sound?
+    std::string _currentSound;  ///< currently played sound
     //FMOD-specific stuff
     FMOD_RESULT result;
-    FMOD::System* fmodsystem;
-    FMOD::Sound* sound;
-    FMOD::Channel* channel;
+    FMOD::System* _fmodsystem;
+    FMOD::Sound* _sound;
+    FMOD::Channel* _channel;
+    FMOD::DSP* _dsp;            ///< DSP used to track the position
 
     boost::scoped_ptr<boost::thread> _updaterThread; ///< Updater thread
     mutable boost::mutex _mutexPlayer;               ///< For thread safetyness
 };
 
 FMOD_RESULT playEndedCallback(FMOD_CHANNELCONTROL *channelcontrol, FMOD_CHANNELCONTROL_TYPE controltype, FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype, void *commanddata1, void *commanddata2);
+
+FMOD_RESULT F_CALLBACK positionCallback( FMOD_DSP_STATE *dspState, float *  inbuffer, float *  outbuffer, unsigned int  length, int  inchannels, int *outchannels );
 
 }
 

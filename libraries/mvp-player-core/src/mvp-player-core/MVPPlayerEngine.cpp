@@ -19,6 +19,13 @@ MVPPlayerEngine::MVPPlayerEngine( ISoundPlayer *soundPlayer )
 
 MVPPlayerEngine::~MVPPlayerEngine()
 {
+    try
+    {
+        stop();
+        _soundPlayer->terminate();
+    }
+    catch( ... )
+    {}
 }
 
 bool MVPPlayerEngine::playFile( const boost::filesystem::path & filename )

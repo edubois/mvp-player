@@ -28,40 +28,57 @@ class SchedulerWorker
 public:
     SchedulerWorker( sc::fifo_scheduler<> & scheduler )
     : _scheduler( scheduler )
-    , _stop( true )
+    , _stopped( true )
     {
+    }
+    
+    ~SchedulerWorker()
+    {
+        join();
     }
 
     inline void start()
     {
-        _stop = false;
         _thread.reset( new boost::thread( boost::bind( &SchedulerWorker::work, this ) ) );
     }
     
     inline void join()
     {
-        _stop = true;
-        _mutex.unlock();
+        _thread->interrupt();
+        _scheduler.terminate();
         _thread->join();
     }
-
+    
     inline boost::mutex & mutex() const
     { return _mutex; }
+    
+    inline bool stopped() const
+    { return _stopped; }
 
 private:    
     void work()
     {
-        while( !_stop )
+        _stopped = false;
+        try
         {
-            _scheduler( 1 );
-            // Needed to handle pause in event processing
-            try { boost::mutex::scoped_lock lock( _mutex ); } catch( boost::lock_error& ) {}
+            while( 1 )
+            {
+                _scheduler( 1 );
+                boost::this_thread::interruption_point();
+                // Needed to handle pause in event processing
+                boost::mutex::scoped_lock lock( _mutex );
+            }
         }
+        catch( boost::thread_interrupted& )
+        {
+        }
+        
+        _stopped = true;
     }
 
 private:
     sc::fifo_scheduler<> & _scheduler;
-    bool _stop;
+    bool _stopped;
     std::unique_ptr<boost::thread> _thread;
     mutable boost::mutex _mutex;
 };
@@ -72,7 +89,7 @@ private:
  * @brief For plugins
  * Put your custom plugin signals in a class inheriting from this class
  */
-struct IPluginPresenter
+struct IPluginPresenter : public boost::signals2::trackable
 {
     virtual ~IPluginPresenter() {}
 };
@@ -81,13 +98,17 @@ struct IPluginPresenter
  * @brief the presenter is the glue between the model and the view,
  *        it also contains the player's state machine
  */
-class MVPPlayerPresenter
+class MVPPlayerPresenter : public boost::signals2::trackable
 {
 public:
     MVPPlayerPresenter()
     : _scheduler( true )
     , _schedulerWorker( _scheduler )
     {}
+    
+    ~MVPPlayerPresenter()
+    {
+    }
 
     template<class M>
     void startStateMachine( const bool startScheduler = true )
@@ -380,15 +401,15 @@ public:
     }
 
 private:
-    mutable sc::fifo_scheduler<> _scheduler;                    ///< Event asynchronous scheduler (used to queue events)
     sc::fifo_scheduler<>::processor_handle _playerProcessor;    ///< Event processor
+    mutable sc::fifo_scheduler<> _scheduler;                    ///< Event asynchronous scheduler (used to queue events)
     details::SchedulerWorker _schedulerWorker;                  ///< Event scheduler thread
 
 public:
     //- signals
     boost::signals2::signal<void( IEvent& )> signalEvent;
-    boost::signals2::signal<sc::result(const std::string&, Playing &)> askPlayingStateExternalTransition;   ///< Bind this to a transition function to extend the state machine states (context is Playing state)
-    boost::signals2::signal<sc::result(const std::string&, Stopped &)> askStoppedStateExternalTransition;   ///< Bind this to a transition function to extend the state machine states (context is Stopped state)
+    boost::signals2::signal<sc::detail::reaction_result(const std::string&, Playing &)> askPlayingStateExternalTransition;   ///< Bind this to a transition function to extend the state machine states (context is Playing state)
+    boost::signals2::signal<sc::detail::reaction_result(const std::string&, Stopped &)> askStoppedStateExternalTransition;   ///< Bind this to a transition function to extend the state machine states (context is Stopped state)
     boost::signals2::signal<void(const boost::filesystem::path&)> signalPlayedTrack;
     boost::signals2::signal<void(const boost::filesystem::path&)> signalPlayTrack;
     boost::signals2::signal<void(const boost::filesystem::path&)> signalAddTrack;

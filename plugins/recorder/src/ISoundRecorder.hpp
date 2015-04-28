@@ -11,7 +11,7 @@ namespace mvpplayer
 
 static const int kLatencyVolumeHighThreshold( 1000 );
 
-class ISoundRecorder
+class ISoundRecorder : public boost::signals2::trackable
 {
 public:
     ISoundRecorder();

@@ -2,6 +2,7 @@
 #define	_CORE_ISOUNDPLAYER_HPP_
 
 #include <boost/signals2.hpp>
+#include <boost/signals2/trackable.hpp>
 
 namespace mvpplayer
 {
@@ -11,11 +12,16 @@ enum ESeekPosition { eSeekPositionPercent, eSeekPositionMS };
 /**
  * Interface for sound players
  */
-class ISoundPlayer
+class ISoundPlayer : public boost::signals2::trackable
 {
 public:
     ISoundPlayer(): _currentVolume( 1.0f ) {}
     virtual ~ISoundPlayer() {}
+    
+    /**
+     * @brief free all
+     */
+    virtual void terminate() = 0;
     
     /**
      * @brief is the player playing sound

@@ -13,7 +13,10 @@ bool MVPPlayerPresenter::processSequencial( const std::function<void()> lambda )
     try
     {
         boost::mutex::scoped_lock threadPause( _schedulerWorker.mutex() );
-        lambda();
+        if ( !_schedulerWorker.stopped() )
+        {
+            lambda();
+        }
         return false;
     }
     catch( ... )
