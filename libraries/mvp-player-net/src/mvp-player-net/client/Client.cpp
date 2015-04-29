@@ -72,7 +72,10 @@ void Client::sendEvent( const IEvent & event )
 {
     if ( _serverPeer )
     {
-        _serverPeer->sendEvent( &event );
+        if ( event.shallDispatch() )
+        {
+            _serverPeer->sendEvent( &event );
+        }
     }
 }
 

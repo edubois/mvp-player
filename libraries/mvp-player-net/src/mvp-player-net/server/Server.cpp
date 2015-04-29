@@ -105,9 +105,12 @@ PeerInfo Server::peerInfo() const
 
 void Server::sendEventMulticast( const IEvent & event )
 {
-    BOOST_FOREACH( const MapClientT::iterator::value_type & v, _clients )
+    if ( event.shallDispatch() )
     {
-        v.second->sendEvent( &event );
+        BOOST_FOREACH( const MapClientT::iterator::value_type & v, _clients )
+        {
+            v.second->sendEvent( &event );
+        }
     }
 }
 

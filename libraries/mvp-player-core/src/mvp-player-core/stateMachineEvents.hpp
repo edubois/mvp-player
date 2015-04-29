@@ -516,6 +516,13 @@ public:
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+
+    /**
+     * @brief don't dispatch this event thru the network
+     */
+    bool shallDispatch() const
+    { return false; }
+
     /**
      * @brief process this event (needed to avoid dynamic_casts)
      * @param scheduler event scheduler
@@ -743,6 +750,13 @@ public:
     // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
     static void operator delete( void *p, const std::size_t n )
     { ::operator delete(p); }
+
+    /**
+     * @brief don't dispatch this event thru the network
+     */
+    bool shallDispatch() const
+    { return false; }
+
     /**
      * @brief process this event (needed to avoid dynamic_casts)
      * @param scheduler event scheduler

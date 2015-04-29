@@ -27,6 +27,12 @@ struct IEvent
     {}
 
     /**
+     * @brief tell if this event shall be dispatched thru the network
+     */
+    virtual bool shallDispatch() const
+    { return true; }
+
+    /**
      * @brief process this event (needed to avoid dynamic_casts)
      * @param scheduler event scheduler
      * @param processor event processor
