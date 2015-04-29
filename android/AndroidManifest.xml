@@ -1,7 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <manifest android:versionCode="1" xmlns:android="http://schemas.android.com/apk/res/android" package="org.edubois.mvpPlayerQt" android:versionName="1.0" android:installLocation="internalOnly">
-    <application android:hardwareAccelerated="true" android:label="@string/app_name" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:icon="@drawable/icon">
-        <activity android:label="@string/app_name" android:name="org.qtproject.qt5.android.bindings.QtActivity" android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation" android:screenOrientation="unspecified">
+    <application android:hardwareAccelerated="true" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="@string/app_name" android:icon="@drawable/icon">
+        <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation"
+                  android:name="org.qtproject.qt5.android.bindings.QtActivity"
+                  android:label="@string/app_name"
+                  android:screenOrientation="unspecified"
+                  android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

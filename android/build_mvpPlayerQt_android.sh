@@ -26,6 +26,7 @@ cp /Users/admin/_DEV/3rdParties/fmodstudioapi10510android/api/lowlevel/lib/armea
 
 mv dist/mbp-gbl/gcc-4.8/release/bin/mvp_player_qt dist/mbp-gbl/gcc-4.8/release/bin/libmvp_player_qt.so
 cp dist/mbp-gbl/gcc-4.8/release/bin/libmvp_player_qt.so android_dist/libs/armeabi-v7a/libmvp_player_qt.so
+cp dist/mbp-gbl/gcc-4.8/release/bin/plugins/*.so android_dist/libs/armeabi-v7a/
 
 rm -rf android_dist/gen android_dist/bin
 androiddeployqt --input ./android-mvpPlayerQt.so-deployment-settings.json --output android_dist --deployment bundled

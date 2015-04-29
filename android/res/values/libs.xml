@@ -7,7 +7,6 @@
     <array name="bundled_libs">
         <item>fmod</item>
         <item>fmodL</item>
-	<item>MVPPlayerRecorderPlugin</item>
     </array>
 
      <array name="qt_libs">
