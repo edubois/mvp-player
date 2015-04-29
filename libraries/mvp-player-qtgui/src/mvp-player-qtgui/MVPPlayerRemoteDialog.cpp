@@ -72,6 +72,7 @@ void MVPPlayerRemoteDialog::dropEvent( QDropEvent *de )
             fileItems.push_back( url.toStdString() );
         }
         signalViewAppendTrackItems( fileItems );
+        de->accept();
     }
 }
 
