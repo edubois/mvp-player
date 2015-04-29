@@ -9,5 +9,5 @@
    "ndk-host": "darwin-x86_64",
    "target-architecture": "armeabi-v7a",
    "android-package-source-directory": "/Users/djarwood/_DEV/mvp-player/android",
-   "application-binary": "/Users/djarwood/_DEV/mvp-player/dist/MBP-de-Djarwood/gcc-4.9/release/bin/libmvp_player_qt.so"
+   "application-binary": "/Users/djarwood/_DEV/mvp-player/dist/MacBook-Pro-de-Djarwood/gcc-4.9/release/bin/libmvp_player_qt.so"
 }
