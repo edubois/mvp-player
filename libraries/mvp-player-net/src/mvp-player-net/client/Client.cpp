@@ -23,7 +23,8 @@ Client::~Client()
         disconnect();
         if ( _ioThread )
         {
-            _ioThread.reset( nullptr );
+            _ioThread->interrupt();
+            _ioThread->join();
         }
     }
     catch( ... )
@@ -37,6 +38,11 @@ boost::system::error_code Client::connect( const std::string & ipAdress, const u
     _serverPeer.reset( new Peer( &_ioService ) );
     // Signal proxy (transfer the signal)
     _serverPeer->signalEvent.connect( [this](IEvent & event){ signalEvent( event ); } );
+    if ( _ioThread )
+    {
+        _ioThread->interrupt();
+        _ioThread->join();
+    }
     _ioThread.reset( new boost::thread( boost::bind( &boost::asio::io_service::run, &_ioService ) ) );
     _serverPeer->socket().connect( boost::asio::ip::tcp::endpoint( boost::asio::ip::address::from_string( ipAdress ), port ), error );
     _serverPeer->receivePeerInfo();

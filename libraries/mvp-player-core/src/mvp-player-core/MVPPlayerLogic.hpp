@@ -153,7 +153,7 @@ struct Playing : sc::simple_state< Playing, Active >
      */
     sc::result react( const EvCustomState & ev )
     {
-        auto result = context< PlayerStateMachine >().presenter.askPlayingStateExternalTransition( ev.action(), boost::ref( *this ) );
+        auto result = context< PlayerStateMachine >().presenter.askPlayingStateExternalTransition( ev.action(), *this );
         // First boost::option level is happening when no slot is connected to the signal
         if ( result != boost::none )
         {
@@ -420,7 +420,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
      */
     sc::result react( const EvCustomState & ev )
     {
-        auto result = context< PlayerStateMachine >().presenter.askStoppedStateExternalTransition( boost::ref( ev.action() ), boost::ref( *this ) );
+        auto result = context< PlayerStateMachine >().presenter.askStoppedStateExternalTransition( ev.action(), *this );
         if ( result != boost::none )
         {
             return sc::detail::result_utility::make_result( *result );
