@@ -21,8 +21,6 @@ void setupMainBehavior( mvpplayer::MVPPlayerEngine & m, mvpplayer::gui::IMVPPlay
 void connectViewPresenter( mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logic::MVPPlayerPresenter & p )
 {
     //@{ Connections (behavior), note that the order is important
-    // To send events in a sequencial way, we need to inform the presenter to pause the event processor
-    v.signalSequencial.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processSequencial, &p, _1 ) );
     // When we hit a button, we want to react by sending a the right event to the state machine
     v.signalViewHitButton.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processCommand, &p, _1 ) );
     // When we hit clear playlist button, we want to react by sending a clear playlist event to the state machine
@@ -34,6 +32,8 @@ void connectViewPresenter( mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logi
     v.signalViewAddTrack.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processAddTrack, &p, _1 ) );
     // When the presenter signalize that the model added a track, we want to react by adding the track in the view's playlist
     p.signalAddedTrack.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::addTrack, &v, _1 ) );
+    // When we add a track on the view, we want to notify the presenter
+    v.signalViewAppendPlaylistTracks.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processAppendPlaylistTrack, &p, _1 ) );
     // When the view want to play a playlist item, react by sending the event to the state machine
     v.signalViewHitPlaylistItem.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processPlayItemAtIndex, &p, _1 ) );
     // When the view want to change track position, react by sending the event to the state machine
@@ -71,8 +71,10 @@ void connectPresenterModel( mvpplayer::logic::MVPPlayerPresenter & p, mvpplayer:
     // Subscribe to clear playlist notifications to clear the view's playlist
     // Connect start playlist event to start the engine's playlist
     p.signalStartPlaylist.connect( boost::bind( &mvpplayer::MVPPlayerEngine::playList, &m ) );
-    // When the presenter signalize that someone added a track, we want to react by adding the track in the model's playlist
+    // When the presenter signalize that user added a track, we want to react by adding the track in the model's playlist
     p.signalAddTrack.connect( boost::bind( &mvpplayer::MVPPlayerEngine::addTrack, &m, _1 ) );
+    // When the presenter signalize that user opened a playlist, inform the presenter
+    p.signalAppendPlaylistTracks.connect( boost::bind( &mvpplayer::MVPPlayerEngine::openPlaylist, &m, _1 ) );
     // When we add a track on the model, we want to notify the presenter
     m.signalTrackAddedToPlaylist.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processAddedTrack, &p, _1 ) );
     // When the presenter notify that we want to play an item of the playlist, inform the model

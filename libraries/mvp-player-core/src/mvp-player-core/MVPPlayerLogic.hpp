@@ -82,6 +82,7 @@ struct Playing : sc::simple_state< Playing, Active >
       sc::custom_reaction< EvTrackPositionChanged >,
       sc::custom_reaction< EvAddTrack >,
       sc::custom_reaction< EvAddedTrack >,
+      sc::custom_reaction< EvAppendPlaylistTrack >,
       sc::custom_reaction< EvClearPlaylist >,
       sc::custom_reaction< EvModelClearedPlaylist >,
       sc::custom_reaction< EvPlayingItemIndex >,
@@ -276,11 +277,19 @@ struct Playing : sc::simple_state< Playing, Active >
      */
     sc::result react( const EvAddTrack & ev )
     {
-        if ( !boost::iends_with( ev.filename().string(), ".m3u" ) 
-             && boost::filesystem::exists( ev.filename() ) )
+        // Check if the file is not a playlist and if the file exists
+        if ( boost::filesystem::exists( ev.filename() ) )
         {
-            context< PlayerStateMachine >().presenter.addTrack( ev.filename() );
-            return transit< Playing >();
+            if ( !boost::iends_with( ev.filename().string(), ".m3u" ) )
+            {
+                context< PlayerStateMachine >().presenter.addTrack( ev.filename() );
+                return transit< Playing >();
+            }
+            else
+            {
+                context< PlayerStateMachine >().presenter.appendPlaylistTracks( ev.filename() );
+                return transit< Playing >();
+            }
         }
         return discard_event();
     }
@@ -296,6 +305,15 @@ struct Playing : sc::simple_state< Playing, Active >
         }
         ++context< PlayerStateMachine >().nItemsPlaylist;
         context< PlayerStateMachine >().presenter.addedTrack( ev.filename() );
+        return transit< Playing >();
+    }
+
+    /**
+     * @brief reaction on append playlist items event
+     */
+    sc::result react( const EvAppendPlaylistTrack & ev )
+    {
+        context< PlayerStateMachine >().presenter.appendPlaylistTracks( ev.playlistFilename() );
         return transit< Playing >();
     }
 
@@ -374,6 +392,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
       sc::custom_reaction< EvModelClearedPlaylist >,
       sc::custom_reaction< EvAddTrack >,
       sc::custom_reaction< EvAddedTrack >,
+      sc::custom_reaction< EvAppendPlaylistTrack >,
       sc::custom_reaction< EvStartPlaylist >,
       sc::custom_reaction< EvOpenedPlaylist >,
       sc::custom_reaction< EvPreviousTrack >,
@@ -424,13 +443,29 @@ struct Stopped : sc::simple_state< Stopped, Active >
     sc::result react( const EvAddTrack & ev )
     {
         // Check if the file is not a playlist and if the file exists
-        if ( !boost::iends_with( ev.filename().string(), ".m3u" ) 
-             && boost::filesystem::exists( ev.filename() ) )
+        if ( boost::filesystem::exists( ev.filename() ) )
         {
-            context< PlayerStateMachine >().presenter.addTrack( ev.filename() );
-            return transit< Stopped >();
+            if ( !boost::iends_with( ev.filename().string(), ".m3u" ) )
+            {
+                context< PlayerStateMachine >().presenter.addTrack( ev.filename() );
+                return transit< Stopped >();
+            }
+            else
+            {
+                context< PlayerStateMachine >().presenter.appendPlaylistTracks( ev.filename() );
+                return transit< Stopped >();
+            }
         }
         return discard_event();
+    }
+
+    /**
+     * @brief reaction on append playlist items event
+     */
+    sc::result react( const EvAppendPlaylistTrack & ev )
+    {
+        context< PlayerStateMachine >().presenter.appendPlaylistTracks( ev.playlistFilename() );
+        return transit< Stopped >();
     }
 
     /**
@@ -539,7 +574,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
         if ( ev.hasFilename() && boost::filesystem::exists( ev.filename().get() ) )
         {
             context< PlayerStateMachine >().lastPlayTime = std::chrono::system_clock::now();
-            context< PlayerStateMachine >().presenter.playTrack( ev.filename().get() );
+            context< PlayerStateMachine >().presenter.processPlay( ev.filename().get() );
             return transit< Playing >();
         }
         else if ( context< PlayerStateMachine >().lastTrackFilename != boost::none )

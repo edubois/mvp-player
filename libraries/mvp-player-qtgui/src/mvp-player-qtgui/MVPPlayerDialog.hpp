@@ -90,9 +90,6 @@ protected:
     
     void setButtonChecked( const std::string & buttonName, const bool checked );
 
-protected:
-    void keyPressEvent(QKeyEvent* event);
-
 protected Q_SLOTS:
     QString slotOpenFile( const QString & title, const QString & extensions, const logic::EFileDialogMode mode );
     void slotDisplayError( const QString & msg );

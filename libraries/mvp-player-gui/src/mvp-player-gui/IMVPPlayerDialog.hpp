@@ -48,13 +48,13 @@ public:
     virtual void setTrackPosition( const std::size_t positionInMS, const std::size_t trackLength ) = 0;
 
 public:
-    boost::signals2::signal<void( const std::function<void()> )> signalSequencial; ///< Signals that we want a sequencial run of the given lambda function
     boost::signals2::signal<void( const std::string & buttonName, const bool pushed )> signalViewHitButton; ///< Signals that user hit a button
     boost::signals2::signal<void( const int )> signalViewHitPlaylistItem; ///< Signals that user hit play on a playlist item
     boost::signals2::signal<void()> signalViewClearPlaylist;  ///< Signal clear playlist
     boost::signals2::signal<void()> signalViewStartPlaylist;  ///< Signal start playlist
     boost::signals2::signal<void()> signalViewHitEditSettings;  ///< Signal edit settings
     boost::signals2::signal<void( const std::string& )> signalViewAddTrack; ///< Signals that user wants to add a track
+    boost::signals2::signal<void( const boost::filesystem::path& playlistFilename )> signalViewAppendPlaylistTracks; ///< Signals that user wants to append a playlist
     boost::signals2::signal<void( const std::size_t& )> signalViewHitTrackPosition; ///< Signals that user wants to change current track position
 
 protected:

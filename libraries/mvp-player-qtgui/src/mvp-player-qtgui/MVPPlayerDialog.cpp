@@ -64,11 +64,6 @@ void MVPPlayerDialog::setButtonChecked( const std::string & buttonName, const bo
     }
 }
 
-void MVPPlayerDialog::keyPressEvent( QKeyEvent* event )
-{
-    QMessageBox::information( QApplication::activeWindow(), "test", QString::number( event->key() ) );
-}
-
 void MVPPlayerDialog::slotViewHitButton()
 {
     QToolButton *button = qobject_cast<QToolButton*>( sender() );

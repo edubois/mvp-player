@@ -6,26 +6,6 @@ namespace logic
 {
 
 /**
- * @brief pause the processor, call the lambda function, restart the processor
- */
-bool MVPPlayerPresenter::processSequencial( const std::function<void()> lambda )
-{
-    try
-    {
-        boost::mutex::scoped_lock threadPause( _schedulerWorker.mutex() );
-        if ( !_schedulerWorker.stopped() )
-        {
-            lambda();
-        }
-        return false;
-    }
-    catch( ... )
-    {
-        return true;
-    }
-}
-
-/**
  * @brief process an event
  */
 void MVPPlayerPresenter::processEvent( IEvent & event )

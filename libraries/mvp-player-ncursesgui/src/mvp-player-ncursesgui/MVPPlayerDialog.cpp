@@ -183,13 +183,8 @@ int MVPPlayerDialog::exec()
                         item = openFile( _cdkScreen, "Open file or playlist", "*" );
                     }
 
-                    signalSequencial(
-                        [this, &item]()
-                        {
-                            signalViewClearPlaylist();
-                            signalViewHitPlay( item.string() );
-                        }
-                    );
+                    signalViewClearPlaylist();
+                    signalViewHitPlay( item.string() );
                 }
                 break;
             }

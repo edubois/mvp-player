@@ -66,32 +66,15 @@ void MVPPlayerRemoteDialog::dropEvent( QDropEvent *de )
         QList<QUrl> urlList = de->mimeData()->urls();
         if ( urlList.size() && urlList.first().path().endsWith( ".m3u" ) )
         {
-            signalSequencial(
-                [this, &urlList]()
-                {
-                    signalViewClearPlaylist();
-                    signalViewAddTrack( urlList.first().path().toStdString() );
-                    signalViewStartPlaylist();
-                }
-            );
+            signalViewAppendPlaylistTracks( urlList.first().path().toStdString() );
         }
         else
         {
-            signalSequencial(
-                [this, &urlList](){
-                    signalViewHitButton( "Stop", true );
-                    signalViewClearPlaylist();
-                    for ( int i = 0; i < urlList.size(); ++i )
-                    {
-                        const QString url = urlList.at( i ).path();
-                        signalViewAddTrack( url.toStdString() );
-                    }
-                    if ( urlList.size() )
-                    {
-                        signalViewStartPlaylist();
-                    }
-                }
-            );
+            for ( int i = 0; i < urlList.size(); ++i )
+            {
+                const QString url = urlList.at( i ).path();
+                signalViewAddTrack( url.toStdString() );
+            }
         }
     }
 }
@@ -130,13 +113,11 @@ void MVPPlayerRemoteDialog::slotViewHitMute( const bool checked )
 
 void MVPPlayerRemoteDialog::slotSetIconStop()
 {
-    widget.sliderPosition->setEnabled( true );
     _btnPlayPause->setChecked( true );
 }
 
 void MVPPlayerRemoteDialog::slotSetIconPlay()
 {
-    widget.sliderPosition->setEnabled( false );
     _btnPlayPause->setChecked( false );
 }
 
@@ -192,7 +173,7 @@ void MVPPlayerRemoteDialog::slotSetTrackLength( const std::size_t lengthInMS )
 void MVPPlayerRemoteDialog::slotSetTrackPosition( const int positionInMS, const int trackLength )
 {
     widget.sliderPosition->blockSignals( true ); // Don't forget to put this to avoid dead locks
-    widget.sliderPosition->setValue( positionInMS / trackLength );
+    widget.sliderPosition->setValue( 100 * positionInMS / trackLength );
     widget.sliderPosition->blockSignals( false );
 }
 

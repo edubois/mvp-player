@@ -14,8 +14,7 @@ MVPPlayerLocalDialog::MVPPlayerLocalDialog( QWidget *parent )
 : Parent( parent )
 {
     widget.setupUi(this);
-    widget.sliderPosition->setEnabled( false );
-    
+
     initDialog( widget );
     connect( _btnPlayPause, SIGNAL( toggled(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
     connect( widget.btnServer, SIGNAL( toggled(bool) ), this, SLOT( startStopServer( const bool ) ) );
@@ -62,32 +61,15 @@ void MVPPlayerLocalDialog::dropEvent( QDropEvent *de )
         QList<QUrl> urlList = de->mimeData()->urls();
         if ( urlList.size() && urlList.first().path().endsWith( ".m3u" ) )
         {
-            signalSequencial(
-                [this, &urlList]()
-                {
-                    signalViewClearPlaylist();
-                    signalViewAddTrack( urlList.first().path().toStdString() );
-                    signalViewStartPlaylist();
-                }
-            );
+            signalViewAppendPlaylistTracks( urlList.first().path().toStdString() );
         }
         else
         {
-            signalSequencial(
-                [this, &urlList](){
-                    signalViewHitButton( "Stop", true );
-                    signalViewClearPlaylist();
-                    for ( int i = 0; i < urlList.size(); ++i )
-                    {
-                        const QString url = urlList.at( i ).path();
-                        signalViewAddTrack( url.toStdString() );
-                    }
-                    if ( urlList.size() )
-                    {
-                        signalViewStartPlaylist();
-                    }
-                }
-            );
+            for ( int i = 0; i < urlList.size(); ++i )
+            {
+                const QString url = urlList.at( i ).path();
+                signalViewAddTrack( url.toStdString() );
+            }
         }
     }
 }
@@ -126,13 +108,11 @@ void MVPPlayerLocalDialog::startStopServer( const bool start )
 
 void MVPPlayerLocalDialog::slotSetIconStop()
 {
-    widget.sliderPosition->setEnabled( true );
     _btnPlayPause->setChecked( true );
 }
 
 void MVPPlayerLocalDialog::slotSetIconPlay()
 {
-    widget.sliderPosition->setEnabled( false );
     _btnPlayPause->setChecked( false );
 }
 
