@@ -434,6 +434,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
      */
     sc::result react( const EvOpenedPlaylist & ev )
     {
+        context< PlayerStateMachine >().nItemsPlaylist = ev.playlistItems().size();
         context< PlayerStateMachine >().presenter.openedPlaylist( ev.playlistItems() );
         return transit< Playing >();
     }
@@ -448,12 +449,12 @@ struct Stopped : sc::simple_state< Stopped, Active >
         {
             if ( !boost::iends_with( ev.filename().string(), ".m3u" ) )
             {
-                context< PlayerStateMachine >().presenter.addTrack( ev.filename() );
+                context< PlayerStateMachine >().presenter.appendPlaylistTracks( ev.filename() );
                 return transit< Stopped >();
             }
             else
             {
-                context< PlayerStateMachine >().presenter.appendPlaylistTracks( ev.filename() );
+                context< PlayerStateMachine >().presenter.addTrack( ev.filename() );
                 return transit< Stopped >();
             }
         }
