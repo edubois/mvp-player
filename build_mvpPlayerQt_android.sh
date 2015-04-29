@@ -1,5 +1,7 @@
 export PATH=/Users/$USER/_DEV/3rdParties/apache-ant/bin:/Users/$USER/_DEV/3rdParties/qt5/5.4/android_armv7/bin/:$PATH
 mkdir -p android_dist/libs/armeabi-v7a/
+export host="${HOSTNAME%.*}"
+
 cp /Users/$USER/_DEV/3rdParties/qt5/5.4/android_armv7/lib/*.so android_dist/libs/armeabi-v7a/
 cp /Users/$USER/_DEV/3rdParties/qt5/5.4/android_armv7/plugins/sqldrivers/libqsqlite.so android_dist/libs/armeabi-v7a/libplugins_sqldrivers_libqsqlite.so
 cp /Users/$USER/_DEV/3rdParties/qt5/5.4//android_armv7/plugins/imageformats/libqgif.so android_dist/libs/armeabi-v7a/libplugins_imageformats_libqgif.so
@@ -27,14 +29,17 @@ cp /Users/$USER/_DEV/3rdParties/fmodstudioapi10510android/api/lowlevel/lib/armea
 cp /Users/$USER/_DEV/3rdParties/fmodstudioapi10510android/api/lowlevel/lib/fmod.jar android_dist/libs/
 cp /Users/$USER/_DEV/3rdParties/android-ndk/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi/libgnustl_shared.so android_dist/libs/armeabi-v7a/
 
-mv dist/$HOSTNAME/gcc-4.9/release/bin/mvp_player_qt dist/$HOSTNAME/gcc-4.9/release/bin/libmvp_player_qt.so
-cp dist/$HOSTNAME/gcc-4.9/release/bin/libmvp_player_qt.so android_dist/libs/armeabi-v7a/libmvp_player_qt.so
-cp dist/$HOSTNAME/gcc-4.9/release/lib/libmvp_player_pluger.so android_dist/libs/armeabi-v7a/
-cp dist/$HOSTNAME/gcc-4.9/release/lib/libmvp_player_gui.so android_dist/libs/armeabi-v7a/
-cp dist/$HOSTNAME/gcc-4.9/release/lib/libmvp_player_core.so android_dist/libs/armeabi-v7a/
-cp dist/$HOSTNAME/gcc-4.9/release/lib/libmvp_player_qtgui.so android_dist/libs/armeabi-v7a/
-cp dist/$HOSTNAME/gcc-4.9/release/bin/plugins/*.so android_dist/libs/armeabi-v7a/
+mv dist/$host/gcc-4.9/release/bin/mvp_player_qt dist/$host/gcc-4.9/release/bin/libmvp_player_qt.so
+cp dist/$host/gcc-4.9/release/bin/libmvp_player_qt.so android_dist/libs/armeabi-v7a/libmvp_player_qt.so
+cp dist/$host/gcc-4.9/release/lib/libmvp_player_pluger.so android_dist/libs/armeabi-v7a/
+cp dist/$host/gcc-4.9/release/lib/libmvp_player_gui.so android_dist/libs/armeabi-v7a/
+cp dist/$host/gcc-4.9/release/lib/libmvp_player_core.so android_dist/libs/armeabi-v7a/
+cp dist/$host/gcc-4.9/release/lib/libmvp_player_qtgui.so android_dist/libs/armeabi-v7a/
+#cp dist/$host/gcc-4.9/release/bin/plugins/*.so android_dist/libs/armeabi-v7a/
+#mkdir -p android_dist/assets/plugins
+#touch android_dist/assets/plugins/put_your_plugins_here
+cp -f ui android_dist/assets/
 
 rm -rf android_dist/gen android_dist/bin
 androiddeployqt --input ./android-mvpPlayerQt.so-deployment-settings.json --output android_dist --deployment bundled
-#adb -s emulator-5554 install -l /Users/djarwood/_DEV/mvp-player/android_dist//bin/QtApp-debug.apk
+#adb -s emulator-5554 install -r /Users/djarwood/_DEV/mvp-player/android_dist//bin/QtApp-debug.apk
