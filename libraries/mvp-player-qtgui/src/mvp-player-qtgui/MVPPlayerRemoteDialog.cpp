@@ -63,19 +63,15 @@ void MVPPlayerRemoteDialog::dropEvent( QDropEvent *de )
     // Unpack dropped data and handle it
     if ( de->mimeData()->hasUrls() )
     {
+        std::vector<boost::filesystem::path> fileItems;
         QList<QUrl> urlList = de->mimeData()->urls();
-        if ( urlList.size() && urlList.first().path().endsWith( ".m3u" ) )
+        fileItems.reserve( urlList.size() );
+        for ( int i = 0; i < urlList.size(); ++i )
         {
-            signalViewAppendPlaylistTracks( urlList.first().path().toStdString() );
+            const QString url = urlList.at( i ).path();
+            fileItems.push_back( url.toStdString() );
         }
-        else
-        {
-            for ( int i = 0; i < urlList.size(); ++i )
-            {
-                const QString url = urlList.at( i ).path();
-                signalViewAddTrack( url.toStdString() );
-            }
-        }
+        signalViewAppendTrackItems( fileItems );
     }
 }
 

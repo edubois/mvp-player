@@ -358,6 +358,52 @@ private:
 };
 
 /**
+ * @brief event append track items
+ */
+struct EvAppendTrackItems : IEvent, sc::event< EvAppendTrackItems >
+{
+private:
+    typedef EvAppendTrackItems This;
+    typedef std::vector<boost::filesystem::path> TrackItemsVecT;
+public:
+    EvAppendTrackItems()
+    {
+    }
+
+    EvAppendTrackItems( const TrackItemsVecT & trackItems )
+    : _trackItems( trackItems )
+    {
+    }
+
+    inline const TrackItemsVecT & trackItems() const
+    { return _trackItems; }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+        ar & _trackItems;
+    }
+
+    // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
+    static void operator delete( void *p, const std::size_t n )
+    { ::operator delete(p); }
+
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
+private:
+    TrackItemsVecT _trackItems;      ///< Playlist track items (may be playlists or musics)
+};
+
+/**
  * @brief event played track
  */
 struct EvPlayed : IEvent, sc::event< EvPlayed >
@@ -890,6 +936,7 @@ void registerClassInArchive( Archive & ar )
     ar.template register_type< EvAddTrack >();
     ar.template register_type< EvAddedTrack >();
     ar.template register_type< EvAppendPlaylistTrack >();
+    ar.template register_type< EvAppendTrackItems >();
     ar.template register_type< EvOpenedPlaylist >();
     ar.template register_type< EvPlayingItemIndex >();
     ar.template register_type< EvPlayItemAtIndex >();
@@ -917,6 +964,7 @@ BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvPlayed );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvAddTrack );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvAddedTrack );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvAppendPlaylistTrack );
+BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvAppendTrackItems );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvOpenedPlaylist );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvPlayingItemIndex );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvPlayItemAtIndex );

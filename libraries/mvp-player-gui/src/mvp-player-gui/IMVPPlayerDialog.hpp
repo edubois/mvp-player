@@ -55,6 +55,7 @@ public:
     boost::signals2::signal<void()> signalViewHitEditSettings;  ///< Signal edit settings
     boost::signals2::signal<void( const std::string& )> signalViewAddTrack; ///< Signals that user wants to add a track
     boost::signals2::signal<void( const boost::filesystem::path& playlistFilename )> signalViewAppendPlaylistTracks; ///< Signals that user wants to append a playlist
+    boost::signals2::signal<void( const std::vector<boost::filesystem::path>& filenames )> signalViewAppendTrackItems; ///< Signals that user wants to append a file items to the playlist
     boost::signals2::signal<void( const std::size_t& )> signalViewHitTrackPosition; ///< Signals that user wants to change current track position
 
 protected:

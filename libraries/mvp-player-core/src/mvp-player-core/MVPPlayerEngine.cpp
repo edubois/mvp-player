@@ -51,6 +51,22 @@ bool MVPPlayerEngine::playFile( const boost::filesystem::path & filename )
     }
 }
 
+void MVPPlayerEngine::addTrackItems( const std::vector<boost::filesystem::path> & filename )
+{
+    for( const boost::filesystem::path & p: filename )
+    {
+        if ( boost::iequals( p.extension().string(), ".m3u" ) )
+        {
+            openPlaylist( p );
+        }
+        else
+        {
+            _playlist.push_back( p );
+            signalTrackAddedToPlaylist( p.filename() );
+        }
+    }
+}
+
 void MVPPlayerEngine::openPlaylist( const boost::filesystem::path & playlistFilename )
 {
     // Parse the playlist

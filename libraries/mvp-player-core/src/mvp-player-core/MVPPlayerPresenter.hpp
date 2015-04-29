@@ -161,6 +161,12 @@ public:
      */
     inline void appendPlaylistTracks( const boost::filesystem::path & filename )
     { signalAppendPlaylistTracks( filename ); }
+    /**
+     * @brief append playlist tracks
+     * @param filename playlist filename (.m3u)
+     */
+    inline void appendTrackItems( const std::vector<boost::filesystem::path> & filename )
+    { signalAppendTrackItems( filename ); }
 
     inline void stopped()
     { signalStopTrack(); }
@@ -265,6 +271,14 @@ public:
     {
         using EventT = EvAppendPlaylistTrack;
         EventT *event = new EventT( filename );
+        signalEvent( *event );
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
+
+    inline void processAppendTrackItems( const std::vector<boost::filesystem::path> & items )
+    {
+        using EventT = EvAppendTrackItems;
+        EventT *event = new EventT( items );
         signalEvent( *event );
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
@@ -420,7 +434,8 @@ public:
     boost::signals2::signal<void( IEvent& )> signalEvent;
     boost::signals2::signal<sc::detail::reaction_result(const std::string&, Playing &)> askPlayingStateExternalTransition;   ///< Bind this to a transition function to extend the state machine states (context is Playing state)
     boost::signals2::signal<sc::detail::reaction_result(const std::string&, Stopped &)> askStoppedStateExternalTransition;   ///< Bind this to a transition function to extend the state machine states (context is Stopped state)
-    boost::signals2::signal<void(const boost::filesystem::path&)> signalAppendPlaylistTracks;
+    boost::signals2::signal<void(const boost::filesystem::path& playlistFilename)> signalAppendPlaylistTracks;
+    boost::signals2::signal<void(const std::vector<boost::filesystem::path>& items)> signalAppendTrackItems;
     boost::signals2::signal<void(const boost::filesystem::path&)> signalPlayedTrack;
     boost::signals2::signal<void(const boost::filesystem::path&)> signalPlayTrack;
     boost::signals2::signal<void(const boost::filesystem::path&)> signalAddTrack;

@@ -92,6 +92,11 @@ public:
     }
 
     /**
+     * @brief add track items to the playlist
+     */
+    void addTrackItems( const std::vector<boost::filesystem::path> & filename );
+
+    /**
      * @brief clear the playlist
      */
     void clearPlaylist();

@@ -83,6 +83,7 @@ struct Playing : sc::simple_state< Playing, Active >
       sc::custom_reaction< EvAddTrack >,
       sc::custom_reaction< EvAddedTrack >,
       sc::custom_reaction< EvAppendPlaylistTrack >,
+      sc::custom_reaction< EvAppendTrackItems >,
       sc::custom_reaction< EvClearPlaylist >,
       sc::custom_reaction< EvModelClearedPlaylist >,
       sc::custom_reaction< EvPlayingItemIndex >,
@@ -319,6 +320,15 @@ struct Playing : sc::simple_state< Playing, Active >
     }
 
     /**
+     * @brief reaction on append track items event
+     */
+    sc::result react( const EvAppendTrackItems & ev )
+    {
+        context< PlayerStateMachine >().presenter.appendTrackItems( ev.trackItems() );
+        return transit< Playing >();
+    }
+
+    /**
      * @brief reaction on played event
      */
     sc::result react( const EvPlayed & ev )
@@ -394,6 +404,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
       sc::custom_reaction< EvAddTrack >,
       sc::custom_reaction< EvAddedTrack >,
       sc::custom_reaction< EvAppendPlaylistTrack >,
+      sc::custom_reaction< EvAppendTrackItems >,
       sc::custom_reaction< EvStartPlaylist >,
       sc::custom_reaction< EvOpenedPlaylist >,
       sc::custom_reaction< EvPreviousTrack >,
@@ -467,6 +478,15 @@ struct Stopped : sc::simple_state< Stopped, Active >
     sc::result react( const EvAppendPlaylistTrack & ev )
     {
         context< PlayerStateMachine >().presenter.appendPlaylistTracks( ev.playlistFilename() );
+        return transit< Stopped >();
+    }
+
+    /**
+     * @brief reaction on append track items event
+     */
+    sc::result react( const EvAppendTrackItems & ev )
+    {
+        context< PlayerStateMachine >().presenter.appendTrackItems( ev.trackItems() );
         return transit< Stopped >();
     }
 
