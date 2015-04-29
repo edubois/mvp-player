@@ -98,6 +98,7 @@ struct Playing : sc::simple_state< Playing, Active >
     sc::result react( const EvStop & ev )
     {
         context< PlayerStateMachine >().presenter.stopped();
+        context< PlayerStateMachine >().presenter.processTrackLengthChanged( 0 );
         return transit< Stopped >();
     }
 

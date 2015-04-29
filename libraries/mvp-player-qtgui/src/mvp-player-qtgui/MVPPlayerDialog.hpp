@@ -97,6 +97,7 @@ protected Q_SLOTS:
     void changeTrackPosition( const int positionInPercent );
 
 protected:
+    std::size_t _currentTrackLength = 0;
     QToolButton *_btnPlayPause;
     QToolButton *_btnPrevious;
     QToolButton *_btnNext;

@@ -167,13 +167,23 @@ void MVPPlayerRemoteDialog::changeTrackPosition( const int positionInPercent )
 
 void MVPPlayerRemoteDialog::slotSetTrackLength( const std::size_t lengthInMS )
 {
-    widget.lblTrackLength->setText( QString::fromStdString( trackLengthToString( lengthInMS ) ) );
+    const int position = widget.sliderPosition->value() * _currentTrackLength / 100;
+    if ( lengthInMS < position )
+    {
+        slotSetTrackPosition( lengthInMS, lengthInMS );
+        widget.lblTrackLength->setText( QString::fromStdString( trackLengthToString( lengthInMS ) ) );
+    }
+    else
+    {
+        widget.lblTrackLength->setText( QString::fromStdString( trackLengthToString( lengthInMS ) ) );
+    }
 }
 
 void MVPPlayerRemoteDialog::slotSetTrackPosition( const int positionInMS, const int trackLength )
 {
     widget.sliderPosition->blockSignals( true ); // Don't forget to put this to avoid dead locks
     widget.sliderPosition->setValue( 100 * positionInMS / trackLength );
+    _currentTrackLength = trackLength;
     widget.sliderPosition->blockSignals( false );
 }
 

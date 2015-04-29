@@ -102,9 +102,9 @@ void MVPPlayerEngine::playPlaylistItem( const int index )
  * @param positionInPercent position in percent (0-100)
  * @param seekType seek position in percent or milliseconds
  */
-void MVPPlayerEngine::setTrackPosition( const std::size_t positionInPercent, const ESeekPosition seekType )
+void MVPPlayerEngine::setTrackPosition( const std::size_t position, const ESeekPosition seekType )
 {
-    _soundPlayer->setPosition( positionInPercent, seekType );
+    _soundPlayer->setPosition( position, seekType );
 }
 
 bool MVPPlayerEngine::restart()

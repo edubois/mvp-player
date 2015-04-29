@@ -157,6 +157,10 @@ void MVPPlayerLocalDialog::slotAddTrack( const QString & filename )
 
 void MVPPlayerLocalDialog::slotSetTrackLength( const std::size_t lengthInMS )
 {
+    widget.sliderPosition->blockSignals( true ); // Don't forget to put this to avoid dead locks
+    widget.sliderPosition->setValue( 0 );
+    widget.sliderPosition->blockSignals( false );
+    _currentTrackLength = lengthInMS;
     widget.lblTrackLength->setText( QString::fromStdString( trackLengthToString( lengthInMS ) ) );
 }
 
