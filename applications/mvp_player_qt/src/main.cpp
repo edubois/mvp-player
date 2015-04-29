@@ -53,20 +53,25 @@ int instanciateApp<gui::MVPPlayerRemoteDialog>( int argc, char **argv )
     using Dialog = gui::MVPPlayerRemoteDialog;
 
     QApplication app( argc, argv );
-    QStyle * android = QStyleFactory::create("Android");
-    app.setStyle( android );
+#ifdef ANDROID
+//    QStyle * android = QStyleFactory::create( "android" );
+//    if ( android )
+//    {
+//        app.setStyle( android );
+//    }
+#endif
 
     initResources();
 
-    // Core (model): a sound player engine
-    mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
-    mvpplayer::SoundPlayer::getInstance().setVolume( 0.0f );
+    // Main dialog (view)
+    Dialog dlg;
 
     // Network remote
     mvpplayer::network::client::Client mvpPlayerClient;
 
-    // Main dialog (view)
-    Dialog dlg;
+    // Core (model): a sound player engine
+    mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
+    mvpplayer::SoundPlayer::getInstance().setVolume( 0.0f );
 
     // Presenter (presenter: logic-glu between model and view)
     mvpplayer::logic::MVPPlayerPresenter presenter;
@@ -130,22 +135,29 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerLocalDialog>( int argc, char **a
     using Dialog = mvpplayer::gui::qt::MVPPlayerLocalDialog;
 
     QApplication app( argc, argv );
+#ifdef ANDROID
+//    QStyle * android = QStyleFactory::create( "android" );
+//    if ( android )
+//    {
+//        app.setStyle( android );
+//    }
+#endif
 
     initResources();
+
+    Dialog dlg;
 
     // Core (model): a sound player engine
     mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
     mvpplayer::network::server::Server mvpPlayerServer;
 
-    // Main dialog (view)
-    QSystemTrayIcon trayIcon( QIcon( ":/mvpplayer/action/play.png" ) );
-    trayIcon.setVisible( true );
-
-    Dialog dlg;
-
     // Presenter (presenter: logic-glu between model and view)
     mvpplayer::logic::MVPPlayerPresenter presenter;
     presenter.startStateMachine<mvpplayer::logic::PlayerStateMachine>();
+
+    // Main dialog (view)
+    QSystemTrayIcon trayIcon( QIcon( ":/mvpplayer/action/play.png" ) );
+    trayIcon.setVisible( true );
 
     // Specific connections (be careful of the order here)
 
@@ -201,16 +213,19 @@ int main( int argc, char **argv )
             Settings::getInstance().set( "plugins", "pluginsPath", *envStr );
         }
     }
+    int res = 0;
 #ifdef FORCE_REMOTE_BY_DEFAULT
-        return instanciateApp<gui::MVPPlayerRemoteDialog>( argc, argv );
+    res = instanciateApp<gui::MVPPlayerRemoteDialog>( argc, argv );
 #else
     if ( argc > 1 && ( std::string( argv[1] ) == "--remote" || std::string( argv[1] ) == "-r" ) )
     {
-        return instanciateApp<gui::MVPPlayerRemoteDialog>( argc, argv );
+        res = instanciateApp<gui::MVPPlayerRemoteDialog>( argc, argv );
     }
     else
     {
-        return instanciateApp<gui::MVPPlayerLocalDialog>( argc, argv );
+        res = instanciateApp<gui::MVPPlayerLocalDialog>( argc, argv );
     }
+
+    return res;
 #endif
 }
