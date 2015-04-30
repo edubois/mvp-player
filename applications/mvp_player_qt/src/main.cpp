@@ -32,6 +32,7 @@ template<class Dialog>
 int instanciateApp( int argc, char **argv )
 {
     std::cerr << "Unimplented GUI" << std::endl;
+    return 0;
 }
 
 void editSettings( QDialog *caller, mvpplayer::MVPPlayerEngine & m, mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logic::MVPPlayerPresenter & p )
@@ -204,7 +205,7 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerLocalDialog>( int argc, char **a
     presenter.signalEvent.disconnect_all_slots();
     // Make sure all events are processed before we delete the view
     app.processEvents();
-    return 0;
+    return res;
 }
 
 /**
@@ -233,7 +234,6 @@ int main( int argc, char **argv )
     {
         res = instanciateApp<gui::MVPPlayerLocalDialog>( argc, argv );
     }
-
-    return res;
 #endif
+    return res;
 }
