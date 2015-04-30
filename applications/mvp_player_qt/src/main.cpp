@@ -66,12 +66,12 @@ int instanciateApp<gui::MVPPlayerRemoteDialog>( int argc, char **argv )
     // Main dialog (view)
     Dialog dlg;
 
-    // Network remote
-    mvpplayer::network::client::Client mvpPlayerClient;
-
     // Core (model): a sound player engine
     mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
     mvpplayer::SoundPlayer::getInstance().setVolume( 0.0f );
+
+    // Network remote
+    mvpplayer::network::client::Client mvpPlayerClient;
 
     // Presenter (presenter: logic-glu between model and view)
     mvpplayer::logic::MVPPlayerPresenter presenter;
@@ -116,14 +116,17 @@ int instanciateApp<gui::MVPPlayerRemoteDialog>( int argc, char **argv )
     );
     dlg.signalViewDisconnect.connect( boost::bind( &mvpplayer::network::client::Client::disconnect, &mvpPlayerClient ) );
 
+    int res = 0;
     if ( !dlg.exec() )
     {
-        return -1;
+        res = -1;
     }
-    else
-    {
-        return 0;
-    }
+
+    mvpPlayerClient.signalEvent.disconnect_all_slots();
+    presenter.signalEvent.disconnect_all_slots();
+    // Make sure all events are processed before we delete the view
+    app.processEvents();
+    return res;
 }
 
 /**
@@ -149,6 +152,7 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerLocalDialog>( int argc, char **a
 
     // Core (model): a sound player engine
     mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
+
     mvpplayer::network::server::Server mvpPlayerServer;
 
     // Presenter (presenter: logic-glu between model and view)
@@ -189,14 +193,18 @@ int instanciateApp<mvpplayer::gui::qt::MVPPlayerLocalDialog>( int argc, char **a
     dlg.signalViewStartServer.connect( boost::bind( &mvpplayer::network::server::Server::run, &mvpPlayerServer ) );
     dlg.signalViewStopServer.connect( boost::bind( &mvpplayer::network::server::Server::stop, &mvpPlayerServer ) );
 
+    int res = 0;
     if ( !dlg.exec() )
     {
-        return -1;
+        res = -1;
     }
-    else
-    {
-        return 0;
-    }
+
+    // Disconnect network signals related
+    mvpPlayerServer.signalEventFrom.disconnect_all_slots();
+    presenter.signalEvent.disconnect_all_slots();
+    // Make sure all events are processed before we delete the view
+    app.processEvents();
+    return 0;
 }
 
 /**

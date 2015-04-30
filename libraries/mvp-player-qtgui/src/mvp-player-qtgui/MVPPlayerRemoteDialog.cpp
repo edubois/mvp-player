@@ -179,7 +179,14 @@ void MVPPlayerRemoteDialog::slotSetTrackLength( const std::size_t lengthInMS )
 void MVPPlayerRemoteDialog::slotSetTrackPosition( const int positionInMS, const int trackLength )
 {
     widget.sliderPosition->blockSignals( true ); // Don't forget to put this to avoid dead locks
-    widget.sliderPosition->setValue( 100 * positionInMS / trackLength );
+    if ( trackLength != 0 )
+    {
+        widget.sliderPosition->setValue( 100 * positionInMS / trackLength );
+    }
+    else
+    {
+        widget.sliderPosition->setValue( 0 );
+    }
     _currentTrackLength = trackLength;
     widget.sliderPosition->blockSignals( false );
 }

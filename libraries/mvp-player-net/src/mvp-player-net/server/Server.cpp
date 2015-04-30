@@ -22,7 +22,8 @@ Server::~Server()
         stop();
         if ( _ioThread )
         {
-            _ioThread.reset( nullptr );
+            _ioThread->interrupt();
+            _ioThread->join();
         }
     }
     catch( ... )
@@ -41,8 +42,8 @@ void Server::handleConnection()
 void Server::handleNewConnection( Peer * peerPtr, const boost::system::error_code& error )
 {
     std::auto_ptr<Peer> serverPeer( peerPtr );
-	if ( !error )
-	{
+    if ( !error )
+    {
         // The order is important here
         // Start by presenting ourself
         serverPeer->presentation( peerInfo() );
@@ -59,17 +60,29 @@ void Server::handleNewConnection( Peer * peerPtr, const boost::system::error_cod
         signalNewClient( peerAddress );
         // Go back to new connection handling
 		handleConnection();
-	}
+    }
 }
 
 void Server::run()
 {
-    stop();
-    _acceptor.reset( new boost::asio::ip::tcp::acceptor( _ioService, boost::asio::ip::tcp::endpoint( boost::asio::ip::tcp::v4(), _port ) ) );
-    handleConnection();
+    try
+    {
+        stop();
+        _acceptor.reset( new boost::asio::ip::tcp::acceptor( _ioService, boost::asio::ip::tcp::endpoint( boost::asio::ip::tcp::v4(), _port ) ) );
+        handleConnection();
 
-    _ioThread.reset( new boost::thread( boost::bind( &boost::asio::io_service::run, &_ioService ) ) );
-    _stopped = false;
+        if ( _ioThread )
+        {
+            _ioThread->interrupt();
+            _ioThread->join();
+        }
+        _ioThread.reset( new boost::thread( boost::bind( &boost::asio::io_service::run, &_ioService ) ) );
+        _stopped = false;
+    }
+    catch( ... )
+    {
+        _stopped = true;
+    }
 }
 
 void Server::stop()

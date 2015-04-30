@@ -20,7 +20,7 @@ static const unsigned short kDefaultServerPort = 11999;
 /**
  * @brief mvp_player network client
  */
-class Client
+class Client : public boost::signals2::trackable
 {
 public:
     Client();

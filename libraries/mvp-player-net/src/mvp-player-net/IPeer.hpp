@@ -20,7 +20,7 @@ namespace network
 /**
  * @brief mvp_player network client instance
  */
-class IPeer
+class IPeer : public boost::signals2::trackable
 {
 private:
     typedef boost::archive::text_iarchive IArchive;

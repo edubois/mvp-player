@@ -20,7 +20,7 @@ static const unsigned short kDefaultServerPort = 11999;
 /**
  * @brief mvp_player network server
  */
-class Server
+class Server : public boost::signals2::trackable
 {
 private:
     typedef boost::ptr_multimap<std::string, Peer> MapClientT;

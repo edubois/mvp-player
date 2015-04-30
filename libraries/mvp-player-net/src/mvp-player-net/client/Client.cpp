@@ -21,6 +21,7 @@ Client::~Client()
     try
     {
         disconnect();
+        _serverPeer.reset( nullptr );
         if ( _ioThread )
         {
             _ioThread->interrupt();

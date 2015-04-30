@@ -21,7 +21,21 @@ IPeer::IPeer( boost::asio::io_service *ioService )
 }
 
 IPeer::~IPeer()
-{}
+{
+    try
+    {
+        if ( _ioThread )
+        {
+            _ioThread->interrupt();
+            _ioThread->join();
+        }
+        disconnect();
+    }
+    catch( ... )
+    {
+        std::cerr << ::boost::current_exception_diagnostic_information() << std::endl;
+    }
+}
 
 void IPeer::start()
 {
@@ -52,6 +66,7 @@ void IPeer::handleReceiving()
     {
         while( !_stop )
         {
+            boost::this_thread::interruption_point();
             // Read event
             IEvent *event = nullptr;
             recv( event );
@@ -69,6 +84,8 @@ void IPeer::handleReceiving()
             }
         }
     }
+    catch( boost::thread_interrupted& )
+    {}
     catch( ... )
     {
         std::cerr << ::boost::current_exception_diagnostic_information() << std::endl;
@@ -78,11 +95,6 @@ void IPeer::handleReceiving()
 void IPeer::disconnect()
 {
     _stop = true;
-
-    if ( _ioScopedService )
-    {
-        _ioScopedService->stop();
-    }
 
     if ( _socket.is_open() )
     {
@@ -99,7 +111,19 @@ void IPeer::disconnect()
 
     if ( _receivingThread )
     {
+        _receivingThread->interrupt();
+        if ( _ioScopedService )
+        {
+            _ioScopedService->stop();
+        }
+        _receivingThread->join();
         _receivingThread.reset( nullptr );
+    }
+
+
+    if ( _ioScopedService )
+    {
+        _ioScopedService->stop();
     }
 }
 
