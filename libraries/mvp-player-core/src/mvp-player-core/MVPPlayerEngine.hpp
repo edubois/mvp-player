@@ -102,6 +102,13 @@ public:
     void clearPlaylist();
 
     /**
+     * @brief set volume
+     * @param volume volume in [0;1]
+     */
+    void setVolume( const float volume )
+    { _soundPlayer->setVolume( volume ); }
+
+    /**
      * @brief get current played track
      * @return the current track
      * @todo threadsafe this

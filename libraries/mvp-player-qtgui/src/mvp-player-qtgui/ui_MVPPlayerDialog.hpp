@@ -36,7 +36,8 @@ public:
     QToolButton *btnSettings;
     QToolButton *btnServer;
     QLabel *lblVol;
-    QSlider *verticalSlider;
+    QSlider *sliderVolume;
+    QSpacerItem *verticalSpacer;
     QVBoxLayout *verticalLayout;
     QFrame *frameImage;
     QHBoxLayout *horizontalLayout;
@@ -57,7 +58,7 @@ public:
     {
         if (MVPPlayerDialog->objectName().isEmpty())
             MVPPlayerDialog->setObjectName(QStringLiteral("MVPPlayerDialog"));
-        MVPPlayerDialog->resize(537, 339);
+        MVPPlayerDialog->resize(537, 356);
         QIcon icon;
         icon.addFile(QStringLiteral(":/mvpplayer/app/splashscreen.png"), QSize(), QIcon::Normal, QIcon::Off);
         MVPPlayerDialog->setWindowIcon(icon);
@@ -103,18 +104,23 @@ public:
 
         verticalLayout_3->addWidget(lblVol);
 
-        verticalSlider = new QSlider(MVPPlayerDialog);
-        verticalSlider->setObjectName(QStringLiteral("verticalSlider"));
+        sliderVolume = new QSlider(MVPPlayerDialog);
+        sliderVolume->setObjectName(QStringLiteral("sliderVolume"));
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(verticalSlider->sizePolicy().hasHeightForWidth());
-        verticalSlider->setSizePolicy(sizePolicy);
-        verticalSlider->setMaximum(100);
-        verticalSlider->setValue(100);
-        verticalSlider->setOrientation(Qt::Vertical);
+        sizePolicy.setHeightForWidth(sliderVolume->sizePolicy().hasHeightForWidth());
+        sliderVolume->setSizePolicy(sizePolicy);
+        sliderVolume->setMinimumSize(QSize(0, 128));
+        sliderVolume->setMaximum(100);
+        sliderVolume->setValue(100);
+        sliderVolume->setOrientation(Qt::Vertical);
 
-        verticalLayout_3->addWidget(verticalSlider);
+        verticalLayout_3->addWidget(sliderVolume);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_3->addItem(verticalSpacer);
 
 
         horizontalLayout_4->addLayout(verticalLayout_3);
@@ -207,8 +213,8 @@ public:
 
         QWidget::setTabOrder(btnOpen, btnSettings);
         QWidget::setTabOrder(btnSettings, btnServer);
-        QWidget::setTabOrder(btnServer, verticalSlider);
-        QWidget::setTabOrder(verticalSlider, sliderPosition);
+        QWidget::setTabOrder(btnServer, sliderVolume);
+        QWidget::setTabOrder(sliderVolume, sliderPosition);
         QWidget::setTabOrder(sliderPosition, playlist);
 
         retranslateUi(MVPPlayerDialog);

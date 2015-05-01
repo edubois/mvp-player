@@ -239,11 +239,7 @@ FMOD_RESULT F_CALLBACK dspCallback( FMOD_DSP_STATE *dspState, float *inbuffer, f
     thisDSP->getUserData( (void**)( &recorder ) );
 
     FMOD::Channel & channel = recorder->channel();
-    /*
-    unsigned int position;
-    channel.getPosition( &position, FMOD_TIMEUNIT_PCM );
-     */
-    
+
     const float thresholdVol = recorder->thresholdVolumeHigh();
 
     bool triggered = false;

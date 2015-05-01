@@ -79,6 +79,7 @@ protected:
         }
 
         connect( widget.sliderPosition, SIGNAL( valueChanged( int ) ), this, SLOT( changeTrackPosition( int ) ) );
+        connect( widget.sliderVolume, SIGNAL( valueChanged( int ) ), this, SLOT( changeVolume( int ) ) );
 
         // Center window
     #ifndef ANDROID
@@ -95,6 +96,7 @@ protected Q_SLOTS:
     void slotDisplayError( const QString & msg );
     void slotViewHitButton();
     void changeTrackPosition( const int positionInPercent );
+    void changeVolume( const int volume );
 
 protected:
     std::size_t _currentTrackLength = 0;

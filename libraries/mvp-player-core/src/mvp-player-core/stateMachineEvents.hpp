@@ -627,6 +627,49 @@ private:
     int _playlistIndex;                     ///< Playlist index
 };
 
+/**
+ * @brief event triggered when settings volume
+ */
+struct EvSetVolume : IEvent, sc::event< EvSetVolume >
+{
+private:
+    typedef EvSetVolume This;
+public:
+    EvSetVolume()
+    : _volume( 1.0f )
+    {}
+
+    EvSetVolume( const float vol )
+    : _volume( vol )
+    {}
+
+    inline const float volume() const
+    { return _volume; }
+
+    friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & boost::serialization::base_object<IEvent>( *this );
+        ar & _volume;
+    }
+
+    // This is needed to avoid a strange error on BOOST_CLASS_EXPORT_KEY
+    static void operator delete( void *p, const std::size_t n )
+    { ::operator delete(p); }
+    /**
+     * @brief process this event (needed to avoid dynamic_casts)
+     * @param scheduler event scheduler
+     * @param processor event processor
+     */
+    void processSelf( boost::statechart::fifo_scheduler<> & scheduler, boost::statechart::fifo_scheduler<>::processor_handle & processor )
+    {
+        scheduler.queue_event( processor, boost::intrusive_ptr< This >( this ) );
+    }
+private:
+    float _volume;                     ///< Volume in [0;1]
+};
+
 
 /**
  * @brief event triggered when playing an item of the playlist
@@ -952,6 +995,7 @@ void registerClassInArchive( Archive & ar )
     ar.template register_type< EvAppendPlaylistTrack >();
     ar.template register_type< EvAppendTrackItems >();
     ar.template register_type< EvOpenedPlaylist >();
+    ar.template register_type< EvSetVolume >();
     ar.template register_type< EvPlayingItemIndex >();
     ar.template register_type< EvPlayItemAtIndex >();
     ar.template register_type< EvReset >();
@@ -980,6 +1024,7 @@ BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvAddedTrack );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvAppendPlaylistTrack );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvAppendTrackItems );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvOpenedPlaylist );
+BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvSetVolume );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvPlayingItemIndex );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvPlayItemAtIndex );
 BOOST_CLASS_EXPORT_KEY( mvpplayer::logic::EvReset );

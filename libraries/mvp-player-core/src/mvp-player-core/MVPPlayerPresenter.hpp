@@ -210,6 +210,9 @@ public:
     inline void trackLengthChanged( const std::size_t lengthInMS )
     { signalTrackLengthChanged( lengthInMS ); }
 
+    inline void setVolume( const float vol )
+    { signalSetVolume( vol ); }
+
     boost::optional<boost::filesystem::path> askForFile( const std::string & question, const EFileDialogMode & mode )
     {
         auto sigAnswer = signalAskForFile( question, mode );
@@ -394,6 +397,14 @@ public:
         _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
     }
 
+    inline void processSetVolume( const float volume )
+    {
+        using EventT = EvSetVolume;
+        EventT *event = new EventT( volume );
+        signalEvent( *event );
+        _scheduler.queue_event( _playerProcessor, boost::intrusive_ptr< EventT >( event ) );
+    }
+
     inline void processTrackLengthChanged( const std::size_t lengthInMS )
     {
         using EventT = EvTrackLengthChanged;
@@ -452,6 +463,7 @@ public:
     boost::signals2::signal<void(const std::size_t posInPercent)> signalSetTrackPosition;
     boost::signals2::signal<void(const std::size_t posInMS, const std::size_t trackLength)> signalTrackPositionChanged;
     boost::signals2::signal<void(const std::vector<m3uParser::PlaylistItem> &)> signalOpenedPlaylist;
+    boost::signals2::signal<void(const float volume)> signalSetVolume;
     boost::signals2::signal<void(const boost::filesystem::path&, const int)> signalPlayingItemIndex;
     boost::signals2::signal<void(const std::string&)> signalFailed;
     boost::signals2::signal<boost::optional<boost::filesystem::path> (const std::string&, const EFileDialogMode)> signalAskForFile;

@@ -1,11 +1,12 @@
 #include "SoundPlayer.hpp"
 
-#include <cassert>
-#include <iostream>
-
 #include <boost/asio.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread.hpp>
+
+#include <chrono>
+#include <cassert>
+#include <iostream>
 
 namespace mvpplayer
 {
@@ -24,7 +25,6 @@ void SoundPlayer::initialize()
     //if initialise the sound system. If fails, sound is set to impossible
     if (possible) result = _fmodsystem->init( 2, FMOD_INIT_NORMAL, 0 );
     if (result != FMOD_OK) possible = false;
-    createPositionDSP();
 }
 
 /**
@@ -37,12 +37,6 @@ void SoundPlayer::terminate()
     signalTrackLength.disconnect_all_slots();
 
     unload();
-
-    if ( _dsp )
-    {
-        _dsp->release();
-        _dsp = nullptr;
-    }
 
     if ( _fmodsystem )
     {
@@ -57,16 +51,27 @@ void SoundPlayer::updater()
     assert( _fmodsystem != nullptr );
     try
     {
+        std::chrono::system_clock::time_point lastTime = std::chrono::system_clock::now();
         while( on )
         {
             boost::mutex::scoped_lock lock( _mutexPlayer );
+
             if ( _fmodsystem )
             {
                 _fmodsystem->update();
             }
 
+            // Inform the position
+            if ( _channel && !isPaused() )
+            {
+                std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+                if ( std::chrono::duration_cast<std::chrono::milliseconds>( now - lastTime ).count() >= kDecideToSendPositionThreshold )
+                {
+                    signalPositionChanged( getPosition(), getLength() );
+                }
+            }
+
             // Wait 25ms
-            boost::this_thread::interruption_point();
             boost::this_thread::sleep( boost::posix_time::milliseconds( 25 ) );
             boost::this_thread::interruption_point();
         }
@@ -75,13 +80,18 @@ void SoundPlayer::updater()
     {}
 }
 
-//sets the actual playing sound's volume
+/**
+ * @brief sets the actual playing sound's volume
+ * @param v volume in [0;1]
+ */
 void SoundPlayer::setVolume( const float v )
 {
     _currentVolume = v;
     if ( _channel && v >= 0.0f && v <= 1.0f )
     {
-        _channel->setVolume( v );
+        boost::mutex::scoped_lock lock( _mutexPlayer );
+        result = _channel->setVolume( v );
+        _fmodsystem->update();
     }
 }
 
@@ -119,11 +129,6 @@ void SoundPlayer::unload()
 
     if ( _sound )
     {
-        if ( _dsp )
-        {
-            _channel->removeDSP( _dsp );
-        }
-
         _channel->stop();
         result = _sound->release();
         _sound = nullptr;
@@ -166,7 +171,6 @@ bool SoundPlayer::play( const bool pause )
         _channel->setCallback( &playEndedCallback );
         on = true;
         setVolume( _currentVolume );
-        _channel->addDSP( 0, _dsp );
         // Start fmod updater thread
         // We need to call update every 20 ms to get fmod system status
         _updaterThread.reset( new boost::thread( boost::bind( &SoundPlayer::updater, this ) ) );
@@ -190,6 +194,19 @@ void SoundPlayer::setPause( const bool pause )
 {
     signalPositionChanged( getPosition(), getLength() );
     _channel->setPaused( pause );
+}
+
+/**
+ * @brief is track paused
+ */
+bool SoundPlayer::isPaused() const
+{ 
+    bool paused = false;
+    if ( _channel )
+    {
+        _channel->getPaused( &paused );
+    }
+    return paused;
 }
 
 /**
@@ -259,33 +276,6 @@ void SoundPlayer::setPosition( const std::size_t position, const ESeekPosition s
     }
 }
 
-/**
- * @brief create dsp used to track the position
- */
-void SoundPlayer::createPositionDSP()
-{
-    assert( _fmodsystem );
-    
-    if ( _dsp )
-    {
-        _dsp->release();
-        _dsp = nullptr;
-    }
-
-    FMOD_DSP_DESCRIPTION dspdesc; 
-    memset(&dspdesc, 0, sizeof(dspdesc));
-
-    strncpy( dspdesc.name, "DSP for position", sizeof(dspdesc.name) );
-    dspdesc.version = 0x00010000;
-    dspdesc.numinputbuffers = 1;
-    dspdesc.numoutputbuffers = 1;
-    dspdesc.read = &positionCallback;
-    dspdesc.userdata = (void *)this;
-
-    _fmodsystem->createDSP( &dspdesc, &_dsp ); 
-} 
-
-
 FMOD_RESULT playEndedCallback(FMOD_CHANNELCONTROL *cchannelcontrol, FMOD_CHANNELCONTROL_TYPE controltype, FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype, void *commanddata1, void *commanddata2)
 {
     FMOD::ChannelControl *channelcontrol = (FMOD::ChannelControl *)( cchannelcontrol );
@@ -314,18 +304,6 @@ FMOD_RESULT playEndedCallback(FMOD_CHANNELCONTROL *cchannelcontrol, FMOD_CHANNEL
     {
         return FMOD_ERR_INTERNAL;
     }
-    return FMOD_OK;
-}
-
-FMOD_RESULT F_CALLBACK positionCallback( FMOD_DSP_STATE *dspState, float *inbuffer, float *outbuffer, unsigned int length, int inchannels, int *outchannels ) 
-{
-    assert( dspState );
-    FMOD::DSP *thisDSP = (FMOD::DSP *)dspState->instance;
-    mvpplayer::SoundPlayer* player = nullptr;
-    thisDSP->getUserData( (void**)( &player ) );
-
-    // Signal track position
-    player->signalPositionChanged( player->getPosition(), player->getLength() );
     return FMOD_OK;
 }
 

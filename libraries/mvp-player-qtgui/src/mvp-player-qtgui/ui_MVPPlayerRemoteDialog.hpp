@@ -35,6 +35,9 @@ public:
     QHBoxLayout *horizontalLayout;
     QHBoxLayout *layoutButtonsBar;
     QSpacerItem *horizontalSpacer;
+    QHBoxLayout *horizontalLayout_4;
+    QSlider *sliderVolume;
+    QLabel *lblVol;
     QToolButton *btnServer;
     QFrame *line_2;
     QCheckBox *cbMute;
@@ -52,7 +55,7 @@ public:
     {
         if (MVPPlayerRemoteDialog->objectName().isEmpty())
             MVPPlayerRemoteDialog->setObjectName(QStringLiteral("MVPPlayerRemoteDialog"));
-        MVPPlayerRemoteDialog->resize(556, 335);
+        MVPPlayerRemoteDialog->resize(510, 356);
         verticalLayout_3 = new QVBoxLayout(MVPPlayerRemoteDialog);
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
         verticalLayout_2 = new QVBoxLayout();
@@ -68,6 +71,37 @@ public:
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer);
+
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        sliderVolume = new QSlider(MVPPlayerRemoteDialog);
+        sliderVolume->setObjectName(QStringLiteral("sliderVolume"));
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(sliderVolume->sizePolicy().hasHeightForWidth());
+        sliderVolume->setSizePolicy(sizePolicy);
+        sliderVolume->setMinimumSize(QSize(128, 0));
+        sliderVolume->setMaximum(100);
+        sliderVolume->setValue(100);
+        sliderVolume->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_4->addWidget(sliderVolume);
+
+        lblVol = new QLabel(MVPPlayerRemoteDialog);
+        lblVol->setObjectName(QStringLiteral("lblVol"));
+        QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Preferred);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(lblVol->sizePolicy().hasHeightForWidth());
+        lblVol->setSizePolicy(sizePolicy1);
+        lblVol->setPixmap(QPixmap(QString::fromUtf8(":/mvpplayer/app/icon.png")));
+        lblVol->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_4->addWidget(lblVol);
+
+
+        horizontalLayout->addLayout(horizontalLayout_4);
 
         btnServer = new QToolButton(MVPPlayerRemoteDialog);
         btnServer->setObjectName(QStringLiteral("btnServer"));
@@ -106,11 +140,12 @@ public:
 
         lblCurrentTrack = new QLabel(MVPPlayerRemoteDialog);
         lblCurrentTrack->setObjectName(QStringLiteral("lblCurrentTrack"));
-        QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(lblCurrentTrack->sizePolicy().hasHeightForWidth());
-        lblCurrentTrack->setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy2(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(lblCurrentTrack->sizePolicy().hasHeightForWidth());
+        lblCurrentTrack->setSizePolicy(sizePolicy2);
+        lblCurrentTrack->setWordWrap(true);
 
         horizontalLayout_2->addWidget(lblCurrentTrack);
 
@@ -168,6 +203,7 @@ public:
     void retranslateUi(QDialog *MVPPlayerRemoteDialog)
     {
         MVPPlayerRemoteDialog->setWindowTitle(QApplication::translate("MVPPlayerRemoteDialog", "MVPPlayer - Remote", 0));
+        lblVol->setText(QString());
         btnServer->setText(QApplication::translate("MVPPlayerRemoteDialog", "C", 0));
         cbMute->setText(QApplication::translate("MVPPlayerRemoteDialog", "Mute", 0));
         label->setText(QApplication::translate("MVPPlayerRemoteDialog", "Current track:", 0));

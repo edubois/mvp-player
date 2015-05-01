@@ -54,6 +54,11 @@ public:
     virtual bool play( const bool pause = false ) = 0;
 
     /**
+     * @brief is track paused
+     */
+    virtual bool isPaused() const = 0;
+    
+    /**
      * @brief stop the current played track
      */
     virtual void stop()

@@ -86,6 +86,7 @@ struct Playing : sc::simple_state< Playing, Active >
       sc::custom_reaction< EvAppendTrackItems >,
       sc::custom_reaction< EvClearPlaylist >,
       sc::custom_reaction< EvModelClearedPlaylist >,
+      sc::custom_reaction< EvSetVolume >,
       sc::custom_reaction< EvPlayingItemIndex >,
       sc::custom_reaction< EvPlayItemAtIndex >,
       sc::custom_reaction< EvEndOfTrack >,
@@ -205,6 +206,15 @@ struct Playing : sc::simple_state< Playing, Active >
         context< PlayerStateMachine >().nItemsPlaylist = ev.playlistItems().size();
         context< PlayerStateMachine >().currentPlaylistIndex = 0;
         context< PlayerStateMachine >().presenter.openedPlaylist( ev.playlistItems() );
+        return transit< Playing >();
+    }
+
+    /**
+     * @brief reaction on set volume
+     */
+    sc::result react( const EvSetVolume & ev )
+    {
+        context< PlayerStateMachine >().presenter.setVolume( ev.volume() );
         return transit< Playing >();
     }
 

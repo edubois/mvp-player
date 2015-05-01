@@ -13,6 +13,8 @@
 namespace mvpplayer
 {
 
+static const std::size_t kDecideToSendPositionThreshold = 250; // in ms
+
 class SoundPlayer : public ISoundPlayer, public Singleton<SoundPlayer>
 {
 public:
@@ -22,7 +24,6 @@ public:
     , _fmodsystem( nullptr )
     , _sound( nullptr )
     , _channel( nullptr )
-    , _dsp( nullptr )
     {
         initialize();
     }
@@ -121,6 +122,11 @@ public:
      */
     void togglePause() override;
 
+    /**
+     * @brief is track paused
+     */
+    bool isPaused() const override;
+    
     inline boost::mutex & mutexPlayer()
     { return _mutexPlayer; }
 
@@ -129,7 +135,6 @@ public:
 
 private:
     void updater();
-    void createPositionDSP();
 
 private:
     bool on;                    ///< is sound on?
@@ -140,15 +145,12 @@ private:
     FMOD::System* _fmodsystem;
     FMOD::Sound* _sound;
     FMOD::Channel* _channel;
-    FMOD::DSP* _dsp;            ///< DSP used to track the position
 
     boost::scoped_ptr<boost::thread> _updaterThread; ///< Updater thread
     mutable boost::mutex _mutexPlayer;               ///< For thread safetyness
 };
 
 FMOD_RESULT playEndedCallback(FMOD_CHANNELCONTROL *channelcontrol, FMOD_CHANNELCONTROL_TYPE controltype, FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype, void *commanddata1, void *commanddata2);
-
-FMOD_RESULT F_CALLBACK positionCallback( FMOD_DSP_STATE *dspState, float *  inbuffer, float *  outbuffer, unsigned int  length, int  inchannels, int *outchannels );
 
 }
 

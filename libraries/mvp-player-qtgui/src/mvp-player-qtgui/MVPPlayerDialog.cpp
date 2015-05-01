@@ -83,6 +83,11 @@ void MVPPlayerDialog::changeTrackPosition( const int positionInPercent )
     signalViewHitTrackPosition( positionInPercent );
 }
 
+void MVPPlayerDialog::changeVolume( const int volume )
+{
+    signalViewSetVolume( volume / 100.0f );
+}
+
 }
 }
 }

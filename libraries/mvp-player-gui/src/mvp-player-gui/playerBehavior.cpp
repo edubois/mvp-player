@@ -40,6 +40,8 @@ void connectViewPresenter( mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logi
     v.signalViewHitPlaylistItem.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processPlayItemAtIndex, &p, _1 ) );
     // When the view want to change track position, react by sending the event to the state machine
     v.signalViewHitTrackPosition.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processSetTrackPosition, &p, _1 ) );
+    // When the view want to change volume, react by sending the event to the state machine
+    v.signalViewSetVolume.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processSetVolume, &p, _1 ) );
     // Connect stop event to change play button to [*]
     p.signalPlayedTrack.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setIconStop, &v ) );
     // Connect played event to display track filename function
@@ -91,6 +93,8 @@ void connectPresenterModel( mvpplayer::logic::MVPPlayerPresenter & p, mvpplayer:
     p.signalRestartTrack.connect( boost::bind( &mvpplayer::MVPPlayerEngine::restart, &m ) );
     // When the logic asks for 'restart track' play restart track
     p.signalSetTrackPosition.connect( boost::bind( &mvpplayer::MVPPlayerEngine::setTrackPosition, &m, _1, mvpplayer::eSeekPositionPercent ) );
+    // When the logic asks to change the volume, set the sound engine's volume
+    p.signalSetVolume.connect( boost::bind( &mvpplayer::MVPPlayerEngine::setVolume, &m, _1 ) );
     // Process cleared playlist event when the model clear its playlist
     m.signalClearedPlaylist.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processModelClearedPlaylist, &p ) );
     // When we add a track on the model, we want to notify the presenter
