@@ -21,7 +21,6 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QSlider>
-#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QVBoxLayout>
 
@@ -30,14 +29,13 @@ QT_BEGIN_NAMESPACE
 class Ui_MVPPlayerRemoteDialog
 {
 public:
-    QVBoxLayout *verticalLayout_3;
+    QVBoxLayout *verticalLayout_4;
     QVBoxLayout *verticalLayout_2;
-    QHBoxLayout *horizontalLayout;
-    QHBoxLayout *layoutButtonsBar;
-    QSpacerItem *horizontalSpacer;
+    QVBoxLayout *verticalLayout_3;
     QHBoxLayout *horizontalLayout_4;
     QSlider *sliderVolume;
     QLabel *lblVol;
+    QHBoxLayout *layoutButtonsBar;
     QToolButton *btnServer;
     QFrame *line_2;
     QCheckBox *cbMute;
@@ -55,25 +53,23 @@ public:
     {
         if (MVPPlayerRemoteDialog->objectName().isEmpty())
             MVPPlayerRemoteDialog->setObjectName(QStringLiteral("MVPPlayerRemoteDialog"));
-        MVPPlayerRemoteDialog->resize(510, 356);
-        verticalLayout_3 = new QVBoxLayout(MVPPlayerRemoteDialog);
-        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        MVPPlayerRemoteDialog->resize(380, 429);
+        verticalLayout_4 = new QVBoxLayout(MVPPlayerRemoteDialog);
+        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
+        verticalLayout_4->setSizeConstraint(QLayout::SetDefaultConstraint);
+        verticalLayout_4->setContentsMargins(-1, -1, 12, -1);
         verticalLayout_2 = new QVBoxLayout();
+#ifndef Q_OS_MAC
+        verticalLayout_2->setSpacing(-1);
+#endif
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        verticalLayout_2->setContentsMargins(-1, 0, -1, -1);
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        layoutButtonsBar = new QHBoxLayout();
-        layoutButtonsBar->setObjectName(QStringLiteral("layoutButtonsBar"));
-
-        horizontalLayout->addLayout(layoutButtonsBar);
-
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout->addItem(horizontalSpacer);
-
+        verticalLayout_2->setContentsMargins(-1, 0, 0, -1);
+        verticalLayout_3 = new QVBoxLayout();
+        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        verticalLayout_3->setSizeConstraint(QLayout::SetMinimumSize);
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        horizontalLayout_4->setSizeConstraint(QLayout::SetMinimumSize);
         sliderVolume = new QSlider(MVPPlayerRemoteDialog);
         sliderVolume->setObjectName(QStringLiteral("sliderVolume"));
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -81,7 +77,7 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(sliderVolume->sizePolicy().hasHeightForWidth());
         sliderVolume->setSizePolicy(sizePolicy);
-        sliderVolume->setMinimumSize(QSize(128, 0));
+        sliderVolume->setMinimumSize(QSize(0, 0));
         sliderVolume->setMaximum(100);
         sliderVolume->setValue(100);
         sliderVolume->setOrientation(Qt::Horizontal);
@@ -101,8 +97,10 @@ public:
         horizontalLayout_4->addWidget(lblVol);
 
 
-        horizontalLayout->addLayout(horizontalLayout_4);
+        verticalLayout_3->addLayout(horizontalLayout_4);
 
+        layoutButtonsBar = new QHBoxLayout();
+        layoutButtonsBar->setObjectName(QStringLiteral("layoutButtonsBar"));
         btnServer = new QToolButton(MVPPlayerRemoteDialog);
         btnServer->setObjectName(QStringLiteral("btnServer"));
         QIcon icon;
@@ -111,10 +109,13 @@ public:
         btnServer->setIconSize(QSize(32, 32));
         btnServer->setCheckable(true);
 
-        horizontalLayout->addWidget(btnServer);
+        layoutButtonsBar->addWidget(btnServer);
 
 
-        verticalLayout_2->addLayout(horizontalLayout);
+        verticalLayout_3->addLayout(layoutButtonsBar);
+
+
+        verticalLayout_2->addLayout(verticalLayout_3);
 
         line_2 = new QFrame(MVPPlayerRemoteDialog);
         line_2->setObjectName(QStringLiteral("line_2"));
@@ -131,6 +132,7 @@ public:
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setSizeConstraint(QLayout::SetNoConstraint);
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
         label = new QLabel(MVPPlayerRemoteDialog);
@@ -140,7 +142,7 @@ public:
 
         lblCurrentTrack = new QLabel(MVPPlayerRemoteDialog);
         lblCurrentTrack->setObjectName(QStringLiteral("lblCurrentTrack"));
-        QSizePolicy sizePolicy2(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+        QSizePolicy sizePolicy2(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(0);
         sizePolicy2.setHeightForWidth(lblCurrentTrack->sizePolicy().hasHeightForWidth());
@@ -181,6 +183,11 @@ public:
 
         playlist = new QListWidget(MVPPlayerRemoteDialog);
         playlist->setObjectName(QStringLiteral("playlist"));
+        QSizePolicy sizePolicy3(QSizePolicy::Expanding, QSizePolicy::Maximum);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(playlist->sizePolicy().hasHeightForWidth());
+        playlist->setSizePolicy(sizePolicy3);
         playlist->setDragDropMode(QAbstractItemView::DropOnly);
 
         verticalLayout->addWidget(playlist);
@@ -189,9 +196,8 @@ public:
         verticalLayout_2->addLayout(verticalLayout);
 
 
-        verticalLayout_3->addLayout(verticalLayout_2);
+        verticalLayout_4->addLayout(verticalLayout_2);
 
-        QWidget::setTabOrder(btnServer, cbMute);
         QWidget::setTabOrder(cbMute, sliderPosition);
         QWidget::setTabOrder(sliderPosition, playlist);
 
