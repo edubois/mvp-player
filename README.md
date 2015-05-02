@@ -12,27 +12,28 @@ This is a proof of concept of my personal way to implement the
 model view presenter pattern.
 
 This project shows an easy powerful way to deal with multiple GUI.
-To me, this pattern (or similar) should exist on every C++ projects.
+To me, this important pattern (or similar, such as MV-VM) should exist on every C++ projects.
 
 ////////////////////////////////////////////////////////////////////////////////
 
 ## Main features
 
-* Multiplatform music (MP3, WAV, FLAC, ...) player
+* Multiplatform music (MP3, WAV, FLAC, ...) player: tested on osx, linux, android.
 * Qt music player Gui
 * Console music player (ncurses)
 * Network client/server to remotely play music
 * Support of M3U playlist
+* Plugin engine (example of plugin that plays a song when you clap on your hands)
 
 ## Compilation
 
 To compile, you will need Qt5, Boost, Fmod, ncurses, cdk and scons:
 
-* QT5: http://www.qt.io/download/
-* Boost: http://www.boost.org/users/download/
-* FMOD: http://www.fmod.org/
-* NCURSES: http://ftp.gnu.org/pub/gnu/ncurses/
-* CDK: http://invisible-island.net/cdk/
+* [QT5](http://www.qt.io/download/)
+* [Boost](http://www.boost.org/users/download/)
+* [FMOD](http://www.fmod.org/)
+* [NCURSES](http://ftp.gnu.org/pub/gnu/ncurses/)
+* [CDK](http://invisible-island.net/cdk/)
 
 
 First, clone the repository:
@@ -126,4 +127,10 @@ This is a version of the player using an asynchronous state machine (a little bi
 * ```version_with_network_support```
 
 This is a version with support of network remote player.
+
+## Additionnal resources:
+
+* [MVP-Player in 2 minutes](https://www.youtube.com/watch?v=hB-deB3Axpg)
+
+
 
