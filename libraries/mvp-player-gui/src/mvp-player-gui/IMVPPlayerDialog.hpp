@@ -47,6 +47,8 @@ public:
 
     virtual void setTrackPosition( const std::size_t positionInMS, const std::size_t trackLength ) = 0;
 
+    virtual void setVolume( const float volume ) = 0;
+
 public:
     boost::signals2::signal<void( const std::string & buttonName, const bool pushed )> signalViewHitButton; ///< Signals that user hit a button
     boost::signals2::signal<void( const int )> signalViewHitPlaylistItem; ///< Signals that user hit play on a playlist item

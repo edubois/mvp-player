@@ -175,6 +175,13 @@ void MVPPlayerLocalDialog::slotSetTrackPosition( const int positionInMS, const i
     widget.sliderPosition->blockSignals( false );
 }
 
+void MVPPlayerLocalDialog::slotSetVolume( const float volume )
+{
+    widget.sliderVolume->blockSignals( true );
+    widget.sliderVolume->setValue( volume * 100.0f );
+    widget.sliderVolume->blockSignals( false );
+}
+
 }
 }
 }

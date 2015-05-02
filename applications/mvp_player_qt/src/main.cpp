@@ -96,7 +96,7 @@ int instanciateApp<gui::MVPPlayerRemoteDialog>( int argc, char **argv )
 
     // React on mute event
     // We don't want to share this event
-    dlg.signalViewMute.connect( [](const bool mute) { mvpplayer::SoundPlayer::getInstance().setVolume( mute == false ? 1.0f : 0.0f ); } );
+    dlg.signalViewMute.connect( [](const bool mute) { mvpplayer::SoundPlayer::getInstance().mute( mute ); } );
 
     // Transfer events received from the network to the presenter's state machine
     mvpPlayerClient.signalEvent.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processEvent, &presenter, _1 ) );

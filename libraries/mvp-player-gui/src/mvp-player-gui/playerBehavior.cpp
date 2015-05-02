@@ -60,6 +60,8 @@ void connectViewPresenter( mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logi
     p.signalTrackLengthChanged.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setTrackLength, &v, _1 ) );
     // When the presenter notify that the track position changed, inform the view
     p.signalTrackPositionChanged.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setTrackPosition, &v, _1, _2 ) );
+    // When the presenter notify that the track position changed, inform the view
+    p.signalSetVolume.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::setVolume, &v, _1 ) );
     //@}
 }
 

@@ -19,14 +19,8 @@ class SoundPlayer : public ISoundPlayer, public Singleton<SoundPlayer>
 {
 public:
     SoundPlayer()
-    : on( false )
-    , possible( true )
-    , _fmodsystem( nullptr )
-    , _sound( nullptr )
-    , _channel( nullptr )
-    {
-        initialize();
-    }
+    { initialize(); }
+
     virtual ~SoundPlayer();
 
 public:
@@ -53,6 +47,11 @@ public:
      */
     void setVolume( const float v ) override;
     
+    /**
+     * @brief mute sound
+     */
+    void mute( const bool active = true ) override;
+
     /**
      * @brief load a given file
      * @param filename given file
@@ -137,14 +136,14 @@ private:
     void updater();
 
 private:
-    bool on;                    ///< is sound on?
-    bool possible;              ///< is it possible to play sound?
+    bool on = false;                    ///< is sound on?
+    bool possible = true;              ///< is it possible to play sound?
     std::string _currentSound;  ///< currently played sound
     //FMOD-specific stuff
     FMOD_RESULT result;
-    FMOD::System* _fmodsystem;
-    FMOD::Sound* _sound;
-    FMOD::Channel* _channel;
+    FMOD::System* _fmodsystem = nullptr;
+    FMOD::Sound* _sound = nullptr;
+    FMOD::Channel* _channel = nullptr;
 
     boost::scoped_ptr<boost::thread> _updaterThread; ///< Updater thread
     mutable boost::mutex _mutexPlayer;               ///< For thread safetyness

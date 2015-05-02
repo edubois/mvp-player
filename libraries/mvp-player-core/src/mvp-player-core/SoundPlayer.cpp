@@ -15,7 +15,7 @@ SoundPlayer::~SoundPlayer()
 {
     terminate();
 }
-    
+
 //initialises sound
 void SoundPlayer::initialize()
 {
@@ -91,8 +91,18 @@ void SoundPlayer::setVolume( const float v )
     {
         boost::mutex::scoped_lock lock( _mutexPlayer );
         result = _channel->setVolume( v );
+        mute( _mute );
         _fmodsystem->update();
     }
+}
+
+void SoundPlayer::mute( const bool active )
+{
+    if ( _channel )
+    {
+        _channel->setMute( active );
+    }
+    _mute = active;
 }
 
 //loads a soundfile
@@ -170,6 +180,7 @@ bool SoundPlayer::play( const bool pause )
         _channel->setUserData( this );
         _channel->setCallback( &playEndedCallback );
         on = true;
+        mute( _mute );
         setVolume( _currentVolume );
         // Start fmod updater thread
         // We need to call update every 20 ms to get fmod system status

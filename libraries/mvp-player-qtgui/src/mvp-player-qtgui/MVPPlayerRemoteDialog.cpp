@@ -191,6 +191,13 @@ void MVPPlayerRemoteDialog::slotSetTrackPosition( const int positionInMS, const 
     widget.sliderPosition->blockSignals( false );
 }
 
+void MVPPlayerRemoteDialog::slotSetVolume( const float volume )
+{
+    widget.sliderVolume->blockSignals( true );
+    widget.sliderVolume->setValue( volume * 100.0f );
+    widget.sliderVolume->blockSignals( false );
+}
+
 }
 }
 }

@@ -15,7 +15,7 @@ enum ESeekPosition { eSeekPositionPercent, eSeekPositionMS };
 class ISoundPlayer : public boost::signals2::trackable
 {
 public:
-    ISoundPlayer(): _currentVolume( 1.0f ) {}
+    ISoundPlayer() {}
     virtual ~ISoundPlayer() {}
     
     /**
@@ -57,6 +57,11 @@ public:
      * @brief is track paused
      */
     virtual bool isPaused() const = 0;
+    
+    /**
+     * @brief mute sound
+     */
+    virtual void mute( const bool active = true ) = 0;
     
     /**
      * @brief stop the current played track
@@ -123,7 +128,8 @@ public:
     boost::signals2::signal<void( const long pos, const long len)> signalPositionChanged;   ///< Signalize track position
 
 protected:
-    float _currentVolume;           ///< Current player volume
+    bool _mute = false;                 ///< Mute or not
+    float _currentVolume = 1.0f;        ///< Current player volume
 };
 
 }

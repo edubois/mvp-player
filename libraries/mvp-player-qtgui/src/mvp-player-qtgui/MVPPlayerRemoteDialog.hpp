@@ -62,6 +62,9 @@ public:
     inline void setTrackLength( const std::size_t lengthInMS ) override
     { QMetaObject::invokeMethod( this, "slotSetTrackLength", Qt::BlockingQueuedConnection, Q_ARG( std::size_t, lengthInMS ) ); }
 
+    inline void setVolume( const float volume ) override
+    { QMetaObject::invokeMethod( this, "slotSetVolume", Qt::BlockingQueuedConnection, Q_ARG( float, volume ) ); }
+
 private:
     void dropEvent( QDropEvent *de );
     void dragEnterEvent( QDragEnterEvent *event );
@@ -82,6 +85,7 @@ private Q_SLOTS:
     void slotAddTrack( const QString & filename );
     void slotSetTrackPosition( const int positionInMS, const int trackLength );
     void slotSetTrackLength( const std::size_t lengthInMS );
+    void slotSetVolume( const float volume );
 
 private:
     Ui::MVPPlayerRemoteDialog widget;
