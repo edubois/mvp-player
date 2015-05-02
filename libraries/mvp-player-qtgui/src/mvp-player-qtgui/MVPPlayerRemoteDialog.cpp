@@ -19,12 +19,13 @@ MVPPlayerRemoteDialog::MVPPlayerRemoteDialog( QWidget *parent )
 {
     widget.setupUi(this);
 
-    initDialog( widget );
+    initDialog( *this );
 
     connect( _btnPlayPause, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
     connect( widget.cbMute, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitMute(const bool) ) );
     connect( widget.btnServer, SIGNAL( clicked(bool) ), this, SLOT( connectDisconnectClient( const bool ) ) );
     connect( widget.playlist, SIGNAL( currentRowChanged(int) ), this, SLOT( playPlaylistItemAtIndex(int) ) );
+    connect( widget.sliderVolume, SIGNAL( valueChanged( int ) ), this, SLOT( changeVolume( int ) ) );
 }
 
 MVPPlayerRemoteDialog::~MVPPlayerRemoteDialog()

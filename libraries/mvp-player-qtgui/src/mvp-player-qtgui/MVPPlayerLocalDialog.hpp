@@ -28,6 +28,9 @@ class MVPPlayerLocalDialog : public MVPPlayerDialog
     Q_OBJECT
 private:
     typedef MVPPlayerDialog Parent;
+    typedef MVPPlayerLocalDialog This;
+protected:
+    friend void mvpplayer::gui::qt::initDialog<This>( This & dlg );
 public:
     MVPPlayerLocalDialog( QWidget *parent = NULL );
     virtual ~MVPPlayerLocalDialog();

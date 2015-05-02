@@ -28,6 +28,9 @@ class MVPPlayerRemoteDialog : public MVPPlayerDialog
     Q_OBJECT
 private:
     typedef MVPPlayerDialog Parent;
+    typedef MVPPlayerRemoteDialog This;
+protected:
+    friend void mvpplayer::gui::qt::initDialog<This>( This & dlg );
 public:
     MVPPlayerRemoteDialog( QWidget *parent = NULL );
     virtual ~MVPPlayerRemoteDialog();

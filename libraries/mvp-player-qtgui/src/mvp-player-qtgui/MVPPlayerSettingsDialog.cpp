@@ -13,7 +13,7 @@ namespace gui
 namespace qt
 {
 
-MVPPlayerSettingsDialog::MVPPlayerSettingsDialog( mvpplayer::MVPPlayerEngine & model, mvpplayer::gui::IMVPPlayerDialog & view, mvpplayer::logic::MVPPlayerPresenter & presenter, QDialog *parent )
+MVPPlayerSettingsDialog::MVPPlayerSettingsDialog( mvpplayer::MVPPlayerEngine & model, mvpplayer::gui::IMVPPlayerDialog & view, mvpplayer::logic::MVPPlayerPresenter & presenter, QWidget *parent )
 : QDialog( parent )
 , _editedSettings( Settings::getInstance() )
 , _model( model )

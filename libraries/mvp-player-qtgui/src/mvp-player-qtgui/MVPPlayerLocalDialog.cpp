@@ -15,11 +15,12 @@ MVPPlayerLocalDialog::MVPPlayerLocalDialog( QWidget *parent )
 {
     widget.setupUi(this);
 
-    initDialog( widget );
+    initDialog( *this );
     connect( _btnPlayPause, SIGNAL( toggled(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
     connect( widget.btnServer, SIGNAL( toggled(bool) ), this, SLOT( startStopServer( const bool ) ) );
     connect( widget.playlist, SIGNAL( currentRowChanged(int) ), this, SLOT( playPlaylistItemAtIndex(int) ) );
     connect( widget.btnSettings, SIGNAL( released() ), this, SLOT( editSettings() ) );
+    connect( widget.sliderVolume, SIGNAL( valueChanged( int ) ), this, SLOT( changeVolume( int ) ) );
 }
 
 MVPPlayerLocalDialog::~MVPPlayerLocalDialog()

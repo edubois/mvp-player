@@ -49,6 +49,9 @@ public:
 
     virtual void setVolume( const float volume ) = 0;
 
+    inline PlayerButtonsBar & buttonsBar()
+    { return _buttonsBar; }
+
 public:
     boost::signals2::signal<void( const std::string & buttonName, const bool pushed )> signalViewHitButton; ///< Signals that user hit a button
     boost::signals2::signal<void( const int )> signalViewHitPlaylistItem; ///< Signals that user hit play on a playlist item

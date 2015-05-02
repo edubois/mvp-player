@@ -1,13 +1,10 @@
 #ifndef _GUI_MVPPLAYERDIALOG_HPP_
 #define	_GUI_MVPPLAYERDIALOG_HPP_
 
-#include <mvp-player-gui/IMVPPlayerDialog.hpp>
-#include <mvp-player-core/MVPPlayerPresenter.hpp>
+#include "dialogInit.hpp"
 
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDesktopWidget>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QToolButton>
+#include <mvp-player-core/MVPPlayerPresenter.hpp>
+#include <mvp-player-qtgui/dialogInit.hpp>
 
 #include <boost/optional.hpp>
 
@@ -21,6 +18,11 @@ namespace qt
 class MVPPlayerDialog : public QDialog, public IMVPPlayerDialog
 {
     Q_OBJECT
+private:
+    typedef MVPPlayerDialog This;
+protected:
+    friend void initDialog<This>( This & dlg );
+
 public:
     MVPPlayerDialog( QWidget *parent = NULL );
     virtual ~MVPPlayerDialog();
@@ -34,61 +36,6 @@ public:
     boost::optional<boost::filesystem::path> openFile( const std::string & title, const logic::EFileDialogMode mode, const std::string & extensions );
 
 protected:
-    template<class Dlg>
-    void initDialog( Dlg & widget )
-    {
-#ifndef ANDROID
-        setAcceptDrops(true);
-#endif
-
-        // Transform descriptor into real player buttons
-        for( const ButtonDescriptor & desc: _buttonsBar.buttons() )
-        {
-            // Checkable button
-            QToolButton * button = new QToolButton( this );
-            widget.layoutButtonsBar->addWidget( button );
-            if ( desc.property<std::string>( "captionPushed" ).size() )
-            {
-                button->setCheckable( true );
-            }
-
-            button->setText( desc.property<std::string>( "captionNormal" ).c_str() );
-            button->setStyleSheet( desc.property<std::string>( "styleSheet" ).c_str() );
-            // Connect the right signals according to buttons' names
-            const std::string buttonName = desc.property<std::string>( "name" );
-            button->setObjectName( buttonName.c_str() );
-            _playerButtonsWidgets[ buttonName ] = button;
-
-            if ( buttonName == "Play" )
-            {
-                _btnPlayPause = button;
-            }
-            else
-            {
-                connect( button, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitButton() ) );
-            }
-
-            if ( buttonName == "Previous" )
-            {
-                _btnPrevious = button;
-            }
-            else if ( buttonName == "Next" )
-            {
-                _btnNext = button;
-            }
-        }
-
-        connect( widget.sliderPosition, SIGNAL( valueChanged( int ) ), this, SLOT( changeTrackPosition( int ) ) );
-        connect( widget.sliderVolume, SIGNAL( valueChanged( int ) ), this, SLOT( changeVolume( int ) ) );
-
-        // Center window
-    #ifndef ANDROID
-        move( QApplication::desktop()->screen()->rect().center() - rect().center() );
-    #else
-        showMaximized();
-    #endif
-    }
-    
     void setButtonChecked( const std::string & buttonName, const bool checked );
 
 protected Q_SLOTS:

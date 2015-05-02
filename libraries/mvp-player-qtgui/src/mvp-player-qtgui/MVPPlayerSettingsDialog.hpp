@@ -27,7 +27,7 @@ class MVPPlayerSettingsDialog : public QDialog
 {
     Q_OBJECT
 public:
-    MVPPlayerSettingsDialog( mvpplayer::MVPPlayerEngine & model, mvpplayer::gui::IMVPPlayerDialog & view, mvpplayer::logic::MVPPlayerPresenter & presenter, QDialog *parent = NULL );
+    MVPPlayerSettingsDialog( mvpplayer::MVPPlayerEngine & model, mvpplayer::gui::IMVPPlayerDialog & view, mvpplayer::logic::MVPPlayerPresenter & presenter, QWidget *parent = NULL );
     virtual ~MVPPlayerSettingsDialog();
     
 
