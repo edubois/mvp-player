@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>537</width>
-    <height>356</height>
+    <height>373</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,7 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_4">
+  <layout class="QHBoxLayout" name="horizontalLayout_5">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
@@ -243,11 +243,26 @@
       </layout>
      </item>
      <item>
-      <widget class="QLabel" name="lblPlaylist">
-       <property name="text">
-        <string>Playlist:</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QToolButton" name="btnClearPlaylist">
+         <property name="text">
+          <string>x</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources/mvpplayer.qrc">
+           <normaloff>:/mvpplayer/action/cancel.png</normaloff>:/mvpplayer/action/cancel.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblPlaylist">
+         <property name="text">
+          <string>Playlist:</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QListWidget" name="playlist">

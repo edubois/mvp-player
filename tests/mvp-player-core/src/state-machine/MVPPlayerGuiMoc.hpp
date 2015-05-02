@@ -17,25 +17,25 @@ public:
     MVPPlayerGuiMoc() {}
     virtual ~MVPPlayerGuiMoc() {}
 
-    void setPlaylistItemIndex( const int row )
+    void setPlaylistItemIndex( const int row ) override
     { /* No GUI */ }
 
-    virtual void setCurrentTrack( const boost::filesystem::path & filename )
+    virtual void setCurrentTrack( const boost::filesystem::path & filename ) override
     { /* No GUI */ }
 
-    virtual void setIconStop()
+    virtual void setIconStop() override
     { /* No GUI */ }
     
-    virtual void setIconPlay()
+    virtual void setIconPlay() override
     { /* No GUI */ }
 
-    virtual void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems )
+    virtual void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems ) override
     { /* No GUI */ }
 
-    virtual void addTrack( const boost::filesystem::path & filename )
+    virtual void addTrack( const boost::filesystem::path & filename ) override
     { /* No GUI */ }
 
-    virtual void clearPlaylist()
+    virtual void clearedPlaylist() override
     { /* No GUI */ }
 };
 

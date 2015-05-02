@@ -7,19 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>380</width>
-    <height>429</height>
+    <height>396</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MVPPlayer - Remote</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
-   <property name="sizeConstraint">
-    <enum>QLayout::SetDefaultConstraint</enum>
-   </property>
-   <property name="rightMargin">
-    <number>12</number>
-   </property>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <property name="spacing">
@@ -199,11 +193,26 @@
         </layout>
        </item>
        <item>
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Playlist:</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QToolButton" name="btnClearPlaylist">
+           <property name="text">
+            <string>x</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../resources/mvpplayer.qrc">
+             <normaloff>:/mvpplayer/action/cancel.png</normaloff>:/mvpplayer/action/cancel.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblPlaylist">
+           <property name="text">
+            <string>Playlist:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QListWidget" name="playlist">

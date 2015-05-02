@@ -35,7 +35,7 @@ cp dist/$host/gcc-4.9/release/lib/libmvp_player_pluger.so android_dist/libs/arme
 cp dist/$host/gcc-4.9/release/lib/libmvp_player_gui.so android_dist/libs/armeabi-v7a/
 cp dist/$host/gcc-4.9/release/lib/libmvp_player_core.so android_dist/libs/armeabi-v7a/
 cp dist/$host/gcc-4.9/release/lib/libmvp_player_qtgui.so android_dist/libs/armeabi-v7a/
-#cp dist/$host/gcc-4.9/release/bin/plugins/*.so android_dist/libs/armeabi-v7a/
+cp dist/$host/gcc-4.9/release/bin/plugins/*.so android_dist/libs/armeabi-v7a/
 #mkdir -p android_dist/assets/plugins
 #touch android_dist/assets/plugins/put_your_plugins_here
 cp -f ui android_dist/assets/

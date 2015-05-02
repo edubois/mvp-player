@@ -44,6 +44,7 @@ protected Q_SLOTS:
     void slotViewHitButton();
     void changeTrackPosition( const int positionInPercent );
     void changeVolume( const int volume );
+    void clearPlaylist();
 
 protected:
     std::size_t _currentTrackLength = 0;

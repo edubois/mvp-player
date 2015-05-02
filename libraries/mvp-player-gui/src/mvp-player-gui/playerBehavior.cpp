@@ -25,7 +25,7 @@ void connectViewPresenter( mvpplayer::gui::IMVPPlayerDialog & v, mvpplayer::logi
     v.signalViewHitButton.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processCommand, &p, _1 ) );
     // When we hit clear playlist button, we want to react by sending a clear playlist event to the state machine
     v.signalViewClearPlaylist.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processClearPlaylist, &p ) );
-    p.signalModelClearedPlaylist.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::clearPlaylist, &v ) );
+    p.signalModelClearedPlaylist.connect( boost::bind( &mvpplayer::gui::IMVPPlayerDialog::clearedPlaylist, &v ) );
     // When we hit start playlist button, we want to react by sending a start playlist event to the state machine
     v.signalViewStartPlaylist.connect( boost::bind( &mvpplayer::logic::MVPPlayerPresenter::processStartPlaylist, &p ) );
     // When we add a track on the view, we want to notify the presenter

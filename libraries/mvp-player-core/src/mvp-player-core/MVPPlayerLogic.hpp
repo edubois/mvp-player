@@ -173,6 +173,7 @@ struct Playing : sc::simple_state< Playing, Active >
      */
     sc::result react( const EvClearPlaylist & ev )
     {
+        context< PlayerStateMachine >().presenter.stopped();
         context< PlayerStateMachine >().presenter.clearPlaylist();
         return transit< Playing >();
     }
@@ -185,6 +186,7 @@ struct Playing : sc::simple_state< Playing, Active >
         context< PlayerStateMachine >().presenter.modelClearedPlaylist();
         context< PlayerStateMachine >().nItemsPlaylist = 0;
         context< PlayerStateMachine >().currentPlaylistIndex = -1;
+        context< PlayerStateMachine >().lastTrackFilename = boost::none;
         return transit< Stopped >();
     }
 
@@ -542,9 +544,8 @@ struct Stopped : sc::simple_state< Stopped, Active >
      */
     sc::result react( const EvClearPlaylist & ev )
     {
+        context< PlayerStateMachine >().presenter.stopped();
         context< PlayerStateMachine >().presenter.clearPlaylist();
-        context< PlayerStateMachine >().nItemsPlaylist = 0;
-        context< PlayerStateMachine >().currentPlaylistIndex = -1;
         return transit< Stopped >();
     }
 
@@ -554,6 +555,9 @@ struct Stopped : sc::simple_state< Stopped, Active >
     sc::result react( const EvModelClearedPlaylist & ev )
     {
         context< PlayerStateMachine >().presenter.modelClearedPlaylist();
+        context< PlayerStateMachine >().nItemsPlaylist = 0;
+        context< PlayerStateMachine >().currentPlaylistIndex = -1;
+        context< PlayerStateMachine >().lastTrackFilename = boost::none;
         return transit< Stopped >();
     }
 

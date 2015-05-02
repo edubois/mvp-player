@@ -88,6 +88,11 @@ void MVPPlayerDialog::changeVolume( const int volume )
     signalViewSetVolume( volume / 100.0f );
 }
 
+void MVPPlayerDialog::clearPlaylist()
+{
+    signalViewClearPlaylist();
+}
+
 }
 }
 }

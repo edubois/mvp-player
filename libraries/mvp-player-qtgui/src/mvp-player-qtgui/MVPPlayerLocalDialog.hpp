@@ -59,8 +59,8 @@ public:
 
     void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems ) override;
 
-    inline void clearPlaylist() override
-    { QMetaObject::invokeMethod( this, "slotClearPlaylist", Qt::BlockingQueuedConnection ); }
+    inline void clearedPlaylist() override
+    { QMetaObject::invokeMethod( this, "slotClearedPlaylist", Qt::BlockingQueuedConnection ); }
 
     inline void addTrack( const boost::filesystem::path & filename ) override
     { QMetaObject::invokeMethod( this, "slotAddTrack", Qt::BlockingQueuedConnection, Q_ARG( QString, QString::fromStdString( filename.filename().string() ) ) ); }
@@ -83,7 +83,7 @@ private Q_SLOTS:
     void slotSetIconStop();
     void slotSetIconPlay();
     void slotOpenedPlaylist( const QStringList & filenames );
-    void slotClearPlaylist();
+    void slotClearedPlaylist();
     void slotAddTrack( const QString & filename );
     void slotSetTrackPosition( const int positionInMS, const int trackLength );
     void slotSetTrackLength( const std::size_t lengthInMS );

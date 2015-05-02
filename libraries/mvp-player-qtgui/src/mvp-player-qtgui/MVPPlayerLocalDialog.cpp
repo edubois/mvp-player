@@ -18,6 +18,7 @@ MVPPlayerLocalDialog::MVPPlayerLocalDialog( QWidget *parent )
     initDialog( *this );
     connect( _btnPlayPause, SIGNAL( toggled(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
     connect( widget.btnServer, SIGNAL( toggled(bool) ), this, SLOT( startStopServer( const bool ) ) );
+    connect( widget.btnClearPlaylist, SIGNAL( clicked(bool) ), this, SLOT( clearPlaylist() ) );
     connect( widget.playlist, SIGNAL( currentRowChanged(int) ), this, SLOT( playPlaylistItemAtIndex(int) ) );
     connect( widget.btnSettings, SIGNAL( released() ), this, SLOT( editSettings() ) );
     connect( widget.sliderVolume, SIGNAL( valueChanged( int ) ), this, SLOT( changeVolume( int ) ) );
@@ -139,7 +140,7 @@ void MVPPlayerLocalDialog::slotOpenedPlaylist( const QStringList & filenames )
     signalViewStartPlaylist();
 }
 
-void MVPPlayerLocalDialog::slotClearPlaylist()
+void MVPPlayerLocalDialog::slotClearedPlaylist()
 {
     widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
     widget.playlist->clear();

@@ -46,18 +46,18 @@ public:
     QLabel *lblTrackLength;
     QHBoxLayout *horizontalLayout_3;
     QSlider *sliderPosition;
-    QLabel *label_2;
+    QHBoxLayout *horizontalLayout_5;
+    QToolButton *btnClearPlaylist;
+    QLabel *lblPlaylist;
     QListWidget *playlist;
 
     void setupUi(QDialog *MVPPlayerRemoteDialog)
     {
         if (MVPPlayerRemoteDialog->objectName().isEmpty())
             MVPPlayerRemoteDialog->setObjectName(QStringLiteral("MVPPlayerRemoteDialog"));
-        MVPPlayerRemoteDialog->resize(380, 429);
+        MVPPlayerRemoteDialog->resize(380, 396);
         verticalLayout_4 = new QVBoxLayout(MVPPlayerRemoteDialog);
         verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
-        verticalLayout_4->setSizeConstraint(QLayout::SetDefaultConstraint);
-        verticalLayout_4->setContentsMargins(-1, -1, 12, -1);
         verticalLayout_2 = new QVBoxLayout();
 #ifndef Q_OS_MAC
         verticalLayout_2->setSpacing(-1);
@@ -176,10 +176,23 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_3);
 
-        label_2 = new QLabel(MVPPlayerRemoteDialog);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        horizontalLayout_5 = new QHBoxLayout();
+        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
+        btnClearPlaylist = new QToolButton(MVPPlayerRemoteDialog);
+        btnClearPlaylist->setObjectName(QStringLiteral("btnClearPlaylist"));
+        QIcon icon1;
+        icon1.addFile(QStringLiteral(":/mvpplayer/action/cancel.png"), QSize(), QIcon::Normal, QIcon::Off);
+        btnClearPlaylist->setIcon(icon1);
 
-        verticalLayout->addWidget(label_2);
+        horizontalLayout_5->addWidget(btnClearPlaylist);
+
+        lblPlaylist = new QLabel(MVPPlayerRemoteDialog);
+        lblPlaylist->setObjectName(QStringLiteral("lblPlaylist"));
+
+        horizontalLayout_5->addWidget(lblPlaylist);
+
+
+        verticalLayout->addLayout(horizontalLayout_5);
 
         playlist = new QListWidget(MVPPlayerRemoteDialog);
         playlist->setObjectName(QStringLiteral("playlist"));
@@ -215,7 +228,8 @@ public:
         label->setText(QApplication::translate("MVPPlayerRemoteDialog", "Current track:", 0));
         lblCurrentTrack->setText(QString());
         lblTrackLength->setText(QString());
-        label_2->setText(QApplication::translate("MVPPlayerRemoteDialog", "Playlist:", 0));
+        btnClearPlaylist->setText(QApplication::translate("MVPPlayerRemoteDialog", "x", 0));
+        lblPlaylist->setText(QApplication::translate("MVPPlayerRemoteDialog", "Playlist:", 0));
     } // retranslateUi
 
 };

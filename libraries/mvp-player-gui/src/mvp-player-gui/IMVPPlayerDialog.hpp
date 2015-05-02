@@ -39,7 +39,7 @@ public:
 
     virtual void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems ) = 0;
 
-    virtual void clearPlaylist() = 0;
+    virtual void clearedPlaylist() = 0;
 
     virtual void addTrack( const boost::filesystem::path & filename ) = 0;
 

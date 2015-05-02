@@ -29,21 +29,21 @@ public:
     MVPPlayerDialog( CDKSCREEN *cdkScreen, const int width, const int height, const int x, const int y );
     virtual ~MVPPlayerDialog();
 
-    void setCurrentTrack( const boost::filesystem::path & filename );
+    void setCurrentTrack( const boost::filesystem::path & filename ) override;
 
-    void setPlaylistItemIndex( const int row );
+    void setPlaylistItemIndex( const int row ) override;
 
-    void setIconStop();
+    void setIconStop() override;
 
-    void setIconPlay();
+    void setIconPlay() override;
 
     int exec();
 
-    void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems );
+    void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems ) override;
 
-    void clearPlaylist();
+    void clearedPlaylist() override;
 
-    void addTrack( const boost::filesystem::path & filename );
+    void addTrack( const boost::filesystem::path & filename ) override;
 
 private:
     void initWin( const std::string & currentTrack, const bool playButton = true );

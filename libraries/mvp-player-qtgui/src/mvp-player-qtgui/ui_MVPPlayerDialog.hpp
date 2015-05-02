@@ -30,7 +30,7 @@ QT_BEGIN_NAMESPACE
 class Ui_MVPPlayerDialog
 {
 public:
-    QHBoxLayout *horizontalLayout_4;
+    QHBoxLayout *horizontalLayout_5;
     QVBoxLayout *verticalLayout_3;
     QToolButton *btnOpen;
     QToolButton *btnSettings;
@@ -51,6 +51,8 @@ public:
     QHBoxLayout *horizontalLayout_3;
     QSlider *sliderPosition;
     QLabel *lblTrackLength;
+    QHBoxLayout *horizontalLayout_4;
+    QToolButton *btnClearPlaylist;
     QLabel *lblPlaylist;
     QListWidget *playlist;
 
@@ -58,15 +60,15 @@ public:
     {
         if (MVPPlayerDialog->objectName().isEmpty())
             MVPPlayerDialog->setObjectName(QStringLiteral("MVPPlayerDialog"));
-        MVPPlayerDialog->resize(537, 356);
+        MVPPlayerDialog->resize(537, 373);
         QIcon icon;
         icon.addFile(QStringLiteral(":/mvpplayer/app/splashscreen.png"), QSize(), QIcon::Normal, QIcon::Off);
         MVPPlayerDialog->setWindowIcon(icon);
         MVPPlayerDialog->setLocale(QLocale(QLocale::English, QLocale::UnitedStates));
         MVPPlayerDialog->setSizeGripEnabled(true);
         MVPPlayerDialog->setModal(true);
-        horizontalLayout_4 = new QHBoxLayout(MVPPlayerDialog);
-        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        horizontalLayout_5 = new QHBoxLayout(MVPPlayerDialog);
+        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
         verticalLayout_3 = new QVBoxLayout();
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
         btnOpen = new QToolButton(MVPPlayerDialog);
@@ -123,7 +125,7 @@ public:
         verticalLayout_3->addItem(verticalSpacer);
 
 
-        horizontalLayout_4->addLayout(verticalLayout_3);
+        horizontalLayout_5->addLayout(verticalLayout_3);
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
@@ -196,10 +198,23 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_3);
 
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        btnClearPlaylist = new QToolButton(MVPPlayerDialog);
+        btnClearPlaylist->setObjectName(QStringLiteral("btnClearPlaylist"));
+        QIcon icon4;
+        icon4.addFile(QStringLiteral(":/mvpplayer/action/cancel.png"), QSize(), QIcon::Normal, QIcon::Off);
+        btnClearPlaylist->setIcon(icon4);
+
+        horizontalLayout_4->addWidget(btnClearPlaylist);
+
         lblPlaylist = new QLabel(MVPPlayerDialog);
         lblPlaylist->setObjectName(QStringLiteral("lblPlaylist"));
 
-        verticalLayout->addWidget(lblPlaylist);
+        horizontalLayout_4->addWidget(lblPlaylist);
+
+
+        verticalLayout->addLayout(horizontalLayout_4);
 
         playlist = new QListWidget(MVPPlayerDialog);
         playlist->setObjectName(QStringLiteral("playlist"));
@@ -209,7 +224,7 @@ public:
         verticalLayout->addWidget(playlist);
 
 
-        horizontalLayout_4->addLayout(verticalLayout);
+        horizontalLayout_5->addLayout(verticalLayout);
 
         QWidget::setTabOrder(btnOpen, btnSettings);
         QWidget::setTabOrder(btnSettings, btnServer);
@@ -232,6 +247,7 @@ public:
         label->setText(QApplication::translate("MVPPlayerDialog", "Current track:", 0));
         lblCurrentTrack->setText(QString());
         lblTrackLength->setText(QString());
+        btnClearPlaylist->setText(QApplication::translate("MVPPlayerDialog", "x", 0));
         lblPlaylist->setText(QApplication::translate("MVPPlayerDialog", "Playlist:", 0));
 #ifndef QT_NO_WHATSTHIS
         playlist->setWhatsThis(QApplication::translate("MVPPlayerDialog", "Playlist", 0));

@@ -209,7 +209,7 @@ int MVPPlayerDialog::exec()
     return 0;
 }
 
-void MVPPlayerDialog::clearPlaylist()
+void MVPPlayerDialog::clearedPlaylist()
 {
     boost::mutex::scoped_lock lock( _mutexGui );
     if ( _playlist )

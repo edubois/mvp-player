@@ -23,6 +23,7 @@ MVPPlayerRemoteDialog::MVPPlayerRemoteDialog( QWidget *parent )
 
     connect( _btnPlayPause, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitPlayStopBtn() ) );
     connect( widget.cbMute, SIGNAL( clicked(bool) ), this, SLOT( slotViewHitMute(const bool) ) );
+    connect( widget.btnClearPlaylist, SIGNAL( clicked(bool) ), this, SLOT( clearPlaylist() ) );
     connect( widget.btnServer, SIGNAL( clicked(bool) ), this, SLOT( connectDisconnectClient( const bool ) ) );
     connect( widget.playlist, SIGNAL( currentRowChanged(int) ), this, SLOT( playPlaylistItemAtIndex(int) ) );
     connect( widget.sliderVolume, SIGNAL( valueChanged( int ) ), this, SLOT( changeVolume( int ) ) );
@@ -144,7 +145,7 @@ void MVPPlayerRemoteDialog::slotOpenedPlaylist( const QStringList & filenames )
     signalViewStartPlaylist();
 }
 
-void MVPPlayerRemoteDialog::slotClearPlaylist()
+void MVPPlayerRemoteDialog::slotClearedPlaylist()
 {
     widget.playlist->blockSignals( true ); // Don't forget to put this to avoid dead locks
     widget.playlist->clear();

@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="mvpplayer">
+    <file>action/cancel.png</file>
     <file>action/open.png</file>
     <file>action/fileopen.png</file>
     <file>action/play.png</file>
