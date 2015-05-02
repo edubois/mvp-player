@@ -69,7 +69,7 @@ int instanciateApp<gui::MVPPlayerRemoteDialog>( int argc, char **argv )
 
     // Core (model): a sound player engine
     mvpplayer::MVPPlayerEngine playerEngine( &mvpplayer::SoundPlayer::getInstance() );
-    mvpplayer::SoundPlayer::getInstance().setVolume( 0.0f );
+    mvpplayer::SoundPlayer::getInstance().mute( true );
 
     // Network remote
     mvpplayer::network::client::Client mvpPlayerClient;
