@@ -238,12 +238,10 @@ FMOD_RESULT F_CALLBACK dspCallback( FMOD_DSP_STATE *dspState, float *inbuffer, f
     mvpplayer::SoundRecorder* recorder = nullptr;
     thisDSP->getUserData( (void**)( &recorder ) );
 
-    FMOD::Channel & channel = recorder->channel();
-
     const float thresholdVol = recorder->thresholdVolumeHigh();
 
     bool triggered = false;
-    for( std::size_t i = 0; i < length; ++i )
+    for( int i = length * *outchannels - 1; i >= 0; --i )
     {
         if ( !triggered && std::abs( inbuffer[i] ) >= thresholdVol )
         {
