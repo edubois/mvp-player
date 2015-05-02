@@ -24,7 +24,6 @@ void PluginLoader::loadPlugins( const boost::filesystem::path & pluginsPath, mvp
     QDir pluginsDir( pluginsPath.string().c_str() );
 
     std::cout << "Loading plugins from " << pluginsPath << std::endl;
-    std::size_t count = pluginsDir.entryList( QDir::Files ).size();
     std::size_t progress = 0;
     Q_FOREACH( const QString & fileName, pluginsDir.entryList( QDir::Files ) )
     {
