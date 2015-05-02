@@ -56,6 +56,7 @@ public:
         if (MVPPlayerRemoteDialog->objectName().isEmpty())
             MVPPlayerRemoteDialog->setObjectName(QStringLiteral("MVPPlayerRemoteDialog"));
         MVPPlayerRemoteDialog->resize(380, 396);
+        MVPPlayerRemoteDialog->setAcceptDrops(true);
         verticalLayout_4 = new QVBoxLayout(MVPPlayerRemoteDialog);
         verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
         verticalLayout_2 = new QVBoxLayout();

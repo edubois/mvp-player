@@ -53,16 +53,16 @@ void MVPPlayerDialog::initWin( const std::string & currentTrack, const bool play
         destroyCDKDialog( _childwin );
     }
     init_pair( kColorMessage, COLOR_WHITE, COLOR_BLUE );
-    char* msg[1];
+    const char* msg[1];
     if ( currentTrack.length() == 0 )
     {
         msg[0] = "Music player";
     }
     else
     {
-        msg[0] = const_cast<char*>( currentTrack.c_str() );
+        msg[0] = currentTrack.c_str();
     }
-    char* buttons[10];
+    const char* buttons[10];
     buttons[0] = "<<   ";
     if ( playButton )
     {
@@ -74,7 +74,7 @@ void MVPPlayerDialog::initWin( const std::string & currentTrack, const bool play
     }
     buttons[2] = "   >>";
     buttons[3] = "\nExit";
-    _childwin = newCDKDialog( _cdkScreen, CENTER, CENTER, msg, 1, buttons, 4, COLOR_PAIR(kColorMessage) | A_REVERSE | A_BOLD, true, true, false );
+    _childwin = newCDKDialog( _cdkScreen, CENTER, CENTER, const_cast<char**>( msg ), 1, const_cast<char**>( buttons ), 4, COLOR_PAIR(kColorMessage) | A_REVERSE | A_BOLD, true, true, false );
     setCDKDialogBackgroundColor( _childwin, "</5>" );
     assert( _childwin != NULL );
     refreshCDKScreen( _cdkScreen );
@@ -166,31 +166,32 @@ int MVPPlayerDialog::exec()
         {
             case 0:
             {
-                signalViewHitPrevious();
+                signalViewHitButton( "Previous", true );
                 break;
             }
             case 1:
             {
                 if ( _isPlaying )
                 {
-                    signalViewHitStop();
+                    signalViewHitButton( "Stop", true );
                 }
                 else
                 {
-                    boost::filesystem::path item;
+                    std::vector<boost::filesystem::path> items;
                     {
                         boost::mutex::scoped_lock lock( _mutexGui );
-                        item = openFile( _cdkScreen, "Open file or playlist", "*" );
+                        items.push_back( openFile( _cdkScreen, "Open file or playlist", "*" ) );
                     }
 
                     signalViewClearPlaylist();
-                    signalViewHitPlay( item.string() );
+                    signalViewAppendTrackItems( items );
+                    signalViewHitPlaylistItem( 0 );
                 }
                 break;
             }
             case 2:
             {
-                signalViewHitNext();
+                signalViewHitButton( "Next", true );
                 break;
             }
             case 3:
@@ -212,6 +213,7 @@ int MVPPlayerDialog::exec()
 void MVPPlayerDialog::clearedPlaylist()
 {
     boost::mutex::scoped_lock lock( _mutexGui );
+    _playlistItemsStr.clear();
     if ( _playlist )
     { destroyCDKItemlist( _playlist ); }
     refreshCDKScreen( _cdkScreen );
@@ -221,6 +223,26 @@ void MVPPlayerDialog::addTrack( const boost::filesystem::path & filename )
 {
     _playlistItemsStr.push_back( filename.string() );
     initPlaylist( _playlistItemsStr );
+}
+
+void MVPPlayerDialog::setVolume( const float volume )
+{
+    ///@todo diplay volume
+}
+
+void MVPPlayerDialog::setTrackLength( const std::size_t trackLengthInMS )
+{
+    ///@todo diplay track length
+}
+
+void MVPPlayerDialog::setButtonChecked( const std::string & buttonName, const bool checked )
+{
+    ///@todo display checked button
+}
+
+void MVPPlayerDialog::setTrackPosition( const std::size_t positionInMS, const std::size_t trackLength )
+{
+    ///@todo display track position
 }
 
 }

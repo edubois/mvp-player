@@ -29,6 +29,8 @@ public:
     MVPPlayerDialog( CDKSCREEN *cdkScreen, const int width, const int height, const int x, const int y );
     virtual ~MVPPlayerDialog();
 
+    int exec();
+
     void setCurrentTrack( const boost::filesystem::path & filename ) override;
 
     void setPlaylistItemIndex( const int row ) override;
@@ -37,14 +39,19 @@ public:
 
     void setIconPlay() override;
 
-    int exec();
-
     void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems ) override;
 
     void clearedPlaylist() override;
 
     void addTrack( const boost::filesystem::path & filename ) override;
 
+    void setTrackLength( const std::size_t trackLengthInMS ) override;
+
+    void setButtonChecked( const std::string & buttonName, const bool checked ) override;
+
+    void setTrackPosition( const std::size_t positionInMS, const std::size_t trackLength ) override;
+
+    void setVolume( const float volume ) override;
 private:
     void initWin( const std::string & currentTrack, const bool playButton = true );
     void initPlaylist( const std::vector<std::string> & playlistItemsStr );
