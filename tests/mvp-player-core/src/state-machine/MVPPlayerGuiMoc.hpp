@@ -20,22 +20,34 @@ public:
     void setPlaylistItemIndex( const int row ) override
     { /* No GUI */ }
 
-    virtual void setCurrentTrack( const boost::filesystem::path & filename ) override
+    void setCurrentTrack( const boost::filesystem::path & filename ) override
     { /* No GUI */ }
 
-    virtual void setIconStop() override
+    void setIconStop() override
     { /* No GUI */ }
     
-    virtual void setIconPlay() override
+    void setIconPlay() override
     { /* No GUI */ }
 
-    virtual void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems ) override
+    void openedPlaylist( const std::vector<m3uParser::PlaylistItem> & playlistItems ) override
     { /* No GUI */ }
 
-    virtual void addTrack( const boost::filesystem::path & filename ) override
+    void addTrack( const boost::filesystem::path & filename ) override
     { /* No GUI */ }
 
-    virtual void clearedPlaylist() override
+    void clearedPlaylist() override
+    { /* No GUI */ }
+
+    void setTrackLength( const std::size_t trackLengthInMS ) override
+    { /* No GUI */ }
+
+    void setButtonChecked( const std::string & buttonName, const bool checked ) override
+    { /* No GUI */ }
+
+    void setTrackPosition( const std::size_t positionInMS, const std::size_t trackLength ) override
+    { /* No GUI */ }
+
+    void setVolume( const float volume ) override
     { /* No GUI */ }
 };
 

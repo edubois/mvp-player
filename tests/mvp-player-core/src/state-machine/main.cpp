@@ -44,14 +44,17 @@ BOOST_AUTO_TEST_CASE( play_stop_music )
     presenter.signalFailed.connect( boost::bind( &mvpplayer::tests::printError, _1 ) );
 
     // Simulate play
-    viewMoc.signalViewHitPlay( kDummyExistingMusicFile1 );
+    std::vector<boost::filesystem::path> fileItems;
+    fileItems.push_back( kDummyExistingMusicFile1 );
+    viewMoc.signalViewAppendTrackItems( fileItems );
+    viewMoc.signalViewHitPlaylistItem( 0 );
     std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the engine is playing the "dummyFile.ogg"
     BOOST_CHECK( player.trackFilename == kDummyExistingMusicFile1 );
 
     // Simulate stop
-    viewMoc.signalViewHitStop();
+    viewMoc.signalViewHitButton( "Stop", true );
     std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the engine is stopped
@@ -87,7 +90,7 @@ BOOST_AUTO_TEST_CASE( play_restart_previous_music )
     BOOST_CHECK( player.position > 0 );
 
     // Simulate next track
-    viewMoc.signalViewHitNext();
+    viewMoc.signalViewHitButton( "Next", true );
     std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the engine is playing the "dummyFile2.ogg"
@@ -100,7 +103,7 @@ BOOST_AUTO_TEST_CASE( play_restart_previous_music )
     std::this_thread::sleep_for( std::chrono::milliseconds( 2010 ) );
 
     // Simulate previous
-    viewMoc.signalViewHitPrevious();
+    viewMoc.signalViewHitButton( "Previous", true );
     std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the position is 0 (restart)
@@ -140,7 +143,7 @@ BOOST_AUTO_TEST_CASE( play_restart_next_previous_music )
     BOOST_CHECK( player.position > 0 );
 
     // Simulate next track
-    viewMoc.signalViewHitNext();
+    viewMoc.signalViewHitButton( "Next", true );
     std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the engine is playing the "dummyFile2.ogg"
@@ -150,7 +153,7 @@ BOOST_AUTO_TEST_CASE( play_restart_next_previous_music )
     std::this_thread::sleep_for( std::chrono::milliseconds( 2010 ) );
 
     // Simulate previous
-    viewMoc.signalViewHitPrevious();
+    viewMoc.signalViewHitButton( "Previous", true );
     std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the position is 0 (restart)
@@ -160,14 +163,14 @@ BOOST_AUTO_TEST_CASE( play_restart_next_previous_music )
     std::this_thread::sleep_for( std::chrono::milliseconds( 2010 ) );
 
     // Simulate previous
-    viewMoc.signalViewHitPrevious();
+    viewMoc.signalViewHitButton( "Previous", true );
     std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the position is 0 (restart)
     BOOST_CHECK( player.position == 0 );
 
     // Simulate previous
-    viewMoc.signalViewHitPrevious();
+    viewMoc.signalViewHitButton( "Previous", true );
     std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
 
     // Check if the position is 0 (playing)

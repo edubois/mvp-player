@@ -3,6 +3,7 @@
 
 #include <mvp-player-net/server/Server.hpp>
 #include <mvp-player-net/client/Client.hpp>
+#include <mvp-player-net/stringTools.hpp>
 #include <mvp-player-core/stateMachineEvents.hpp>
 
 #include <chrono>
@@ -75,7 +76,7 @@ BOOST_AUTO_TEST_CASE( server_client_event_communication )
         // Server to client
         {
             bool receivedEvent = false;
-            mvpplayer::logic::EvPlay eventPlay( "foo.ogg" );
+            mvpplayer::logic::EvPlay eventPlay( boost::filesystem::path( "foo.ogg" ) );
             client1.signalEvent.connect( [&receivedEvent, &eventPlay](mvpplayer::IEvent & event)
                                          {
                                             receivedEvent = true;
@@ -83,24 +84,27 @@ BOOST_AUTO_TEST_CASE( server_client_event_communication )
                                          }
                                        );
             server.sendEventMulticast( eventPlay );
+            std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
             BOOST_CHECK( receivedEvent == true );
         }
         
         // Client to server
         {
             bool receivedEvent = false;
-            mvpplayer::logic::EvPlay eventPlay( "foo.ogg" );
+            mvpplayer::logic::EvPlay eventPlay( boost::filesystem::path( "foo.ogg" ) );
             server.signalEventFrom.connect( [&receivedEvent, &eventPlay, &client1](const std::string & clientAddress, mvpplayer::IEvent & event)
                                          {
                                             receivedEvent = true;
-                                            BOOST_CHECK( clientAddress == client1.address() );
+                                            BOOST_CHECK_EQUAL( mvpplayer::network::removePort( clientAddress ), mvpplayer::network::removePort( client1.address() ) );
                                             BOOST_CHECK( dynamic_cast<const mvpplayer::logic::EvPlay&>( event ).filename() == eventPlay.filename() );
                                          }
                                        );
             client1.sendEvent( eventPlay );
+            std::this_thread::sleep_for( std::chrono::milliseconds( 40 ) );
             BOOST_CHECK( receivedEvent == true );
         }
     }
+    client1.disconnect();
     server.stop();
     BOOST_CHECK( server.stopped() == true );
 }
