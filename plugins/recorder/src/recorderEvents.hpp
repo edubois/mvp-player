@@ -35,6 +35,12 @@ public:
     }
 
     /**
+     * @brief don't dispatch this event thru the network
+     */
+    bool shallDispatch() const
+    { return false; }
+
+    /**
      * @brief process this event (needed to avoid dynamic_casts)
      * @param scheduler event scheduler
      * @param processor event processor
