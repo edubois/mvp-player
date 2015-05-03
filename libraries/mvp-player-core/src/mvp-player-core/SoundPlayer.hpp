@@ -2,7 +2,7 @@
 #define	_CORE_SOUNDPLAYER_HPP_
 
 #include "Singleton.hpp"
-#include "ISoundPlayer.hpp"
+#include "IFilePlayer.hpp"
 
 #include <fmod.hpp>
 #include <string>
@@ -15,7 +15,7 @@ namespace mvpplayer
 
 static const std::size_t kDecideToSendPositionThreshold = 250; // in ms
 
-class SoundPlayer : public ISoundPlayer, public Singleton<SoundPlayer>
+class SoundPlayer : public IFilePlayer, public Singleton<SoundPlayer>
 {
 public:
     SoundPlayer()

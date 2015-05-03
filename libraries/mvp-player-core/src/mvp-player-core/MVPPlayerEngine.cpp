@@ -7,7 +7,7 @@
 namespace mvpplayer
 {
 
-MVPPlayerEngine::MVPPlayerEngine( ISoundPlayer *soundPlayer )
+MVPPlayerEngine::MVPPlayerEngine( IFilePlayer *soundPlayer )
 : _soundPlayer( soundPlayer )
 {
     // Subscribe to sound player's end of track notifications

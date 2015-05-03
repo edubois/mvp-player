@@ -1,7 +1,7 @@
 #ifndef _TESTS_SOUNDPLAYERMOC_HPP_
 #define	_TESTS_SOUNDPLAYERMOC_HPP_
 
-#include <mvp-player-core/ISoundPlayer.hpp>
+#include <mvp-player-core/IFilePlayer.hpp>
 
 #include <iostream>
 
@@ -13,7 +13,7 @@ namespace tests
 /**
  * @brief Dummy sound player for tests
  */
-class SoundPlayerMOC : public ISoundPlayer
+class SoundPlayerMOC : public IFilePlayer
 {
 public:
     SoundPlayerMOC();

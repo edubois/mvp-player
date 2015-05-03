@@ -1,5 +1,5 @@
-#ifndef _CORE_ISOUNDPLAYER_HPP_
-#define	_CORE_ISOUNDPLAYER_HPP_
+#ifndef _CORE_IFILEPLAYER_HPP_
+#define	_CORE_IFILEPLAYER_HPP_
 
 #include <boost/signals2.hpp>
 #include <boost/signals2/trackable.hpp>
@@ -12,11 +12,11 @@ enum ESeekPosition { eSeekPositionPercent, eSeekPositionMS };
 /**
  * Interface for sound players
  */
-class ISoundPlayer : public boost::signals2::trackable
+class IFilePlayer : public boost::signals2::trackable
 {
 public:
-    ISoundPlayer() {}
-    virtual ~ISoundPlayer() {}
+    IFilePlayer() {}
+    virtual ~IFilePlayer() {}
     
     /**
      * @brief free all

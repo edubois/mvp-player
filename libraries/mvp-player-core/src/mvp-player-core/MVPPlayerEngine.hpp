@@ -1,7 +1,7 @@
 #ifndef _CORE_MVPPLAYERENGINE_HPP_
 #define	_CORE_MVPPLAYERENGINE_HPP_
 
-#include "ISoundPlayer.hpp"
+#include "IFilePlayer.hpp"
 #include "m3uParser.hpp"
 
 #include <boost/signals2.hpp>
@@ -22,7 +22,7 @@ namespace mvpplayer
 class MVPPlayerEngine : public boost::signals2::trackable
 {
 public:
-    MVPPlayerEngine( ISoundPlayer *soundPlayer );
+    MVPPlayerEngine( IFilePlayer *soundPlayer );
     virtual ~MVPPlayerEngine();
 
     /**
@@ -141,7 +141,7 @@ public:
     boost::signals2::signal<void(const boost::filesystem::path&, const int)> signalPlayingItemIndex;///< Signals that we are playing the 'index' track of the playlist
 
 protected:
-    ISoundPlayer *_soundPlayer;                                             ///< Pointer to a sound player instance
+    IFilePlayer *_soundPlayer;                                             ///< Pointer to a sound player instance
     boost::filesystem::path _currentPlayedTrack;                            ///< Current played track
     std::list<boost::filesystem::path>::const_iterator _currentPosition;    ///< Current playing position
     std::list<boost::filesystem::path> _playlist;                           ///< Track playlist
