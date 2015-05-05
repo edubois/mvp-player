@@ -55,7 +55,7 @@ public:
      * @brief load a given file
      * @param filename given file
      */
-    virtual void load( const std::string & filename ) override
+    virtual void load( const boost::filesystem::path & filename ) override
     { trackFilename = filename; }
 
     /**
@@ -130,13 +130,13 @@ public:
     /**
      * @brief set track position
      */
-    void setPosition( const std::size_t position, const ESeekPosition seekType = eSeekPositionPercent )
-    { }
+    bool setPosition( const std::size_t position, const ESeekPosition seekType = eSeekPositionPercent )
+    { return false; }
 // Signals
 public:
     int position = 1;
     float volume = 1.0f;
-    std::string trackFilename;
+    boost::filesystem::path trackFilename;
     bool playing = false;
     bool muted = false;
 };

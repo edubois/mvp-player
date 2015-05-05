@@ -7,13 +7,13 @@
 namespace mvpplayer
 {
 
-MVPPlayerEngine::MVPPlayerEngine( IFilePlayer *soundPlayer )
-: _soundPlayer( soundPlayer )
+MVPPlayerEngine::MVPPlayerEngine( IFilePlayer *filePlayer )
+: _filePlayer( filePlayer )
 {
     // Subscribe to sound player's end of track notifications
-    _soundPlayer->signalEndOfTrack.connect( boost::bind( &MVPPlayerEngine::notifyEndOfTrack, this ) );
-    _soundPlayer->signalTrackLength.connect( boost::bind( &MVPPlayerEngine::notifyTrackLength, this, _1 ) );
-    _soundPlayer->signalPositionChanged.connect( [this]( const std::size_t p, const std::size_t l ){ signalPositionChanged( p, l ); } );
+    _filePlayer->signalEndOfTrack.connect( boost::bind( &MVPPlayerEngine::notifyEndOfTrack, this ) );
+    _filePlayer->signalTrackLength.connect( boost::bind( &MVPPlayerEngine::notifyTrackLength, this, _1 ) );
+    _filePlayer->signalPositionChanged.connect( [this]( const std::size_t p, const std::size_t l ){ signalPositionChanged( p, l ); } );
     _currentPosition = _playlist.begin();
 }
 
@@ -22,7 +22,7 @@ MVPPlayerEngine::~MVPPlayerEngine()
     try
     {
         stop();
-        _soundPlayer->terminate();
+        _filePlayer->terminate();
     }
     catch( ... )
     {}
@@ -43,8 +43,8 @@ bool MVPPlayerEngine::playFile( const boost::filesystem::path & filename )
         {
             boost::mutex::scoped_lock lock( _mutex );
             _currentPlayedTrack = filename;
-            _soundPlayer->load( filename.string() );
-            ret = _soundPlayer->play();
+            _filePlayer->load( filename );
+            ret = _filePlayer->play();
         }
         signalPlayedTrack( filename );
         return ret;
@@ -120,12 +120,12 @@ void MVPPlayerEngine::playPlaylistItem( const int index )
  */
 void MVPPlayerEngine::setTrackPosition( const std::size_t position, const ESeekPosition seekType )
 {
-    _soundPlayer->setPosition( position, seekType );
+    _filePlayer->setPosition( position, seekType );
 }
 
 bool MVPPlayerEngine::restart()
 {
-    return _soundPlayer->restart();
+    return _filePlayer->restart();
 }
 
 void MVPPlayerEngine::playPrevious()
@@ -159,7 +159,7 @@ void MVPPlayerEngine::stop()
     boost::mutex::scoped_lock lock( _mutex );
     _currentPlayedTrack = boost::filesystem::path();
     // Stop all
-    _soundPlayer->stop();
+    _filePlayer->stop();
 }
 
 bool MVPPlayerEngine::playCurrent()
@@ -170,13 +170,14 @@ bool MVPPlayerEngine::playCurrent()
         int trackIndex = -1;
         {
             boost::mutex::scoped_lock lock( _mutex );
-            playedTrack = ( _currentPlayedTrack = *_currentPosition );
-            trackIndex = std::distance( _playlist.cbegin(), _currentPosition );
-            _soundPlayer->load( _currentPlayedTrack.string() );
-            _soundPlayer->play();
+            playedTrack = *_currentPosition;
         }
-        signalPlayedTrack( playedTrack );
-        signalPlayingItemIndex( playedTrack, trackIndex );
+        if ( !playFile( playedTrack ) )
+        {
+            trackIndex = std::distance( _playlist.cbegin(), _currentPosition );
+            signalPlayedTrack( playedTrack );
+            signalPlayingItemIndex( playedTrack, trackIndex );
+        }
         return false;
     }
     return true;

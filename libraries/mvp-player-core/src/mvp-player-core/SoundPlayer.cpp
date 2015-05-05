@@ -105,8 +105,11 @@ void SoundPlayer::mute( const bool active )
     _mute = active;
 }
 
-//loads a soundfile
-void SoundPlayer::load( const std::string & filename )
+/**
+ * @brief load a given file
+ * @param filename given file
+ */
+void SoundPlayer::load( const boost::filesystem::path & filename )
 {
     _currentSound = filename;
     if ( _fmodsystem )
@@ -190,14 +193,6 @@ bool SoundPlayer::play( const bool pause )
     return true;
 }
 
-//toggles sound on and off
-void SoundPlayer::toggleSound()
-{
-    on = !on;
-    if (on == true) { load( _currentSound ); play(); }
-    if (on == false) { stop(); }
-}
-
 /**
  * @brief pause or unpause the sound
  */
@@ -248,7 +243,9 @@ void SoundPlayer::setSound( const bool s )
     on = s;
 }
 
-//toggle pause on and off
+/**
+ * @brief toggle pause on or off
+ */
 void SoundPlayer::togglePause()
 {
     bool p = false;
@@ -256,7 +253,19 @@ void SoundPlayer::togglePause()
     _channel->setPaused( !p );
 }
 
-//tells whether the sound is on or off
+/**
+ * @brief toggle sound on or off
+ */
+void SoundPlayer::toggleSound()
+{
+    on = !on;
+    if (on == true) { load( _currentSound ); play(); }
+    if (on == false) { stop(); }
+}
+
+/**
+ * @brief checks whether the sound is on or off
+ */
 bool SoundPlayer::getSound()
 {
     return on;
@@ -266,9 +275,11 @@ bool SoundPlayer::getSound()
  * @brief set current track position
  * @param position position in percent (0-100) or ms
  * @param seekType seek position in percent or milliseconds
+ * @return false on success, true if error
  */
-void SoundPlayer::setPosition( const std::size_t position, const ESeekPosition seekType )
+bool SoundPlayer::setPosition( const std::size_t position, const ESeekPosition seekType )
 {
+    bool ret = true;
     if ( _channel && _sound )
     {
         boost::mutex::scoped_lock lock( _mutexPlayer );
@@ -277,14 +288,15 @@ void SoundPlayer::setPosition( const std::size_t position, const ESeekPosition s
             unsigned int length = 0;
             _sound->getLength( &length, FMOD_TIMEUNIT_MS );
             const unsigned int offset = length * ( float( position ) / 100.0f );
-            _channel->setPosition( offset, FMOD_TIMEUNIT_MS );
+            ret = ( _channel->setPosition( offset, FMOD_TIMEUNIT_MS ) != FMOD_OK );
         }
         else
         {
-            _channel->setPosition( position, FMOD_TIMEUNIT_MS );
+            ret = ( _channel->setPosition( position, FMOD_TIMEUNIT_MS ) != FMOD_OK );
         }
         _fmodsystem->update();
     }
+    return ret;
 }
 
 FMOD_RESULT playEndedCallback(FMOD_CHANNELCONTROL *cchannelcontrol, FMOD_CHANNELCONTROL_TYPE controltype, FMOD_CHANNELCONTROL_CALLBACK_TYPE callbacktype, void *commanddata1, void *commanddata2)

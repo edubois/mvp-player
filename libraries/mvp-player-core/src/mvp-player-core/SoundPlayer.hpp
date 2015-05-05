@@ -56,7 +56,7 @@ public:
      * @brief load a given file
      * @param filename given file
      */
-    void load( const std::string & filename ) override;
+    void load( const boost::filesystem::path & filename ) override;
 
     /**
      * @brief frees the sound object
@@ -74,8 +74,9 @@ public:
      * @brief set current track position
      * @param position position in percent (0-100) or ms
      * @param seekType seek position in percent or milliseconds
+     * @return false on success, true if error
      */
-    void setPosition( const std::size_t positionInPercent, const ESeekPosition seekType = eSeekPositionPercent ) override;
+    bool setPosition( const std::size_t positionInPercent, const ESeekPosition seekType = eSeekPositionPercent ) override;
 
     /**
      * @brief get the current track's position
@@ -138,7 +139,7 @@ private:
 private:
     bool on = false;                    ///< is sound on?
     bool possible = true;              ///< is it possible to play sound?
-    std::string _currentSound;  ///< currently played sound
+    boost::filesystem::path _currentSound;  ///< currently played sound
     //FMOD-specific stuff
     FMOD_RESULT result;
     FMOD::System* _fmodsystem = nullptr;

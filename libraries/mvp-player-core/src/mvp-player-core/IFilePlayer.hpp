@@ -3,11 +3,12 @@
 
 #include <boost/signals2.hpp>
 #include <boost/signals2/trackable.hpp>
+#include <boost/filesystem/path.hpp>
 
 namespace mvpplayer
 {
 
-enum ESeekPosition { eSeekPositionPercent, eSeekPositionMS };
+enum ESeekPosition { eSeekPositionSample, eSeekPositionPercent, eSeekPositionMS };
 
 /**
  * Interface for sound players
@@ -44,7 +45,7 @@ public:
      * @brief load a given file
      * @param filename given file
      */
-    virtual void load( const std::string & filename ) = 0;
+    virtual void load( const boost::filesystem::path & filename ) = 0;
 
     /**
      * @brief plays a sound
@@ -119,7 +120,7 @@ public:
      * @param position position in percent (0-100) or ms
      * @param seekType seek position in percent or milliseconds
      */
-    virtual void setPosition( const std::size_t position, const ESeekPosition seekType = eSeekPositionPercent ) = 0;
+    virtual bool setPosition( const std::size_t position, const ESeekPosition seekType = eSeekPositionPercent ) = 0;
 
 // Signals
 public:
@@ -131,6 +132,10 @@ protected:
     bool _mute = false;                 ///< Mute or not
     float _currentVolume = 1.0f;        ///< Current player volume
 };
+
+typedef IFilePlayer IStreamPlayer;
+typedef IFilePlayer IFileRecorder;
+typedef IFilePlayer IStreamRecorder;
 
 }
 

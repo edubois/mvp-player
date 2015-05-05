@@ -22,7 +22,7 @@ namespace mvpplayer
 class MVPPlayerEngine : public boost::signals2::trackable
 {
 public:
-    MVPPlayerEngine( IFilePlayer *soundPlayer );
+    MVPPlayerEngine( IFilePlayer *filePlayer );
     virtual ~MVPPlayerEngine();
 
     /**
@@ -85,7 +85,7 @@ public:
     /**
      * @brief add a track to the playlist
      */
-    inline void addTrack( const boost::filesystem::path & filename )
+    virtual void addTrack( const boost::filesystem::path & filename )
     {
         _playlist.push_back( filename );
         signalTrackAddedToPlaylist( filename );
@@ -94,7 +94,7 @@ public:
     /**
      * @brief add track items to the playlist
      */
-    void addTrackItems( const std::vector<boost::filesystem::path> & filename );
+    virtual void addTrackItems( const std::vector<boost::filesystem::path> & filename );
 
     /**
      * @brief clear the playlist
@@ -105,8 +105,8 @@ public:
      * @brief set volume
      * @param volume volume in [0;1]
      */
-    void setVolume( const float volume )
-    { _soundPlayer->setVolume( volume ); }
+    virtual void setVolume( const float volume )
+    { _filePlayer->setVolume( volume ); }
 
     /**
      * @brief get current played track
@@ -141,7 +141,7 @@ public:
     boost::signals2::signal<void(const boost::filesystem::path&, const int)> signalPlayingItemIndex;///< Signals that we are playing the 'index' track of the playlist
 
 protected:
-    IFilePlayer *_soundPlayer;                                             ///< Pointer to a sound player instance
+    IFilePlayer *_filePlayer;                                               ///< Pointer to a file player instance
     boost::filesystem::path _currentPlayedTrack;                            ///< Current played track
     std::list<boost::filesystem::path>::const_iterator _currentPosition;    ///< Current playing position
     std::list<boost::filesystem::path> _playlist;                           ///< Track playlist
