@@ -2,6 +2,7 @@
 #define	_CORE_MVPPLAYERPRESENTER_HPP_
 
 #include "stateMachineEvents.hpp"
+#include "Settings.hpp"
 
 #include <boost/statechart/fifo_scheduler.hpp>
 #include <boost/filesystem/path.hpp>
@@ -445,6 +446,7 @@ public:
     boost::signals2::signal<void( IEvent& )> signalEvent;
     boost::signals2::signal<sc::detail::reaction_result(const std::string&, Playing &)> askPlayingStateExternalTransition;   ///< Bind this to a transition function to extend the state machine states (context is Playing state)
     boost::signals2::signal<sc::detail::reaction_result(const std::string&, Stopped &)> askStoppedStateExternalTransition;   ///< Bind this to a transition function to extend the state machine states (context is Stopped state)
+    boost::signals2::signal<bool(const std::string& cmd, Settings& settings)> signalAskSettingsFor;                                ///< Ask settings for a given command
     boost::signals2::signal<void(const boost::filesystem::path& playlistFilename)> signalAppendPlaylistTracks;
     boost::signals2::signal<void(const std::vector<boost::filesystem::path>& items)> signalAppendTrackItems;
     boost::signals2::signal<void(const boost::filesystem::path&)> signalPlayedTrack;

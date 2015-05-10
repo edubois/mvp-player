@@ -432,7 +432,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
      */
     sc::result react( const EvCustomState & ev )
     {
-        auto result = context< PlayerStateMachine >().presenter.askStoppedStateExternalTransition( ev.action(), *this );
+        auto result = context< PlayerStateMachine >().presenter.askStoppedStateExternalTransition( ev.action(), boost::ref( *this ) );
         if ( result != boost::none )
         {
             return sc::detail::result_utility::make_result( *result );

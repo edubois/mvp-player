@@ -65,7 +65,9 @@ boost::statechart::detail::reaction_result MVPPlayerRecorderPlugin::recordTransi
 {
     if ( action == kRecordAction )
     {
-        state.transit<logic::plugin::Recording>();
+        // The following is needed to silent assert in boost
+        const auto result = state.transit<logic::plugin::Recording>();
+        const auto consume = sc::detail::result_utility::get_result( result );
         return boost::statechart::detail::consumed;
     }
     else
