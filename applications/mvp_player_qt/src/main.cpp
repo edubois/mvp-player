@@ -1,7 +1,7 @@
 #include <mvp-player-core/MVPPlayerEngine.hpp>
 #include <mvp-player-core/MVPPlayerLogic.hpp>
-#include <mvp-player-core/SoundPlayer.hpp>
 #include <mvp-player-core/Settings.hpp>
+#include <mvp-player-fmod/SoundPlayer.hpp>
 #include <mvp-player-gui/playerBehavior.hpp>
 #include <mvp-player-qtgui/MVPPlayerLocalDialog.hpp>
 #include <mvp-player-qtgui/MVPPlayerSettingsDialog.hpp>

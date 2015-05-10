@@ -1,8 +1,8 @@
 #ifndef _CORE_SOUNDPLAYER_HPP_
 #define	_CORE_SOUNDPLAYER_HPP_
 
-#include "Singleton.hpp"
-#include "IFilePlayer.hpp"
+#include <mvp-player-core/Singleton.hpp>
+#include <mvp-player-core/IFilePlayer.hpp>
 
 #include <fmod.hpp>
 #include <string>

@@ -27,6 +27,7 @@ project.commonLibs.append( mvpPlayer )
 SConscript( [
               'libraries/boost-adds/SConscript',
               'libraries/mvp-player-core/SConscript',
+              'libraries/mvp-player-fmod/SConscript',
               'libraries/mvp-player-gui/SConscript',
               'libraries/mvp-player-net/SConscript',
               'libraries/mvp-player-pluger/SConscript',

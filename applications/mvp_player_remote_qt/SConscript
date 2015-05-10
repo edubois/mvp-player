@@ -3,6 +3,7 @@ Import( 'libs' )
 
 libraries = [
               libs.mvp_player_core,
+              libs.mvp_player_fmod,
               libs.mvp_player_gui,
               libs.mvp_player_qtgui,
               libs.boost_program_options,
