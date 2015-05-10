@@ -10,6 +10,11 @@
 namespace mvpplayer
 {
 
+Settings::Settings( const boost::property_tree::ptree & settings )
+: _settings( settings )
+{
+}
+
 Settings::Settings( const boost::filesystem::path & settingsFilename )
 {
     if ( !settingsFilename.empty() )
@@ -91,6 +96,7 @@ void Settings::merge( const Settings & other )
     // Iterate over second property tree
     while( !qValues.empty() )
     {
+        typedef boost::property_tree::ptree::path_type PathT;
         // Setup keys and corresponding values
         boost::property_tree::ptree ptree = qValues.front();
         qValues.pop();
@@ -101,6 +107,9 @@ void Settings::merge( const Settings & other )
             qKeys.pop();
         }
 
+        // Separator needs to be a impossible char
+        const char separator = '\1';
+
         // Iterate over keys level-wise
         for( const auto & child: ptree )
         {
@@ -110,12 +119,12 @@ void Settings::merge( const Settings & other )
                 // No "." for first level entries
                 string s;
                 if( keychain != "" )
-                    s = keychain + "." + child.first.data();
+                    s = keychain + separator + child.first.data();
                 else
                     s = child.first.data();
 
                 // Put into combined property tree
-                _settings.put( s, child.second.data() );
+                _settings.put( PathT( s, separator ), child.second.data() );
             }
             // Subtree
             else
@@ -123,7 +132,7 @@ void Settings::merge( const Settings & other )
                 // Put keys (identifiers of subtrees) and all of its parents (where present)
                 // aside for later iteration. Keys on first level have no parents
                 if( keychain != "" )
-                    qKeys.push( keychain + "." + child.first.data() );
+                    qKeys.push( keychain + separator + child.first.data() );
                 else
                     qKeys.push( child.first.data() );
 

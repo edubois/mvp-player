@@ -18,9 +18,17 @@ static const std::string kDefaultSettingsFilename( ".mvpPlayerSettings.json" );
 class Settings : public Singleton<Settings>
 {
 public:
+    Settings( const boost::property_tree::ptree & settings );
     Settings( const boost::filesystem::path & settingsFilename = kDefaultSettingsFilename );
     virtual ~Settings() {}
     
+    
+    /**
+     * @brief clear settings
+     */
+    inline void clear()
+    { _settings.clear(); }
+
     /**
      * Read settings from a file
      * @param settingsFilename the file name
@@ -40,24 +48,44 @@ public:
     void merge( const Settings & other );
 
     /**
+     * @brief append a sub property tree
+     * @param group the group
+     * @param key the setting key
+     * @param value the sub property tree
+     */
+    void set( const std::string & group, const std::string & key, const boost::property_tree::ptree & subtree, const char separator = '.' )
+    {
+        typedef boost::property_tree::ptree::path_type PathT;
+        std::string path;
+        path += group;
+        if ( !group.empty() )
+        {
+            path += separator;
+        }
+        path += key;
+        _settings.add_child( PathT( path, separator ), subtree );
+    }
+
+    /**
      * @brief set property
      * @param group the group
      * @param key the setting key
      * @param value the setting value
      */
     template<class T>
-    void set( const std::string & group, const std::string & key, const T & value )
+    void set( const std::string & group, const std::string & key, const T & value, const char separator = '.' )
     {
         try
         {
-            std::string path = "settings.";
+            typedef boost::property_tree::ptree::path_type PathT;
+            std::string path;
             path += group;
             if ( !group.empty() )
             {
-                path += ".";
+                path += separator;
             }
             path += key;
-            _settings.put( path, boost::lexical_cast<std::string>( value ) );
+            _settings.put( PathT( path, separator ), boost::lexical_cast<std::string>( value ) );
         }
         catch( ... )
         {
@@ -65,32 +93,34 @@ public:
             std::cerr << "Unable to set setting: " << key << std::endl;
         }
     }
-    
-    inline bool has( const std::string & group, const std::string & key ) const
+
+    inline bool has( const std::string & group, const std::string & key, const char separator = '.' ) const
     {
-        std::string path = "settings.";
+        typedef boost::property_tree::ptree::path_type PathT;
+        std::string path;
         path += group;
         if ( !group.empty() )
         {
-            path += ".";
+            path += separator;
         }
         path += key;
-        return _settings.get_optional<std::string>( path ) != boost::none;
+        return _settings.get_optional<std::string>( PathT( path, separator ) ) != boost::none;
     }
 
     template<class T>
-    T get( const std::string & group, const std::string & key )
+    T get( const std::string & group, const std::string & key, const char separator = '.' )
     {
         try
         {
-            std::string path = "settings.";
+            typedef boost::property_tree::ptree::path_type PathT;
+            std::string path;
             path += group;
             if ( !group.empty() )
             {
-                path += ".";
+                path += separator;
             }
             path += key;
-            return boost::lexical_cast<T>( _settings.get<std::string>( path ) );
+            return boost::lexical_cast<T>( _settings.get<std::string>( PathT( path, separator ) ) );
         }
         catch( ... )
         {
@@ -99,6 +129,9 @@ public:
         }
         return T();
     }
+    
+    const boost::property_tree::ptree & tree() const
+    { return _settings; }
     
 private:
     boost::property_tree::ptree _settings;  ///< Property tree for the settings
