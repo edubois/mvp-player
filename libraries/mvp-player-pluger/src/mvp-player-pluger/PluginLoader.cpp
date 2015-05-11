@@ -19,6 +19,11 @@ PluginLoader::~PluginLoader()
 {
 }
 
+void PluginLoader::unloadPlugins()
+{
+    _plugins.clear();
+}
+
 void PluginLoader::loadPlugins( const boost::filesystem::path & pluginsPath, mvpplayer::MVPPlayerEngine & model, mvpplayer::gui::IMVPPlayerDialog & view, mvpplayer::logic::MVPPlayerPresenter & presenter )
 {
     QDir pluginsDir( pluginsPath.string().c_str() );
@@ -37,10 +42,11 @@ void PluginLoader::loadPlugins( const boost::filesystem::path & pluginsPath, mvp
             IMVPPlugin * tgPlug = dynamic_cast<IMVPPlugin*>( plugin );
             if ( tgPlug )
             {
-                std::cout << "Plugin is: " << tgPlug->pluginName() << std::endl;
-                if ( _plugins.find( tgPlug->pluginName() ) == _plugins.end() )
+                std::string pluginName = tgPlug->pluginName();
+                std::cout << "Plugin is: " << pluginName << std::endl;
+                if ( _plugins.find( pluginName ) == _plugins.end() )
                 {
-                    _plugins[ tgPlug->pluginName() ] = tgPlug;
+                    _plugins.insert( pluginName, tgPlug );
                     tgPlug->setup( model, view, presenter );
                 }
             }

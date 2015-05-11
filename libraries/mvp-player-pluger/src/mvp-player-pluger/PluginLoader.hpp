@@ -8,8 +8,8 @@
 
 #include "IMVPPlugin.hpp"
 
+#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/filesystem/path.hpp>
-#include <map>
 
 namespace mvpplayer
 {
@@ -26,9 +26,9 @@ public:
 
     void loadPlugins( const boost::filesystem::path & pluginsPath, mvpplayer::MVPPlayerEngine & model, mvpplayer::gui::IMVPPlayerDialog & view, mvpplayer::logic::MVPPlayerPresenter & presenter );
     void loadPlugins( mvpplayer::MVPPlayerEngine & model, mvpplayer::gui::IMVPPlayerDialog & view, mvpplayer::logic::MVPPlayerPresenter & presenter );
-
+    void unloadPlugins();
 private:
-    std::map<std::string, IMVPPlugin*> _plugins;    ///< Plugins loaded
+    boost::ptr_map<std::string, IMVPPlugin> _plugins;    ///< Plugins loaded
 };
 
 }
