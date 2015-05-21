@@ -107,6 +107,17 @@ void Server::stop()
     _stopped = true;
 }
 
+/**
+ * @brief wait until server stops
+ */
+void Server::wait()
+{
+    if ( _ioThread )
+    {
+        _ioThread->join();
+    }
+}
+
 PeerInfo Server::peerInfo() const
 {
     PeerInfo peerInfo;
