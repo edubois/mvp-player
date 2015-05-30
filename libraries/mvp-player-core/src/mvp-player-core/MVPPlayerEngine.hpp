@@ -47,7 +47,7 @@ public:
      * @param position position in percent (0-100) or ms
      * @param seekType seek position in percent or milliseconds
      */
-    void setTrackPosition( const std::size_t position, const ESeekPosition seekType = eSeekPositionPercent );
+    void setTrackPosition( const double position, const ESeekPosition seekType = eSeekPositionPercent );
 
     /**
      * @brief restart current track

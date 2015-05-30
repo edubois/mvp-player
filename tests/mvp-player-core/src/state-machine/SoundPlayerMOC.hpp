@@ -130,8 +130,8 @@ public:
     /**
      * @brief set track position
      */
-    bool setPosition( const std::size_t position, const ESeekPosition seekType = eSeekPositionPercent )
-    { return false; }
+    bool setPosition( const double position, const ESeekPosition seekType = eSeekPositionPercent ) override
+    { return true; }
 // Signals
 public:
     int position = 1;

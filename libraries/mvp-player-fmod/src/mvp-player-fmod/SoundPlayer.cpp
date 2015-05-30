@@ -277,7 +277,7 @@ bool SoundPlayer::getSound()
  * @param seekType seek position in percent or milliseconds
  * @return false on success, true if error
  */
-bool SoundPlayer::setPosition( const std::size_t position, const ESeekPosition seekType )
+bool SoundPlayer::setPosition( const double position, const ESeekPosition seekType )
 {
     bool ret = true;
     if ( _channel && _sound )
@@ -287,7 +287,7 @@ bool SoundPlayer::setPosition( const std::size_t position, const ESeekPosition s
         {
             unsigned int length = 0;
             _sound->getLength( &length, FMOD_TIMEUNIT_MS );
-            const unsigned int offset = length * ( float( position ) / 100.0f );
+            const double offset = length * ( double( position ) / 100.0 );
             ret = ( _channel->setPosition( offset, FMOD_TIMEUNIT_MS ) != FMOD_OK );
         }
         else

@@ -120,7 +120,7 @@ public:
      * @param position position in percent (0-100) or ms
      * @param seekType seek position in percent or milliseconds
      */
-    virtual bool setPosition( const std::size_t position, const ESeekPosition seekType = eSeekPositionPercent ) = 0;
+    virtual bool setPosition( const double position, const ESeekPosition seekType = eSeekPositionPercent ) = 0;
 
 // Signals
 public:

@@ -76,7 +76,7 @@ public:
      * @param seekType seek position in percent or milliseconds
      * @return false on success, true if error
      */
-    bool setPosition( const std::size_t positionInPercent, const ESeekPosition seekType = eSeekPositionPercent ) override;
+    bool setPosition( const double positionInPercent, const ESeekPosition seekType = eSeekPositionPercent ) override;
 
     /**
      * @brief get the current track's position
