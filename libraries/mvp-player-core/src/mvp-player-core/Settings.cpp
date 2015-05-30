@@ -33,16 +33,17 @@ bool Settings::read( const boost::filesystem::path & settingsFilename )
             read_xml( settingsFilename.string(), _settings );
             return true;
         }
-        else if ( boost::algorithm::icontains( settingsFilename.string(), ".json" ) )
-        {
-            using namespace boost::property_tree::json_parser;
-            read_json( settingsFilename.string(), _settings );
-            return true;
-        }
         else if ( boost::algorithm::icontains( settingsFilename.string(), ".ini" ) )
         {
             using namespace boost::property_tree::ini_parser;
             read_ini( settingsFilename.string(), _settings );
+            return true;
+        }
+        // JSON by default
+        else
+        {
+            using namespace boost::property_tree::json_parser;
+            read_json( settingsFilename.string(), _settings );
             return true;
         }
     }
@@ -61,16 +62,17 @@ bool Settings::write( const boost::filesystem::path & settingsFilename ) const
             write_xml( settingsFilename.string(), _settings );
             return true;
         }
-        else if ( boost::algorithm::icontains( settingsFilename.string(), ".json" ) )
-        {
-            using namespace boost::property_tree::json_parser;
-            write_json( settingsFilename.string(), _settings );
-            return true;
-        }
         else if ( boost::algorithm::icontains( settingsFilename.string(), ".ini" ) )
         {
             using namespace boost::property_tree::ini_parser;
             write_ini( settingsFilename.string(), _settings );
+            return true;
+        }
+        // JSON by default
+        else
+        {
+            using namespace boost::property_tree::json_parser;
+            write_json( settingsFilename.string(), _settings );
             return true;
         }
     }

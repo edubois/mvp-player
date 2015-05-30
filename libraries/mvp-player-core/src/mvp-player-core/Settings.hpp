@@ -108,7 +108,7 @@ public:
     }
 
     template<class T>
-    T get( const std::string & group, const std::string & key, const char separator = '.' )
+    T get( const std::string & group, const std::string & key, const T & defaultValue = T(), const char separator = '.' ) const
     {
         try
         {
@@ -124,10 +124,8 @@ public:
         }
         catch( ... )
         {
-            std::cerr << boost::current_exception_diagnostic_information() << std::endl;
-            std::cerr << "Unable to get setting: " << key << std::endl;
         }
-        return T();
+        return defaultValue;
     }
     
     const boost::property_tree::ptree & tree() const
