@@ -626,7 +626,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
                 context< PlayerStateMachine >().presenter.processClearPlaylist();
                 context< PlayerStateMachine >().presenter.processAddTrack( *answer );
                 context< PlayerStateMachine >().presenter.processStartPlaylist();
-                return transit< Playing >();
+                return transit< Stopped >();
             }
             else if ( answer )
             {

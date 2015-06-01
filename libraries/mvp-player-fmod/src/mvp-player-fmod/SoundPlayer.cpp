@@ -188,9 +188,9 @@ bool SoundPlayer::play( const bool pause )
         // Start fmod updater thread
         // We need to call update every 20 ms to get fmod system status
         _updaterThread.reset( new boost::thread( boost::bind( &SoundPlayer::updater, this ) ) );
-        return false;
+        return true;
     }
-    return true;
+    return false;
 }
 
 /**
