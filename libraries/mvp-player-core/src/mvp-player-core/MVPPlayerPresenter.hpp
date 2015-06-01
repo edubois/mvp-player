@@ -29,7 +29,6 @@ class SchedulerWorker
 public:
     SchedulerWorker( sc::fifo_scheduler<> & scheduler )
     : _scheduler( scheduler )
-    , _stopped( true )
     {
     }
     
@@ -45,9 +44,18 @@ public:
     
     inline void join()
     {
-        _thread->interrupt();
-        _scheduler.terminate();
-        _thread->join();
+        try
+        {
+            _thread->interrupt();
+            _scheduler.terminate();
+            if ( _thread->joinable() && !_stopped )
+            {
+                _thread->join();
+            }
+        }
+        catch( ... )
+        {
+        }
     }
     
     inline boost::mutex & mutex() const
@@ -79,7 +87,7 @@ private:
 
 private:
     sc::fifo_scheduler<> & _scheduler;
-    bool _stopped;
+    bool _stopped = true;
     std::unique_ptr<boost::thread> _thread;
     mutable boost::mutex _mutex;
 };
