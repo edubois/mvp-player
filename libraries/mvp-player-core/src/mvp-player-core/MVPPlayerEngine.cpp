@@ -35,11 +35,11 @@ bool MVPPlayerEngine::playFile( const boost::filesystem::path & filename )
     {
         openPlaylist( filename );
         playList();
-        return false;
+        return true;
     }
     else
     {
-        bool ret = true;
+        bool ret = false;
         {
             boost::mutex::scoped_lock lock( _mutex );
             _currentPlayedTrack = filename;
@@ -53,6 +53,7 @@ bool MVPPlayerEngine::playFile( const boost::filesystem::path & filename )
 
 void MVPPlayerEngine::addTrackItems( const std::vector<boost::filesystem::path> & filename )
 {
+    boost::mutex::scoped_lock lock( _mutex );
     for( const boost::filesystem::path & p: filename )
     {
         if ( boost::iequals( p.extension().string(), ".m3u" ) )
@@ -172,15 +173,14 @@ bool MVPPlayerEngine::playCurrent()
             boost::mutex::scoped_lock lock( _mutex );
             playedTrack = *_currentPosition;
         }
-        if ( !playFile( playedTrack ) )
+        if ( playFile( playedTrack ) )
         {
             trackIndex = std::distance( _playlist.cbegin(), _currentPosition );
-            signalPlayedTrack( playedTrack );
             signalPlayingItemIndex( playedTrack, trackIndex );
         }
-        return false;
+        return true;
     }
-    return true;
+    return false;
 }
 
 /**
