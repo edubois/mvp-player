@@ -60,7 +60,9 @@ void MVPPlayerDialog::setButtonChecked( const std::string & buttonName, const bo
     auto it = _playerButtonsWidgets.find( buttonName );
     if ( it != _playerButtonsWidgets.end() )
     {
-        it->second->setChecked( false );
+        it->second->blockSignals( true ); // Don't forget to put this to avoid dead locks
+        it->second->setChecked( checked );
+        it->second->blockSignals( false );
     }
 }
 

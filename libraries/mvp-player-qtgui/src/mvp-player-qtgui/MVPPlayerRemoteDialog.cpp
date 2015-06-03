@@ -112,12 +112,16 @@ void MVPPlayerRemoteDialog::slotViewHitMute( const bool checked )
 
 void MVPPlayerRemoteDialog::slotSetIconStop()
 {
+    _btnPlayPause->blockSignals( true ); // Don't forget to put this to avoid dead locks
     _btnPlayPause->setChecked( true );
+    _btnPlayPause->blockSignals( false );
 }
 
 void MVPPlayerRemoteDialog::slotSetIconPlay()
 {
+    _btnPlayPause->blockSignals( true ); // Don't forget to put this to avoid dead locks
     _btnPlayPause->setChecked( false );
+    _btnPlayPause->blockSignals( false );
 }
 
 void MVPPlayerRemoteDialog::slotSetPlaylistItemIndex( const int row )

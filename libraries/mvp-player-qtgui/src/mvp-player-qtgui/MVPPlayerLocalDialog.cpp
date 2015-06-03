@@ -107,12 +107,16 @@ void MVPPlayerLocalDialog::startStopServer( const bool start )
 
 void MVPPlayerLocalDialog::slotSetIconStop()
 {
+    _btnPlayPause->blockSignals( true ); // Don't forget to put this to avoid dead locks
     _btnPlayPause->setChecked( true );
+    _btnPlayPause->blockSignals( false );
 }
 
 void MVPPlayerLocalDialog::slotSetIconPlay()
 {
+    _btnPlayPause->blockSignals( true ); // Don't forget to put this to avoid dead locks
     _btnPlayPause->setChecked( false );
+    _btnPlayPause->blockSignals( false );
 }
 
 void MVPPlayerLocalDialog::slotSetPlaylistItemIndex( const int row )
