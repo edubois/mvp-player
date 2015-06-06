@@ -10,6 +10,5 @@ project.SharedLibrary( 'mvp_player_core',
                                      libs.boost_serialization,
                                      libs.boost_chrono,
                                      libs.boost_thread,
-                                     libs.fmod,
                                     ],
                       )
