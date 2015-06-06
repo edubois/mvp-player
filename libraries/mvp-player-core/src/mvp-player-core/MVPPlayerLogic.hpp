@@ -367,6 +367,7 @@ struct Playing : sc::simple_state< Playing, Active >
                 else
                 {
                     context< PlayerStateMachine >().presenter.startPlaylist();
+                    context< PlayerStateMachine >().currentPlaylistIndex = 0;
                 }
                 return transit< Playing >();
             }
@@ -566,7 +567,8 @@ struct Stopped : sc::simple_state< Stopped, Active >
      */
     sc::result react( const EvStartPlaylist & ev )
     {
-        context< PlayerStateMachine >().presenter.processStartPlaylist();
+        context< PlayerStateMachine >().presenter.startPlaylist();
+        context< PlayerStateMachine >().currentPlaylistIndex = 0;
         return transit< Playing >();
     }
 
@@ -610,12 +612,12 @@ struct Stopped : sc::simple_state< Stopped, Active >
         if ( ev.hasFilename() && boost::filesystem::exists( ev.filename().get() ) )
         {
             context< PlayerStateMachine >().lastPlayTime = std::chrono::system_clock::now();
-            context< PlayerStateMachine >().presenter.processPlay( ev.filename().get() );
+            context< PlayerStateMachine >().presenter.playTrack( ev.filename().get() );
             return transit< Playing >();
         }
         else if ( context< PlayerStateMachine >().lastTrackFilename != boost::none )
         {
-            context< PlayerStateMachine >().presenter.processPlay( *context< PlayerStateMachine >().lastTrackFilename );
+            context< PlayerStateMachine >().presenter.playTrack( *context< PlayerStateMachine >().lastTrackFilename );
             return transit< Playing >();
         }
         else
@@ -626,7 +628,7 @@ struct Stopped : sc::simple_state< Stopped, Active >
                 context< PlayerStateMachine >().presenter.processClearPlaylist();
                 context< PlayerStateMachine >().presenter.processAddTrack( *answer );
                 context< PlayerStateMachine >().presenter.processStartPlaylist();
-                return transit< Stopped >();
+                return transit< Playing >();
             }
             else if ( answer )
             {
