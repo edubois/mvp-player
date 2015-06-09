@@ -53,7 +53,6 @@ bool MVPPlayerEngine::playFile( const boost::filesystem::path & filename )
 
 void MVPPlayerEngine::addTrackItems( const std::vector<boost::filesystem::path> & filename )
 {
-    boost::mutex::scoped_lock lock( _mutex );
     for( const boost::filesystem::path & p: filename )
     {
         if ( boost::iequals( p.extension().string(), ".m3u" ) )
@@ -62,6 +61,7 @@ void MVPPlayerEngine::addTrackItems( const std::vector<boost::filesystem::path> 
         }
         else
         {
+            boost::mutex::scoped_lock lock( _mutex );
             _playlist.push_back( p );
             signalTrackAddedToPlaylist( p.filename() );
         }
