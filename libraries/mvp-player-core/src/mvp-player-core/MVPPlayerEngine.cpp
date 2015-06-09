@@ -80,7 +80,16 @@ void MVPPlayerEngine::openPlaylist( const boost::filesystem::path & playlistFile
         _playlist.clear();
         for( const m3uParser::PlaylistItem playlistItem : playlistItems )
         {
-            _playlist.push_back( playlistItem.filename );
+            boost::filesystem::path pathToAdd = playlistItem.filename;
+            if ( !boost::filesystem::exists( pathToAdd ) )
+            {
+                // try absolute path
+                if ( boost::filesystem::exists( playlistFilename.parent_path() / pathToAdd ) )
+                {
+                    pathToAdd = playlistFilename.parent_path() / pathToAdd;
+                }
+            }
+            _playlist.push_back( pathToAdd );
         }
         _currentPosition = _playlist.begin();
     }
