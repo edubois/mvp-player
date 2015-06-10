@@ -1,8 +1,14 @@
-set(MVP_PLAYER_CORE_SRC_PATH "${PROJECT_SOURCE_DIR}/src")
+set(MVP_PLAYER_CORE_SRC_PATH "${PROJECT_SOURCE_DIR}/src/mvp-player-core")
 file(GLOB_RECURSE MVP_PLAYER_CORE_SRC_FILES "*.cpp" "*.hpp" )
 
+# external dependency
+include(UseMvpPlayerBoost)
+
+# Internal sublib dependency
+find_package(BoostAdds)
+
 # Include mvpPlayerCore and boost
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${BoostAdds_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
 
 # Create 'mvpPlayerCore' static lib
 add_library(mvpPlayerCore-static STATIC ${MVP_PLAYER_CORE_SRC_FILES})

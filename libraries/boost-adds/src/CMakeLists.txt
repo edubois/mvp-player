@@ -1,6 +1,9 @@
 set(BOOST_ADDS_SRC_PATH "${PROJECT_SOURCE_DIR}/src")
 file(GLOB_RECURSE BOOST_ADDS_SRC_FILES "*.cpp" "*.hpp" )
 
+# external libs
+include(UseMvpPlayerBoost)
+
 # Include boostAdds and boost
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 

@@ -2,7 +2,8 @@ set(MVP_PLAYER_GUI_SRC_PATH "${PROJECT_SOURCE_DIR}/src")
 file(GLOB_RECURSE MVP_PLAYER_GUI_SRC_FILES "*.cpp" "*.hpp" )
 
 # Include mvpPlayerGui and boost
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+find_package(MvpPlayerCore)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${MvpPlayerCore_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
 
 # Create 'mvpPlayerGui' static lib
 add_library(mvpPlayerGui-static STATIC ${MVP_PLAYER_GUI_SRC_FILES})

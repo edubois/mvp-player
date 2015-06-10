@@ -13,27 +13,19 @@ add_definitions(-DMVP_PLAYER_FMOD_VERSION_MAJOR=${MVP_PLAYER_FMOD_VERSION_MAJOR}
 add_definitions(-DMVP_PLAYER_FMOD_VERSION_MINOR=${MVP_PLAYER_FMOD_VERSION_MINOR})
 add_definitions(-DMVP_PLAYER_FMOD_VERSION_MICRO=${MVP_PLAYER_FMOD_VERSION_MICRO})
 
-include(UseMvpPlayerFMod)
+# Diplay commands being ran by CMake
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 
-if ( FMOD_FOUND )
-    include_directories(${FMOD_INCLUDE_DIRS})
+# The install rule does not depend on all, i.e. everything will not be built before installing
+set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 
-    # Diplay commands being ran by CMake
-    set(CMAKE_VERBOSE_MAKEFILE OFF)
-
-    # The install rule does not depend on all, i.e. everything will not be built before installing
-    set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
-
-    # CPP flags on debug / release mode
-    if(MSVC)
-         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-    else()
-         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -fPIC -pg -g")
-         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC -O3")
-    endif()
-
-    add_subdirectory(src)
+# CPP flags on debug / release mode
+if(MSVC)
+     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
 else()
-   message("Unable to find libs dependency, aborting compilation of mvp_player_fmod")
+     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -fPIC -pg -g")
+     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC -O3")
 endif()
+
+add_subdirectory(src)

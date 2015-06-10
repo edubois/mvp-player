@@ -1,8 +1,15 @@
 set(MVP_PLAYER_FMOD_SRC_PATH "${PROJECT_SOURCE_DIR}/src")
 file(GLOB_RECURSE MVP_PLAYER_FMOD_SRC_FILES "*.cpp" "*.hpp" )
 
+# External libs
+include(UseMvpPlayerBoost)
+find_package(FMod)
+
+# Internal module dependency
+find_package(MvpPlayerCore)
+
 # Include mvpPlayerFMod and boost
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${MvpPlayerCore_INCLUDE_DIR} ${FMOD_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
 # Create 'mvpPlayerFMod' static lib
 add_library(mvpPlayerFMod-static STATIC ${MVP_PLAYER_FMOD_SRC_FILES})

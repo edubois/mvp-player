@@ -13,25 +13,13 @@ add_definitions(-DMVP_PLAYER_CORE_VERSION_MAJOR=${MVP_PLAYER_CORE_VERSION_MAJOR}
 add_definitions(-DMVP_PLAYER_CORE_VERSION_MINOR=${MVP_PLAYER_CORE_VERSION_MINOR})
 add_definitions(-DMVP_PLAYER_CORE_VERSION_MICRO=${MVP_PLAYER_CORE_VERSION_MICRO})
 
-include(UseMvpPlayerBoost)
-
-if ( MvpPlayerBoost_FOUND )
-    # Diplay commands being ran by CMake
-    set(CMAKE_VERBOSE_MAKEFILE OFF)
-
-    # The install rule does not depend on all, i.e. everything will not be built before installing
-    set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
-
-    # CPP flags on debug / release mode
-    if(MSVC)
-            set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-            set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-    else()
-            set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -fPIC -pg -g")
-            set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC -O3")
-    endif()
-
-    add_subdirectory(src)
+# CPP flags on debug / release mode
+if(MSVC)
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
 else()
-   message("Unable to find libs dependency, aborting compilation of boost-adds")
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -fPIC -pg -g")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC -O3")
 endif()
+
+add_subdirectory(src)

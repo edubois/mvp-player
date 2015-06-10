@@ -19,6 +19,8 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # The install rule does not depend on all, i.e. everything will not be built before installing
 set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 
+include(UseMvpPlayerBoost)
+
 # CPP flags on debug / release mode
 if(MSVC)
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
