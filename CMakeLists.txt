@@ -9,16 +9,27 @@ if(MVP_PLAYER_PRODUCTION)
   add_definitions(-DMVP_PLAYER_PRODUCTION)
 endif()
 
-set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" "${CMAKE_CURRENT_SOURCE_DIR}/cmake-internal-modules" )
+set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
 
-# set Mac flags:
+if(CMAKE_COMPILER_IS_GNUCXX)
+    if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    endif()
+endif()
+
 if(APPLE)
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-register -ftemplate-depth=256 -std=c++11 -stdlib=libc++ -isysroot/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk" )
-set( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -stdlib=libc++ -Wl,-syslibroot,/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk" )
-# set unix flags
-elseif(UNIX)
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-register -ftemplate-depth=256 -std=c++11" )
-set( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}" )
+    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+    set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvm.clang.1_0")
+    set(CMAKE_MACOSX_RPATH 1)
+endif()
+
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC -stdlib=libc++")
+
+if(WIN32)
+    add_definitions(-DUNICODE -D_UNICODE)
+    set(TARGET_ARCHITECTURE "x86")
 endif()
 
 # The install rule does not depend on all, i.e. everything will not be built before installing
@@ -31,10 +42,10 @@ add_subdirectory(libraries/boost-adds)
 add_subdirectory(libraries/mvp-player-core)
 add_subdirectory(libraries/mvp-player-fmod)
 add_subdirectory(libraries/mvp-player-gui)
+add_subdirectory(libraries/mvp-player-pluger)
+add_subdirectory(libraries/mvp-player-qtgui)
 #add_subdirectory(libraries/mvp-player-ncursesgui)
 #add_subdirectory(libraries/mvp-player-net)
-#add_subdirectory(libraries/mvp-player-pluger)
-#add_subdirectory(libraries/mvp-player-qtgui)
 #add_subdirectory(plugins)
 #add_subdirectory(applications)
 
