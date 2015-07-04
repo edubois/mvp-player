@@ -45,8 +45,8 @@ add_subdirectory(libraries/mvp-player-gui)
 add_subdirectory(libraries/mvp-player-pluger)
 add_subdirectory(libraries/mvp-player-qtgui)
 #add_subdirectory(libraries/mvp-player-ncursesgui)
-#add_subdirectory(libraries/mvp-player-net)
+add_subdirectory(libraries/mvp-player-net)
 #add_subdirectory(plugins)
-#add_subdirectory(applications)
+add_subdirectory(applications)
 
 # Add a target to generate API documentation with Doxygen
