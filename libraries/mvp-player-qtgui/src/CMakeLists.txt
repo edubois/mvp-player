@@ -1,11 +1,12 @@
-set(MVP_PLAYER_QTGUI_SRC_PATH "${PROJECT_SOURCE_DIR}/src")
-file(GLOB_RECURSE MVP_PLAYER_QTGUI_SRC_FILES "*.cpp" "*.hpp" )
+set(MVP_PLAYER_QTGUI_SRC_PATH "${PROJECT_SOURCE_DIR}/src/mvp-player-qtgui")
+file(GLOB_RECURSE MVP_PLAYER_QTGUI_SRC_FILES "${MVP_PLAYER_QTGUI_SRC_PATH}/*.cpp" )
 
 include(UseMvpPlayerBoost)
 
 # Find the QtWidgets library
 FIND_PACKAGE(Qt5 COMPONENTS Core Gui Widgets)
-SET(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Create 'mvpPlayerQtGui' static lib
 add_library( mvpPlayerQtGui-static STATIC ${MVP_PLAYER_QTGUI_SRC_FILES} )
