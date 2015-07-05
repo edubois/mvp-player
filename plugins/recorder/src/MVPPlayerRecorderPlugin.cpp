@@ -67,7 +67,7 @@ boost::statechart::detail::reaction_result MVPPlayerRecorderPlugin::recordTransi
     {
         // The following is needed to silent assert in boost
         const auto result = state.transit<logic::plugin::Recording>();
-        const auto consume = sc::detail::result_utility::get_result( result );
+        const auto consume = boost::statechart::detail::result_utility::get_result( result );
         return boost::statechart::detail::consumed;
     }
     else
