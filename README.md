@@ -25,15 +25,21 @@ To me, this important pattern (or similar, such as MV-VM) should exist on every 
 * Support of M3U playlist
 * Plugin engine (example of plugin that plays a song when you clap on your hands)
 
+## Presentation video:
+
+* [MVP-Player in 2 minutes](https://www.youtube.com/watch?v=hB-deB3Axpg)
+
 ## Compilation
 
-To compile, you will need Qt5, Boost, Fmod, ncurses, cdk and scons:
+To compile, you will need Qt5, Boost, Fmod, ncurses, cdk and cmake or scons:
 
 * [QT5](http://www.qt.io/download/)
 * [Boost](http://www.boost.org/users/download/)
 * [FMOD](http://www.fmod.org/)
 * [NCURSES](http://ftp.gnu.org/pub/gnu/ncurses/)
 * [CDK](http://invisible-island.net/cdk/)
+* [CMAKE](http://www.scons.org/)
+* [SCONS](http://www.cmake.org/)
 
 
 First, clone the repository:
@@ -47,12 +53,24 @@ This should bring tools/sconsProject
 
 now, go into tools/sconsProject
 
-and do (this is mandatory):
+and do (this is mandatory if using scons):
 
 ```git checkout precompiled_header_proposal```
 
 
-Now, it's time to edit default.sconf according to your configuration.
+Now,
+
+If using cmake:
+
+make a build directory, go into it, then type:
+
+```ccmake ..```
+
+then adapt your configuration and launch make in the parent directory.
+
+If using scons:
+
+it's time to edit default.sconf according to your configuration.
 In the default configuration, I made a parent directory 3rdParties where I put
 my 3rd party libraries. To change your external libraries base dir, 
 edit the variable extern in this file (default.sconf).
@@ -62,7 +80,7 @@ XCode configuration.
 
 If you are not using Mac, remove the lines after '# Mac only'
 
-## Compilation for android
+## Compilation for android (with scons)
 
 * compile (or obtain) boost, qt and fmod for android-armv7
 
@@ -87,11 +105,11 @@ When you are ready, enter:
 
 * if you want the ncurses console player:
 
-```scons mode=release mvp_player_ncurses```
+```make mvpPlayerNCurses -j4```
 
 * or, if you want the QT player:
 
-```scons mode=release mvp_player_qt```
+```make mvpPlayerQt -j4```
 
 This should build an executable showing a player dialog, where you can play a music (I tried .wav, mp3 and playlist m3u, it was working well on both GUI).
 
@@ -128,9 +146,6 @@ This is a version of the player using an asynchronous state machine (a little bi
 
 This is a version with support of network remote player.
 
-## Additionnal resources:
-
-* [MVP-Player in 2 minutes](https://www.youtube.com/watch?v=hB-deB3Axpg)
 
 
 
