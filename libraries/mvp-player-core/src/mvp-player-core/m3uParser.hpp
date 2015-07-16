@@ -89,7 +89,7 @@ struct Grammar : qi::grammar<Iterator, std::vector<PlaylistItem>()>
         extPlaylistItem = ( lit( "#EXTINF:" ) >> int_[_a = _1] >> ',' >> as_string[ +(char_ - qi::eol) ][_b = _1] >> +qi::eol >> ( -lit( "file://" ) ) >> as_string[ +(char_ - qi::eol) ][_c = _1]  )[ _val = phx::construct<typename m3uParser::PlaylistItem>( _c, _a, _b ) ];
         entry = ( lit( "#EXTM3U" ) >> +qi::eol >> +( ( ( extPlaylistItem[ phx::push_back( _val, _1 ) ] ) | extComment ) >> *qi::eol ) )
                 |
-                ( +( rawPlaylistItem[ phx::push_back( _val, _1 ) ] ) >> *qi::eol );
+                ( +( rawPlaylistItem[ phx::push_back( _val, _1 ) ] >> *qi::eol ) >> *qi::eol );
     }
 
     // Create a starting rule with _val as a vector<double>

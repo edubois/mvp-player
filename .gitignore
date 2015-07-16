@@ -2,3 +2,16 @@ nbproject
 .dist
 dist
 *.log
+
+# temporary files
+*~
+.*.swp # vim
+*.flc # xemacs
+.DS_Store # MacOS
+Thumbs.db # Windows
+# python
+*.pyc
+# folder receiving the compilation products
+/build
+/install
+
