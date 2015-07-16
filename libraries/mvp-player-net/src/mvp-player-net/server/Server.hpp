@@ -57,6 +57,14 @@ public:
     { return _stopped; }
 
     /**
+     * @brief is the server stopped?
+     * @return true or false
+     * @warning please keep the reference over the bool
+     */
+    inline bool & stopped()
+    { return _stopped; }
+
+    /**
      * @brief get clients information
      * @return a map of peers
      */
