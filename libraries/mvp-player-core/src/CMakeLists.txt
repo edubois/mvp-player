@@ -29,5 +29,12 @@ install(
 	PATTERN "*.tcc"
 )
 
+if(APPLE)
+    set_target_properties(mvpPlayerCore-shared
+    PROPERTIES LINK_FLAGS "-framework CoreFoundation -w")
+    set_target_properties(mvpPlayerCore-shared
+    PROPERTIES INSTALL_RPATH "@loader_path")
+endif(APPLE)
+
 install(TARGETS mvpPlayerCore-static DESTINATION lib/ OPTIONAL)
 install(TARGETS mvpPlayerCore-shared DESTINATION lib/ OPTIONAL)
