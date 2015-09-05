@@ -3,6 +3,8 @@
 
 #include <atomic>
 #include <thread>
+#include <mutex>
+#include <condition_variable>
 #include <algorithm>
 
 namespace boost
@@ -19,6 +21,7 @@ public:
      */
     void post( const int n = 1 )
     {
+        std::lock_guard<std::mutex> lock( _mutexRing );
         _availableRings += n;
         if ( _availableRings > 0 )
         {
@@ -38,6 +41,7 @@ public:
      */
     inline bool take()
     {
+        std::lock_guard<std::mutex> lock( _mutexRing );
         if ( _availableRings > 0 )
         {
             return _availableRings-- > 0;
@@ -55,7 +59,8 @@ public:
     { _availableRings = 0; }
 
 private:
-    std::atomic_int _availableRings{0};             ///< Rings available
+    int _availableRings{0};                         ///< Rings available
+    std::mutex _mutexRing;                          ///< Mutex thread
     std::mutex _mutexSynchro;                       ///< Mutex thread
     std::condition_variable _synchroCondition;      ///< Synchronization condition
     std::unique_lock<std::mutex> _synchro;          ///< Lock for condition variable
