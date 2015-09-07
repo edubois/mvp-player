@@ -14,14 +14,11 @@ FILE( GLOB MVPPLAYER_SRCS *.cpp )
 if(APPLE)
     # set how it shows up in the Info.plist file
     SET(MACOSX_BUNDLE_ICON_FILE )
-    # set where in the bundle to put the icns file
-    SET_SOURCE_FILES_PROPERTIES( ${CMAKE_CURRENT_SOURCE_DIR}/resources/${MY_APP_NAME}.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
-    set( MACOSX_BUNDLE_ICON_FILE "${CMAKE_CURRENT_SOURCE_DIR}/resources/${MY_APP_NAME}.icns" )
     set( MACOSX_BUNDLE_BUNDLE_VERSION "${MVPPLAYERQT_VERSION}")
     set( MACOSX_BUNDLE_INFO_STRING "${MY_APP_NAME} - version ${MVPPLAYERQT_VERSION}" )
 
     # Change following line to point to actual icns file in bundle.
-    set( MACOSX_BUNDLE_GUI_IDENTIFIER "cc.${MY_APP_NAME}" )
+    set( MACOSX_BUNDLE_GUI_IDENTIFIER "org.djarlabs.${MY_APP_NAME}" )
     set( MACOSX_BUNDLE_NAME "${MY_APP_NAME}" )
     set( prefix "${CMAKE_INSTALL_PREFIX}/${MACOSX_BUNDLE_NAME}.app/Contents" )
     set( INSTALL_RUNTIME_DIR "${prefix}/MacOS" )
@@ -43,8 +40,8 @@ SET( qtconf_dest_dir bin )
 SET( APPS "${CMAKE_INSTALL_PREFIX}/bin/${MY_APP_NAME}" )
 IF( APPLE )
     SET( qt_plugin_dest_dir ${CMAKE_INSTALL_PREFIX}/${MY_APP_NAME}.app/Contents/PlugIns )
-    SET( plugin_dest_dir ${CMAKE_INSTALL_PREFIX}/${MY_APP_NAME}.app/Contents/Resources/mvpPlayerPlugins )
-    SET( qtconf_dest_dir ${CMAKE_INSTALL_PREFIX}/${MY_APP_NAME}.app/Contents/Resources )
+    SET( plugin_dest_dir ${INSTALL_CMAKE_DIR}/mvpPlayerPlugins )
+    SET( qtconf_dest_dir ${INSTALL_CMAKE_DIR} )
     SET( APPS "${CMAKE_INSTALL_PREFIX}/${MY_APP_NAME}.app" )
 ENDIF( APPLE )
 
@@ -74,8 +71,7 @@ INSTALL( TARGETS ${MY_APP_NAME}
 # Install needed Qt plugins by copying directories from the qt installation
 # One can cull what gets copied by using 'REGEX "..." EXCLUDE'
 IF(APPLE)
-    FIND_PACKAGE( Qt5Core )
-    FIND_PACKAGE( Qt5Widgets )
+    FIND_PACKAGE(Qt5 COMPONENTS Core Gui Widgets)
     GET_TARGET_PROPERTY( QT_PLUGINS_DIR Qt5::Core LOCATION_Release )
     GET_FILENAME_COMPONENT( QT_PLUGINS_DIR "${QT_PLUGINS_DIR}" DIRECTORY )
     GET_FILENAME_COMPONENT( QT_PLUGINS_DIR "${QT_PLUGINS_DIR}" DIRECTORY )
@@ -90,7 +86,7 @@ IF(APPLE)
         DESTINATION ${qt_plugin_dest_dir}
         COMPONENT Runtime
         FILES_MATCHING
-        PATTERN "*${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        REGEX "^.+[^0-9]+\\${CMAKE_SHARED_LIBRARY_SUFFIX}\$"
         PATTERN "*_debug${CMAKE_SHARED_LIBRARY_SUFFIX}" EXCLUDE
     )
 
@@ -101,8 +97,25 @@ IF(APPLE)
         DESTINATION ${plugin_dest_dir}
         COMPONENT Runtime
         FILES_MATCHING
-        PATTERN "*${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        REGEX "^.+[^0-9]+\\${CMAKE_SHARED_LIBRARY_SUFFIX}$"
         PATTERN "*_debug${CMAKE_SHARED_LIBRARY_SUFFIX}" EXCLUDE
+    )
+
+    INSTALL( DIRECTORY "${PROJECT_SOURCE_DIR}/src/resources/"
+        DESTINATION ${INSTALL_CMAKE_DIR}
+        COMPONENT Runtime
+        FILES_MATCHING
+        PATTERN "*.icns"
+    )
+    # set where in the bundle to put the icns file
+    SET_SOURCE_FILES_PROPERTIES( "${MY_APP_NAME}.icns" PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
+    SET( MACOSX_BUNDLE_ICON_FILE "${MY_APP_NAME}.icns" )
+
+    INSTALL( DIRECTORY "${PROJECT_SOURCE_DIR}/ui"
+        DESTINATION ${INSTALL_CMAKE_DIR}
+        COMPONENT Runtime
+        FILES_MATCHING
+        PATTERN "*.ui"
     )
 
     FILE( GLOB_RECURSE MVPPLAYER_PLUGINS
