@@ -18,7 +18,7 @@ To me, this important pattern (or similar, such as MV-VM) should exist on every 
 
 ## Main features
 
-* Multiplatform music (MP3, WAV, FLAC, ...) player: tested on osx, linux, android.
+* Multiplatform music player (MP3, WAV, FLAC, ...): tested on osx, linux, android.
 * Qt music player Gui
 * Console music player (ncurses)
 * Network client/server to remotely play music
@@ -31,7 +31,7 @@ To me, this important pattern (or similar, such as MV-VM) should exist on every 
 
 ## Compilation
 
-To compile, you will need Qt5, Boost, Fmod, ncurses, cdk and cmake or scons:
+To compile, you will need Qt5, Boost, Fmod, ncurses, cdk and cmake (or scons):
 
 * [QT5](http://www.qt.io/download/)
 * [Boost](http://www.boost.org/users/download/)
@@ -49,14 +49,6 @@ git clone https://github.com/edubois/mvp-player.git
 cd mvp-player
 git submodule update -i
 ```
-This should bring tools/sconsProject
-
-now, go into tools/sconsProject
-
-and do (this is mandatory if using scons):
-
-```git checkout precompiled_header_proposal```
-
 
 Now,
 
@@ -67,8 +59,8 @@ make a build directory, go into it, then type:
 ```ccmake ..```
 
 then adapt your configuration and launch make in the parent directory.
+On MacOSX, it's better to set CMAKE_INSTALL_PREFIX as local, because the make install will generate a .app file.
 
-If using scons:
 
 it's time to edit default.sconf according to your configuration.
 In the default configuration, I made a parent directory 3rdParties where I put
