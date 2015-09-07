@@ -24,6 +24,7 @@ target_include_directories( mvpPlayerCore-shared PUBLIC ${CMAKE_CURRENT_SOURCE_D
 target_include_directories( mvpPlayerCore-shared PUBLIC ${FMOD_INCLUDE_DIRS} )
 target_include_directories( mvpPlayerCore-shared PUBLIC ${Boost_INCLUDE_DIRS} )
 target_link_libraries( mvpPlayerFMod-shared ${Boost_LIBRARIES} ${FMOD_LIBRARY} mvpPlayerCore-shared )
+SET_TARGET_PROPERTIES( mvpPlayerFMod-shared PROPERTIES MACOSX_BUNDLE TRUE )
 
 ### Install mvpPlayerFMod libs and include
 install(

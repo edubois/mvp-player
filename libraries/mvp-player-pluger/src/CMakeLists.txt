@@ -27,6 +27,7 @@ target_include_directories( mvpPlayerPluger-shared PUBLIC ${CMAKE_CURRENT_SOURCE
 target_include_directories( mvpPlayerPluger-shared PUBLIC ${Boost_INCLUDE_DIRS} )
 target_include_directories( mvpPlayerPluger-shared PUBLIC ${Qt5Core_INCLUDE_DIRS} )
 target_link_libraries( mvpPlayerPluger-shared ${Boost_LIBRARIES} Qt5::Core mvpPlayerCore-shared mvpPlayerGui-shared )
+SET_TARGET_PROPERTIES( mvpPlayerPluger-shared PROPERTIES MACOSX_BUNDLE TRUE )
 
 #set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}" )
 set( CMAKE_POSITION_INDEPENDENT_CODE ON )

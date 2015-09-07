@@ -12,6 +12,7 @@
 #include <mvp-player-pluger/PluginLoader.hpp>
 
 #include <boost-adds/environment.hpp>
+#include <boost-adds/filesystem/bundle_path.hpp>
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMessageBox>
@@ -217,9 +218,16 @@ int main( int argc, char **argv )
         using namespace mvpplayer;
         Settings::getInstance().read( QDir::homePath().toStdString() + "/" + kDefaultSettingsFilename );
         boost::optional<std::string> envStr = boost::get_env( plugins::kMVPPlayerPluginEnvKey );
-        if ( envStr != boost::none && Settings::getInstance().has( "plugins", "pluginsPath" ) == false )
+        if ( Settings::getInstance().has( "plugins", "pluginsPath" ) == false )
         {
-            Settings::getInstance().set( "plugins", "pluginsPath", *envStr );
+            if ( envStr != boost::none )
+            {
+                Settings::getInstance().set( "plugins", "pluginsPath", *envStr );
+            }
+            else
+            {
+                Settings::getInstance().set( "plugins", "pluginsPath", ( boost::filesystem::bundle_path() / std::string( "mvpPlayerPlugins/" ) ).string() );
+            }
         }
     }
     int res = 0;

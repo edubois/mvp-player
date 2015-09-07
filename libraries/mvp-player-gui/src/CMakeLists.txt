@@ -20,6 +20,7 @@ set_target_properties( mvpPlayerGui-shared PROPERTIES VERSION ${MVP_PLAYER_GUI_V
 target_include_directories( mvpPlayerGui-shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
 target_include_directories( mvpPlayerGui-shared PUBLIC ${Boost_INCLUDE_DIRS} )
 target_link_libraries( mvpPlayerGui-shared ${Boost_LIBRARIES} mvpPlayerCore-shared )
+SET_TARGET_PROPERTIES( mvpPlayerGui-shared PROPERTIES MACOSX_BUNDLE TRUE )
 
 ### Install mvpPlayerGui libs and include
 install(

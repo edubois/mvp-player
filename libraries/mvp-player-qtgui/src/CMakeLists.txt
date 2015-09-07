@@ -25,6 +25,7 @@ set_target_properties( mvpPlayerQtGui-shared PROPERTIES VERSION ${MVP_PLAYER_QTG
 target_include_directories( mvpPlayerQtGui-shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
 target_include_directories( mvpPlayerQtGui-shared PUBLIC ${Boost_INCLUDE_DIRS} )
 target_link_libraries( mvpPlayerQtGui-shared ${Boost_LIBRARIES} mvpPlayerPluger-shared mvpPlayerGui-shared Qt5::Core Qt5::Gui Qt5::Widgets )
+SET_TARGET_PROPERTIES( mvpPlayerQtGui-shared PROPERTIES MACOSX_BUNDLE TRUE )
 
 ### Install mvpPlayerQtGui libs and include
 install(

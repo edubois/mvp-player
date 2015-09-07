@@ -19,6 +19,7 @@ set_target_properties( mvpPlayerCore-shared PROPERTIES SOVERSION ${MVP_PLAYER_CO
 set_target_properties( mvpPlayerCore-shared PROPERTIES VERSION ${MVP_PLAYER_CORE_VERSION} )
 target_include_directories( mvpPlayerCore-shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
 target_link_libraries( mvpPlayerCore-shared ${Boost_LIBRARIES} ${BoostAdds_LIBRARIES} boostAdds-shared )
+SET_TARGET_PROPERTIES( mvpPlayerCore-shared PROPERTIES MACOSX_BUNDLE TRUE )
 
 ### Install mvpPlayerCore libs and include
 install(
@@ -32,8 +33,8 @@ install(
 if(APPLE)
     set_target_properties(mvpPlayerCore-shared
     PROPERTIES LINK_FLAGS "-framework CoreFoundation -w")
-    set_target_properties(mvpPlayerCore-shared
-    PROPERTIES INSTALL_RPATH "@loader_path")
+    set_target_properties(mvpPlayerCore-shared PROPERTIES 
+                          INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif(APPLE)
 
 install(TARGETS mvpPlayerCore-static DESTINATION lib/ OPTIONAL)

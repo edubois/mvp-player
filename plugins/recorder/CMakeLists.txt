@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(RecorderPlugin CXX)
 
+FIND_PACKAGE(Qt5 COMPONENTS Core )
+set(CMAKE_AUTOMOC ON)
+
 # Set sequenceParser versions
 set(RECORDER_PLUGIN_VERSION_MAJOR "1")
 set(RECORDER_PLUGIN_VERSION_MINOR "0")
@@ -21,6 +24,11 @@ else()
         set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -fPIC -pg -g")
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC -O3")
 endif()
+
+ADD_DEFINITIONS(${QT_DEFINITIONS})
+ADD_DEFINITIONS(-DQT_PLUGIN)
+ADD_DEFINITIONS(-DQT_NO_DEBUG)
+ADD_DEFINITIONS(-DQT_SHARED)
 
 set(RECORDER_PLUGIN_SRC_PATH "${PROJECT_SOURCE_DIR}/src")
 file(GLOB_RECURSE RECORDER_PLUGIN_SRC_FILES "*.cpp" )
@@ -48,4 +56,4 @@ install(
 	PATTERN "*.tcc"
 )
 
-install(TARGETS recorderPlugin DESTINATION plugins/ OPTIONAL)
+install(TARGETS recorderPlugin DESTINATION mvpPlayerPlugins/ OPTIONAL)

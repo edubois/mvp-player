@@ -3,53 +3,54 @@ SET(BOOST_ADDS_SRC_PATH "${PROJECT_SOURCE_DIR}/src")
 SET( MY_APP_NAME "MvpPlayer" )
 
 # external modules
-INCLUDE(BundleUtilities)
 include(UseMvpPlayerBoost)
+include(FindFMod)
 
 FILE( GLOB MVPPLAYER_SRCS *.cpp )
 
 #--------------------------------------------------------------------------------
 # For Apple set the icns file containing icons
-IF(APPLE)
+# Handle Mac OS X specific icons etc.
+if(APPLE)
     # set how it shows up in the Info.plist file
-    SET(MACOSX_BUNDLE_ICON_FILE "resources/${MY_APP_NAME}.icns")
+    SET(MACOSX_BUNDLE_ICON_FILE )
     # set where in the bundle to put the icns file
     SET_SOURCE_FILES_PROPERTIES( ${CMAKE_CURRENT_SOURCE_DIR}/resources/${MY_APP_NAME}.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
-    # include the icns file in the target
-    SET( MVPPLAYER_SRCS ${MVPPLAYER_SRCS} "${CMAKE_CURRENT_SOURCE_DIR}/resources/${MY_APP_NAME}.icns" )
+    set( MACOSX_BUNDLE_ICON_FILE "${CMAKE_CURRENT_SOURCE_DIR}/resources/${MY_APP_NAME}.icns" )
+    set( MACOSX_BUNDLE_BUNDLE_VERSION "${MVPPLAYERQT_VERSION}")
+    set( MACOSX_BUNDLE_INFO_STRING "${MY_APP_NAME} - version ${MVPPLAYERQT_VERSION}" )
 
-    # Locate all resourses
-    FILE( GLOB COPY_RESOURCES "${CMAKE_CURRENT_SOURCE_DIR}/ui/buttons/*.ui" )
-    SET_SOURCE_FILES_PROPERTIES(
-      "${COPY_RESOURCES}"
-      PROPERTIES
-      MACOSX_PACKAGE_LOCATION Resources
-    )
+    # Change following line to point to actual icns file in bundle.
+    set( MACOSX_BUNDLE_GUI_IDENTIFIER "cc.${MY_APP_NAME}" )
+    set( MACOSX_BUNDLE_NAME "${MY_APP_NAME}" )
+    set( prefix "${CMAKE_INSTALL_PREFIX}/${MACOSX_BUNDLE_NAME}.app/Contents" )
+    set( INSTALL_RUNTIME_DIR "${prefix}/MacOS" )
+    set( INSTALL_DATA_DIR "${prefix}/data" )
+    set( INSTALL_CMAKE_DIR "${prefix}/Resources" )
 
-    SET( COPY_FRAMEWORKS  ${OGRE_FWK} ${OIS_FWK} )
-    SET_SOURCE_FILES_PROPERTIES(
-      ${COPY_FRAMEWORKS}
-      PROPERTIES
-      MACOSX_PACKAGE_LOCATION Frameworks
-    )
-ENDIF(APPLE)
+elseif(UNIX)
+    #nothing
+elseif(WIN32)
+    list(APPEND MVPPLAYER_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/resources/${MY_APP_NAME}.rc)
+endif()
 
-add_executable( ${MY_APP_NAME} MACOSX_BUNDLE WIN32 ${MVPPLAYER_SRCS} ${COPY_RESOURCES} )
-target_link_libraries( ${MY_APP_NAME} ${Boost_LIBRARIES} ${QT_LIBRARIES} ${BoostAdds_LIBRARIES} boostAdds-shared mvpPlayerCore-shared mvpPlayerNet-shared mvpPlayerFMod-shared mvpPlayerGui-shared mvpPlayerQtGui-shared )
+ADD_EXECUTABLE( ${MY_APP_NAME} MACOSX_BUNDLE WIN32 ${MVPPLAYER_SRCS} ${COPY_RESOURCES} )
+TARGET_LINK_LIBRARIES( ${MY_APP_NAME} ${Boost_LIBRARIES} ${QT_LIBRARIES} boostAdds-shared mvpPlayerCore-shared mvpPlayerNet-shared mvpPlayerFMod-shared mvpPlayerGui-shared mvpPlayerQtGui-shared )
 
 # Install stuff
-set( plugin_dest_dir bin )
-set( qtconf_dest_dir bin )
-set( APPS "\${CMAKE_INSTALL_PREFIX}/bin/${MY_APP_NAME}" )
-if( APPLE )
-    set( plugin_dest_dir ${MY_APP_NAME}.app/Contents/ )
-    set( qtconf_dest_dir ${MY_APP_NAME}.app/Contents/Resources )
-    set( APPS "\${CMAKE_INSTALL_PREFIX}/${MY_APP_NAME}.app" )
-endif( APPLE )
+SET( qt_plugin_dest_dir bin )
+SET( qtconf_dest_dir bin )
+SET( APPS "${CMAKE_INSTALL_PREFIX}/bin/${MY_APP_NAME}" )
+IF( APPLE )
+    SET( qt_plugin_dest_dir ${CMAKE_INSTALL_PREFIX}/${MY_APP_NAME}.app/Contents/PlugIns )
+    SET( plugin_dest_dir ${CMAKE_INSTALL_PREFIX}/${MY_APP_NAME}.app/Contents/Resources/mvpPlayerPlugins )
+    SET( qtconf_dest_dir ${CMAKE_INSTALL_PREFIX}/${MY_APP_NAME}.app/Contents/Resources )
+    SET( APPS "${CMAKE_INSTALL_PREFIX}/${MY_APP_NAME}.app" )
+ENDIF( APPLE )
 
-if( WIN32 )
-    set( APPS "\${CMAKE_INSTALL_PREFIX}/bin/${MY_APP_NAME}.exe" )
-endif( WIN32 )
+IF( WIN32 )
+    SET( APPS "${CMAKE_INSTALL_PREFIX}/bin/${MY_APP_NAME}.exe" )
+ENDIF( WIN32 )
 
 #--------------------------------------------------------------------------------
 # This sets the windows build that will need the special winmain@16 call. Qt provides
@@ -72,63 +73,60 @@ INSTALL( TARGETS ${MY_APP_NAME}
 #--------------------------------------------------------------------------------
 # Install needed Qt plugins by copying directories from the qt installation
 # One can cull what gets copied by using 'REGEX "..." EXCLUDE'
-install( DIRECTORY "${QT_PLUGINS_DIR}/imageformats"
-    "${QT_PLUGINS_DIR}/codecs"
-    "${QT_PLUGINS_DIR}/phonon_backend"
-    "${QT_PLUGINS_DIR}/sqldrivers"
-    "${QT_PLUGINS_DIR}/accessible"
-    "${QT_PLUGINS_DIR}/bearer"
-    "${QT_PLUGINS_DIR}/graphicssystems"
-    DESTINATION ${plugin_dest_dir}/PlugIns
-    COMPONENT Runtime
-    FILES_MATCHING
-    PATTERN "*.dylib"
-    PATTERN "*_debug.dylib" EXCLUDE
-)
-
 IF(APPLE)
-   # Add resources to application bundle target
-   SET_TARGET_PROPERTIES(
+    FIND_PACKAGE( Qt5Core )
+    FIND_PACKAGE( Qt5Widgets )
+    GET_TARGET_PROPERTY( QT_PLUGINS_DIR Qt5::Core LOCATION_Release )
+    GET_FILENAME_COMPONENT( QT_PLUGINS_DIR "${QT_PLUGINS_DIR}" DIRECTORY )
+    GET_FILENAME_COMPONENT( QT_PLUGINS_DIR "${QT_PLUGINS_DIR}" DIRECTORY )
+    GET_FILENAME_COMPONENT( QT_PLUGINS_DIR "${QT_PLUGINS_DIR}" DIRECTORY )
+    SET( QT_PLUGINS_DIR "${QT_PLUGINS_DIR}/plugins" )
+
+    INSTALL( DIRECTORY "${QT_PLUGINS_DIR}/imageformats"
+        "${QT_PLUGINS_DIR}/codecs"
+        "${QT_PLUGINS_DIR}/platforms"
+        "${QT_PLUGINS_DIR}/accessible"
+        "${QT_PLUGINS_DIR}/graphicssystems"
+        DESTINATION ${qt_plugin_dest_dir}
+        COMPONENT Runtime
+        FILES_MATCHING
+        PATTERN "*${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        PATTERN "*_debug${CMAKE_SHARED_LIBRARY_SUFFIX}" EXCLUDE
+    )
+
+    FILE( GLOB_RECURSE QTPLUGINS
+          "${qt_plugin_dest_dir}/*${CMAKE_SHARED_LIBRARY_SUFFIX}" )
+
+    INSTALL( DIRECTORY "${CMAKE_INSTALL_PREFIX}/mvpPlayerPlugins/"
+        DESTINATION ${plugin_dest_dir}
+        COMPONENT Runtime
+        FILES_MATCHING
+        PATTERN "*${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        PATTERN "*_debug${CMAKE_SHARED_LIBRARY_SUFFIX}" EXCLUDE
+    )
+
+    FILE( GLOB_RECURSE MVPPLAYER_PLUGINS
+          "${plugin_dest_dir}/*${CMAKE_SHARED_LIBRARY_SUFFIX}" )
+
+    # Add resources to application bundle target
+    SET_TARGET_PROPERTIES(
      ${MY_APP_NAME}
      PROPERTIES
      RESOURCE "${COPY_RESOURCES}"
-     )
+    )
+
+    #--------------------------------------------------------------------------------
+    # install a qt.conf file
+    # this inserts some cmake code into the install script to write the file
+    INSTALL( CODE "
+        FILE(WRITE \"${qtconf_dest_dir}/qt.conf\" \"[Paths]\nPlugins = PlugIns\")
+        " COMPONENT Runtime
+    )
+
+    SET( DIRS "${Boost_LIBRARY_DIR};${CMAKE_INSTALL_PREFIX}/lib;${FMOD_LIBRARY_DIR}" )
+
+    INSTALL(CODE "
+        INCLUDE(BundleUtilities)
+        fixup_bundle(${CMAKE_INSTALL_PREFIX}/${MY_APP_NAME}.app \"${QTPLUGINS};${MVPPLAYER_PLUGINS}\" \"${DIRS}\")
+    " COMPONENT Runtime)
 ENDIF(APPLE)
-
-#--------------------------------------------------------------------------------
-# install a qt.conf file
-# this inserts some cmake code into the install script to write the file
-install( CODE "
-    file(WRITE \"\${CMAKE_INSTALL_PREFIX}/${qtconf_dest_dir}/qt.conf\" \"\")
-    " COMPONENT Runtime
-)
-
-# directories to look for dependencies
-set( DIRS ${QT_LIBRARY_DIRS} ${BoostAdds_LIBRARIES} )
-
-# Now the work of copying dependencies into the bundle/package
-# The quotes are escaped and variables to use at install time have their $ escaped
-# An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
-# Note that the image plugins depend on QtSvg and QtXml, and it got those copied
-# over.
-
-set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR})
-install( CODE "
-    file(GLOB_RECURSE QTPLUGINS
-      \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
-    set(BU_CHMOD_BUNDLE_ITEMS ON)
-    include(BundleUtilities)
-    fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
-    " COMPONENT Runtime
-)
-
-install(CODE "
-    include(BundleUtilities)
-    fixup_bundle(${CMAKE_INSTALL_PREFIX}/${MY_APP_NAME}.app \"\" \"\")
-" COMPONENT Runtime)
-
-# To Create a package, one can run "cpack -G DragNDrop CPackConfig.cmake" on Mac OS X
-# where CPackConfig.cmake is created by including CPack
-# And then there's ways to customize this as well
-set( CPACK_BINARY_DRAGNDROP ON )
-include( CPack )

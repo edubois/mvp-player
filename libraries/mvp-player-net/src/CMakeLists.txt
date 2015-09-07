@@ -20,6 +20,7 @@ set_target_properties( mvpPlayerNet-shared PROPERTIES VERSION ${MVP_PLAYER_NET_V
 target_include_directories( mvpPlayerNet-shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
 target_include_directories( mvpPlayerNet-shared PUBLIC ${Boost_INCLUDE_DIRS} )
 target_link_libraries( mvpPlayerNet-shared ${Boost_LIBRARIES} mvpPlayerCore-shared )
+SET_TARGET_PROPERTIES( mvpPlayerNet-shared PROPERTIES MACOSX_BUNDLE TRUE )
 
 ### Install mvpPlayerNet libs and include
 install(
