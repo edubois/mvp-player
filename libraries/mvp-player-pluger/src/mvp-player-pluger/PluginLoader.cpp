@@ -75,10 +75,10 @@ void PluginLoader::loadPlugins( mvpplayer::MVPPlayerEngine & model, mvpplayer::g
 #endif
     // Get plugin path from settings, environment variable or ./plugins
     boost::optional<std::string> envStr = boost::get_env( kMVPPlayerPluginEnvKey );
-    std::string chosenPath;
+    boost::filesystem::path chosenPath;
     if ( Settings::getInstance().has( "plugins", "pluginsPath" ) )
     {
-        chosenPath = Settings::getInstance().get<std::string>( "plugins", "pluginsPath" );
+        chosenPath = Settings::getInstance().get<boost::filesystem::path>( "plugins", "pluginsPath" );
     }
     else
     {
