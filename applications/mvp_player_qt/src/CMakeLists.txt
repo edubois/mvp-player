@@ -13,7 +13,7 @@ FILE( GLOB MVPPLAYER_SRCS *.cpp )
 # Handle Mac OS X specific icons etc.
 if(APPLE)
     # set how it shows up in the Info.plist file
-    SET(MACOSX_BUNDLE_ICON_FILE )
+    SET( MACOSX_BUNDLE_ICON_FILE )
     set( MACOSX_BUNDLE_BUNDLE_VERSION "${MVPPLAYERQT_VERSION}")
     set( MACOSX_BUNDLE_INFO_STRING "${MY_APP_NAME} - version ${MVPPLAYERQT_VERSION}" )
 
